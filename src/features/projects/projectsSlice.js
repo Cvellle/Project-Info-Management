@@ -6,7 +6,7 @@ const initialState = {
   status: 'idle'
 }
 
-export const fetchItems = createAsyncThunk('projects/fetchProjects', async () => {
+export const fetchItems = createAsyncThunk('./api/projectsAPI.js', async () => {
   const response = await fetchProjects()
   return response.data
 })
