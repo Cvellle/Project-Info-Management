@@ -30,7 +30,7 @@ export function Register() {
 
   const onSubmit = async (data) => {
     const res = await dispatch(registerAsync(data))
-    if (res) {
+    if (res && !res.error) {
       navigate('/login', { replace: true })
     }
     if (res.error) {
