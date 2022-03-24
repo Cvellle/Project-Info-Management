@@ -29,7 +29,6 @@
 //       //   state.currentUser = action.payload
 //       // })
 //       .addCase(loginAsync.fulfilled, (state, action) => {
-//         state.jwt = action.payload.jwt
 //       })
 //   }
 // })
