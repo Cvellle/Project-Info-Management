@@ -1,6 +1,6 @@
 import API from '../../../services/axios'
 
-export const createUser = async (data) => {
+export const registerAPI = async (data) => {
   try {
     const response = await API.post('/auth/local/register', data)
     const { json } = response.data

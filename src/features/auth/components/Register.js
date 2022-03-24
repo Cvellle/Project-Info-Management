@@ -5,7 +5,8 @@ import { Button } from '@chakra-ui/button'
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/form-control'
 import { Input } from '@chakra-ui/input'
 import { useForm } from 'react-hook-form'
-import { createUser } from '../api/registerAPI'
+import { useDispatch } from 'react-redux'
+import { registerAssync } from '../authSlice'
 
 export function Register() {
   const {
@@ -13,19 +14,20 @@ export function Register() {
     register,
     formState: { errors, isSubmitting }
   } = useForm()
+  const dispatch = useDispatch()
 
   const onSubmit = (data) => {
-    createUser(data)
+    dispatch(registerAssync(data))
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <FormControl isInvalid={errors.name}>
-        <FormLabel htmlFor="name">First name</FormLabel>
+      <FormControl isInvalid={errors.username}>
+        <FormLabel htmlFor="username">First username</FormLabel>
         <Input
-          id="name"
-          placeholder="name"
-          {...register('name', {
+          id="username"
+          placeholder="username"
+          {...register('username', {
             required: 'This is required',
             minLength: { value: 4, message: 'Minimum length should be 4' }
           })}
