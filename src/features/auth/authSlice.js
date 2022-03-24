@@ -1,50 +1,47 @@
-// import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-// import { fetchProjects } from './api/projectsAPI'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { registerAPI } from './api/registerAPI'
+import { loginUser } from './api/loginAPI'
 
-// const initialState = {
-//   currentUser: {},
-//   token: ''
-// }
+const initialState = {
+  currentUser: '',
+  jwt: ''
+}
 
-// export const fetchItems = createAsyncThunk('projects/fetchProjects', async () => {
-//   const response = await fetchProjects()
-//   return response.data
-// })
+export const registerAsync = createAsyncThunk('./api/registerAPI.js', async (data) => {
+  const resData = await registerAPI(data)
+  return resData
+})
 
-// export const projectsSlice = createSlice({
-//   name: 'projects',
-//   initialState,
-//   reducers: {
-//     editProject: (state, action) => {
-//       let currentId = action.payload.id
-//       state.projects = [
-//         ...state.projects.slice(0, currentId - 1),
-//         action.payload,
-//         ...state.projects.slice(currentId)
-//       ]
-//     }
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(fetchItems.pending, (state) => {
-//         state.status = 'loading'
-//       })
-//       .addCase(fetchItems.fulfilled, (state, action) => {
-//         state.status = 'idle'
-//         state.projects += action.payload
-//       })
-//   }
-// })
+export const loginAsync = createAsyncThunk('./api/loginAPI.js', async (data) => {
+  const resData = await loginUser(data)
+  return resData
+})
 
-// export const { increment, decrement, editProject } = projectsSlice.actions
+export const authSlice = createSlice({
+  name: 'auth',
+  initialState,
+  reducers: {
+    setCurrentUser: (state, action) => {
+      state = {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          role: action.payload
+        }
+      }
+    }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(registerAsync.fulfilled, (state, action) => {
+      state = {
+        state,
+        jwt: action.payload.jwt,
+        currentUser: action.payload
+      }
+    })
+  }
+})
 
-// export const selectProjects = (state) => state.projects.projects
+export const { setCurrentUser, setJwt } = authSlice.actions
 
-// export const incrementIfOdd = () => (dispatch, getState) => {
-//   const currentValue = selectProjects(getState())
-//   if (currentValue.length > 0) {
-//     // dispatch(...);
-//   }
-// }
-
-// export default authSlice.reducer
+export default authSlice.reducer

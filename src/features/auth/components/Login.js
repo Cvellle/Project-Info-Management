@@ -14,10 +14,10 @@ import {
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
-import { registerAsync } from '../authSlice'
+import { loginAsync } from '../authSlice'
 import { Link as ReactLink, useNavigate } from 'react-router-dom'
 
-export function Register() {
+export const Login = () => {
   const {
     handleSubmit,
     register,
@@ -26,15 +26,16 @@ export function Register() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState()
-  const [registrationError, setRegistrationError] = useState(false)
+  const [loginError, setLoginError] = useState(false)
 
   const onSubmit = async (data) => {
-    const res = await dispatch(registerAsync(data))
-    if (res) {
-      navigate('/login', { replace: true })
+    const flag = true
+    const res = await dispatch(loginAsync(data, flag))
+    if (res && !res.error) {
+      navigate('/', { replace: true })
     }
     if (res.error) {
-      setRegistrationError(res.error.message)
+      setLoginError(res.error.message)
     }
   }
 
@@ -46,22 +47,6 @@ export function Register() {
     <Container>
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing="3.5">
-          <FormControl isInvalid={errors.username} isRequired>
-            <FormLabel htmlFor="username" padding="0" margin="0">
-              Username
-            </FormLabel>
-            <Input
-              id="username"
-              placeholder="Your Username"
-              autoComplete="username"
-              {...register('username', {
-                required: 'This is required',
-                minLength: { value: 4, message: 'Minimum length should be 4' }
-              })}
-            />
-            <FormErrorMessage>{errors.username && errors.username.message}</FormErrorMessage>
-          </FormControl>
-
           <FormControl isInvalid={errors.email} isRequired>
             <FormLabel htmlFor="email" padding="0" margin="0">
               Email
@@ -70,7 +55,7 @@ export function Register() {
               id="email"
               placeholder="Your Email"
               autoComplete="email"
-              {...register('email', {
+              {...register('identifier', {
                 required: 'This is required',
                 minLength: { value: 4, message: 'Minimum length should be 4' }
               })}
@@ -102,15 +87,15 @@ export function Register() {
             <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
           </FormControl>
 
-          {registrationError && <Box color="red.500">{registrationError}</Box>}
+          {loginError && <Box color="red.500">{loginError}</Box>}
         </VStack>
         <Button colorScheme="teal" isLoading={isSubmitting} type="submit" width="100%" mt="6">
           Submit
         </Button>
       </form>
       <Box my="3">
-        <Link as={ReactLink} to="/login">
-          Already have an account?
+        <Link as={ReactLink} to="/register">
+          Don&apos;t have an account yet? Sign Up
         </Link>
       </Box>
     </Container>
