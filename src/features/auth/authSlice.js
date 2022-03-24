@@ -1,14 +1,19 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { registerAPI } from './api/registerAPI'
+import { loginUser } from './api/loginAPI'
 
 const initialState = {
-  currentUser: {},
   jwt: ''
 }
 
-export const registerAssync = createAsyncThunk('./api/registerAPI.js', async () => {
-  const response = await registerAPI()
-  return response.data
+export const registerAsync = createAsyncThunk('./api/registerAPI.js', async (data) => {
+  const resData = await registerAPI(data)
+  return resData
+})
+
+export const loginAsync = createAsyncThunk('./api/loginAPI.js', async (data) => {
+  const resData = await loginUser(data)
+  return resData
 })
 
 export const authSlice = createSlice({
@@ -18,29 +23,20 @@ export const authSlice = createSlice({
     setCurrentUser: (state, action) => {
       state = {
         ...state,
-        currentUser: action.payload
-        // jwt: action.payload.jwt
+        jwt: action.payload.jwt
       }
     }
   },
   extraReducers: (builder) => {
-    builder
-      // .addCase(registerAssync.pending, (state) => {
-      //   state.status = 'loading'
-      // })
-      .addCase(registerAssync.fulfilled, (state, action) => {
-        console.log(action.payload)
-        state = {
-          ...state,
-          currentUser: action.payload,
-          jwt: action.payload.jwt
-        }
+    builder.addCase(registerAsync.fulfilled, (state, action) => {
+      state.jwt = action.payload.jwt
+    }),
+      builder.addCase(loginAsync.fulfilled, (state, action) => {
+        state.jwt = action.payload.jwt
       })
   }
 })
 
 export const { setCurrentUser, setJwt } = authSlice.actions
-
-export const selectProjects = (state) => state.auth
 
 export default authSlice.reducer
