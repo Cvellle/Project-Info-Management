@@ -3,6 +3,7 @@ import { registerAPI } from './api/registerAPI'
 import { loginUser } from './api/loginAPI'
 
 const initialState = {
+  currentUser: '',
   jwt: ''
 }
 
@@ -23,17 +24,21 @@ export const authSlice = createSlice({
     setCurrentUser: (state, action) => {
       state = {
         ...state,
-        jwt: action.payload.jwt
+        currentUser: {
+          ...state.currentUser,
+          role: action.payload
+        }
       }
     }
   },
   extraReducers: (builder) => {
     builder.addCase(registerAsync.fulfilled, (state, action) => {
-      state.jwt = action.payload.jwt
-    }),
-      builder.addCase(loginAsync.fulfilled, (state, action) => {
-        state.jwt = action.payload.jwt
-      })
+      state = {
+        state,
+        jwt: action.payload.jwt,
+        currentUser: action.payload
+      }
+    })
   }
 })
 

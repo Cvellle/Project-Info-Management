@@ -15,7 +15,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
 import { registerAsync } from '../authSlice'
-import { Link as ReactLink } from 'react-router-dom'
+import { Link as ReactLink, useNavigate } from 'react-router-dom'
 
 export function Register() {
   const {
@@ -23,12 +23,16 @@ export function Register() {
     register,
     formState: { errors, isSubmitting }
   } = useForm()
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState()
   const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
     const res = await dispatch(registerAsync(data))
+    if (res) {
+      navigate('/login', { replace: true })
+    }
     if (res.error) {
       setRegistrationError(res.error.message)
     }
