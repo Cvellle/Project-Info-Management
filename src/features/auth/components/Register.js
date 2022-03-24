@@ -22,12 +22,12 @@ export function Register() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <FormControl isInvalid={errors.name}>
-        <FormLabel htmlFor="name">First name</FormLabel>
+      <FormControl isInvalid={errors.username}>
+        <FormLabel htmlFor="username">First username</FormLabel>
         <Input
-          id="name"
-          placeholder="name"
-          {...register('name', {
+          id="username"
+          placeholder="username"
+          {...register('username', {
             required: 'This is required',
             minLength: { value: 4, message: 'Minimum length should be 4' }
           })}

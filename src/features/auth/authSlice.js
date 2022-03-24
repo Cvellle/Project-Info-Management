@@ -32,7 +32,8 @@ export const authSlice = createSlice({
         console.log(action.payload)
         state = {
           ...state,
-          currentUser: action.payload
+          currentUser: action.payload,
+          jwt: action.payload.jwt
         }
       })
   }
