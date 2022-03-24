@@ -1,8 +1,8 @@
 import API from '../../../services/axios'
 
-export const registerAPI = async (data) => {
+export const loginUser = async (data) => {
   try {
-    const response = await API.post('/auth/local/register', data)
+    const response = await API.post('/auth/local', data)
     return response.data
   } catch (ex) {
     throw Error(ex?.response?.data?.error?.message ?? 'Unknown error')
