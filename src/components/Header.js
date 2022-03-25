@@ -23,7 +23,7 @@ const Header = () => {
 
   return (
     <Box backgroundColor="#F0F0F0">
-      <Container maxW="5xl">
+      <Container>
         <Flex alignItems="center" justifyContent="space-between" padding="1rem 0">
           <Flex alignItems="center" position="relative">
             <Image
@@ -61,7 +61,7 @@ const Header = () => {
                   </MenuItem>
                   <MenuItem>
                     <Link as={NavLink} to="/account">
-                      {`> Account`}
+                      {`> Account`}sdf
                     </Link>
                   </MenuItem>
                   <MenuItem>
