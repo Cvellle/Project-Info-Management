@@ -1,38 +1,43 @@
-// import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-// import { registerAPI } from './api/registerAPI'
-// import { loginUser } from './api/loginAPI'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { getItems } from './api/getItems'
 
-// const initialState = {
-//   currentUser: '',
-//   jwt: ''
-// }
+const initialState = {
+  projects: [],
+  status: 'idle'
+}
 
-// export const registerAsync = createAsyncThunk('./api/registerAPI.js', async (data) => {
-//   const resData = await registerAPI(data)
-//   return resData
-// })
+export const fetchItems = createAsyncThunk('./api/getItems.js', async () => {
+  const response = await getItems()
+  return response.data
+})
 
-// export const dashboardSlice = createSlice({
-//   name: 'dashboard',
-//   initialState,
-//   reducers: {
-//     setCurrentUser: (state, action) => {
-//       state = {
-//         ...state,
-//         currentUser: action.payload
-//       }
-//     }
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       // .addCase(registerAsync.fulfilled, (state, action) => {
-//       //   state.currentUser = action.payload
-//       // })
-//       .addCase(loginAsync.fulfilled, (state, action) => {
-//       })
-//   }
-// })
+export const dashboardSlice = createSlice({
+  name: 'dashboard',
+  initialState,
+  reducers: {
+    editProject: (state, action) => {
+      let currentId = action.payload.id
+      state.projects = [
+        ...state.projects.slice(0, currentId - 1),
+        action.payload,
+        ...state.projects.slice(currentId)
+      ]
+    }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchItems.pending, (state) => {
+        state.status = 'loading'
+      })
+      .addCase(fetchItems.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.projects += action.payload
+      })
+  }
+})
 
-// export const { setCurrentUser, setJwt } = authSlice.actions
+export const { increment, decrement, editProject } = dashboardSlice.actions
 
-// export default authSlice.reducer
+export const selectProjects = (state) => state.projects.projects
+
+export default dashboardSlice.reducer

@@ -3,6 +3,7 @@ import { persistReducer, FLUSH, PAUSE, REHYDRATE, PERSIST, PURGE, REGISTER } fro
 import authReducer from '../features/auth/authSlice'
 import storage from 'redux-persist/lib/storage'
 import { combineReducers } from 'redux'
+import dashboardReducer from '../features/dashboard/dashboardSlice'
 
 const persistConfig = {
   key: 'root',
@@ -11,6 +12,7 @@ const persistConfig = {
 }
 
 const rootReducer = combineReducers({
+  dashboard: dashboardReducer,
   auth: authReducer
 })
 
