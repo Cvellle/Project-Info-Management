@@ -43,7 +43,7 @@ export function Register() {
   }
 
   return (
-    <Container>
+    <Container paddingTop="3rem">
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing="3.5">
           <FormControl isInvalid={errors.username} isRequired>
