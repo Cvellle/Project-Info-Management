@@ -2,7 +2,7 @@ import API from '../../../services/axios'
 
 export const getItems = async () => {
   try {
-    const response = await API.get('/projects')
+    const response = await API.get('./projects')
     console.log(response)
     return response.data
   } catch (ex) {

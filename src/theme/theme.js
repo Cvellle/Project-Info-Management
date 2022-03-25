@@ -7,7 +7,7 @@ const theme = extendTheme({
   },
   textStyles: {
     h2: {
-      fontSize: ['20px', '25px'],
+      fontSize: ['28px', '25px'],
       color: 'black'
     },
     infoDescription: {

@@ -1,8 +1,14 @@
 import { Box } from '@chakra-ui/react'
-// import { useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { fetchItems } from '../dashboardSlice'
 
 export function Projects() {
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(fetchItems())
+  }, [])
 
   return <Box>Projects</Box>
 }
