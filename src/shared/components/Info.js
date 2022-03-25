@@ -1,12 +1,12 @@
 // import { Box, Center, Text, Flex, Heading } from '@chakra-ui/react'
-import { Text, Flex, Center, Box, Heading, Square, Input } from '@chakra-ui/react'
-// import rocketImage from '../../assets/rocket'
+import { Text, Flex, Center, Box, Heading, Square, Image } from '@chakra-ui/react'
+import rocketImage from '../../assets/rocket.png'
 
 export function Info(props) {
   return (
     <Flex color="white">
       <Square size="150px">
-        {/* <Image objectFit="contain" alt="employee" src={rocketImage} boxSize="50px" /> */}
+        <Image objectFit="contain" alt="employee" src={rocketImage} boxSize="96px" h="48" />
       </Square>
       <Center w="100px">
         <Box>
@@ -17,9 +17,6 @@ export function Info(props) {
             {props.textProp}
           </Text>
         </Box>
-      </Center>
-      <Center w="100px" ml="auto">
-        <Input placeholder="Search projects" size="xs" />
       </Center>
     </Flex>
   )

@@ -8,6 +8,7 @@ const initialState = {
 
 export const fetchItems = createAsyncThunk('./api/getItems.js', async () => {
   const response = await getItems()
+  // console.log(response)
   return response.data
 })
 
