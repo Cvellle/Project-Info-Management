@@ -5,7 +5,6 @@ import { Search } from './Search'
 
 export function Dashboard() {
   // const dispatch = useDispatch()
-
   return (
     <Box>
       <Search />
