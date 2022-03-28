@@ -33,6 +33,7 @@ export const Login = () => {
     const res = await dispatch(loginAsync(data, flag))
     if (res && !res.error) {
       navigate('/', { replace: true })
+      localStorage.setItem('token', res.payload.jwt)
     }
     if (res.error) {
       setLoginError(res.error.message)
