@@ -3,7 +3,7 @@ import { registerAPI } from './api/registerAPI'
 import { loginUser } from './api/loginAPI'
 
 const initialState = {
-  currentUser: '',
+  currentUser: null,
   jwt: ''
 }
 
@@ -35,13 +35,14 @@ export const authSlice = createSlice({
     builder.addCase(registerAsync.fulfilled, (state, action) => {
       console.log(state)
       state = {
-        state,
+        ...state,
         jwt: action.payload.jwt,
         currentUser: action.payload
       }
     }),
       builder.addCase(loginAsync.fulfilled, (state, action) => {
         state.jwt = action.payload.jwt
+        state.currentUser = action.payload.user
       })
   }
 })

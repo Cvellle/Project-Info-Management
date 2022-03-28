@@ -6,6 +6,9 @@ const theme = extendTheme({
     body: 'Poppins, sans-serif'
   },
   textStyles: {
+    h1: {
+      fontSize: ['32px', '32px !important']
+    },
     h2: {
       fontSize: ['28px', '25px'],
       color: 'black'

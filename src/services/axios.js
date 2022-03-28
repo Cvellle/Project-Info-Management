@@ -12,6 +12,7 @@ const API = axios.create({
 
 API.interceptors.request.use((config) => {
   const token = localStorage.token
+  // const token = localStorage.token || JSON.parse(JSON.parse(localStorage['persist:root']).auth).jwt
 
   if (!token) {
     return config

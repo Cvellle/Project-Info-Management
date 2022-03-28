@@ -21,7 +21,7 @@ const Header = () => {
 
   return (
     <Flex backgroundColor="#F0F0F0" p={'20px 62px 20px 47px'} m="0" h="88px" align-items="center">
-      <Flex alignItems="center" justifyContent="space-between">
+      <Flex alignItems="center" justifyContent="space-between" w="100%">
         <Image
           objectFit="contain"
           alt="Q Project Info"
@@ -31,7 +31,7 @@ const Header = () => {
           top="11px"
         />
         <Flex alignItems="center" position="relative">
-          <Heading as="h1" size="md" paddingLeft="125px">
+          <Heading as="h1" size="md" paddingLeft="125px" fontSize="32px" fontWeight="900">
             Q Project Info
           </Heading>
         </Flex>
