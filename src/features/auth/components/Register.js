@@ -32,7 +32,6 @@ export function Register() {
     const res = await dispatch(registerAsync(data))
     if (res && !res.error) {
       navigate('/login', { replace: true })
-      localStorage.setItem('token', res.payload.jwt)
     }
     if (res.error) {
       setRegistrationError(res.error.message)

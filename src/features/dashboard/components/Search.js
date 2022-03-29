@@ -1,6 +1,6 @@
 import { Flex, Center, Input } from '@chakra-ui/react'
 
-import { Info } from '../../../shared/components/Info'
+import { Info } from '../../../components/Info'
 // import { useDispatch } from 'react-redux'
 
 export function Search() {

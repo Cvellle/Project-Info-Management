@@ -13,8 +13,8 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
-import { loginAsync } from '../authSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { authState, getMeAssync, loginAsync } from '../authSlice'
 import { Link as ReactLink, useNavigate } from 'react-router-dom'
 
 export const Login = () => {
@@ -25,6 +25,7 @@ export const Login = () => {
   } = useForm()
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const authSelector = useSelector(authState)
   const [showPassword, setShowPassword] = useState()
   const [loginError, setLoginError] = useState(false)
 
@@ -32,6 +33,7 @@ export const Login = () => {
     const flag = true
     const res = await dispatch(loginAsync(data, flag))
     if (res && !res.error) {
+      dispatch(getMeAssync(authSelector.currentUser.id))
       navigate('/', { replace: true })
       localStorage.setItem('token', res.payload.jwt)
     }
