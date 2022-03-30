@@ -16,15 +16,7 @@ export function Projects() {
   return (
     <Flex flexWrap="wrap" w="calc(1222px + 15px)" m="31px auto">
       {projectsSelector.map((project, i) => {
-        let projectAttributes = project.attributes
-        return (
-          <ProjectItem
-            key={i}
-            projectTitle={projectAttributes.name}
-            projectImg={projectAttributes.logo.data.attributes.url}
-            projectDescription={projectAttributes.description}
-          />
-        )
+        return <ProjectItem key={i} item={project} />
       })}
     </Flex>
   )

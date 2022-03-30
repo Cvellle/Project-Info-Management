@@ -20,7 +20,6 @@ export const loginAsync = createAsyncThunk('./api/loginAPI.js', async (data) => 
 
 export const getMeAssync = createAsyncThunk('./api/getMeAPI.js', async (prop) => {
   const response = await getMeAPI(prop)
-  console.log(response)
   return response.role
 })
 
@@ -52,10 +51,9 @@ export const authSlice = createSlice({
         state.currentUser = action.payload.user
       })
       .addCase(getMeAssync.fulfilled, (state, action) => {
-        console.log(action.payload.role.name)
         state.currentUser = {
           ...state.currentUser,
-          role: action.payload.role.name
+          role: action.payload.name
         }
       })
   }
