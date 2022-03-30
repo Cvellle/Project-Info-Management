@@ -11,21 +11,18 @@ const API = axios.create({
 })
 
 API.interceptors.request.use((config) => {
-  const token = localStorage.token
-  // const token = localStorage.token || JSON.parse(JSON.parse(localStorage['persist:root']).auth).jwt
-
-  if (!token) {
-    return config
-  } else {
+  try {
+    const token = JSON.parse(JSON.parse(localStorage['persist:root']).auth).jwt
     config.headers.Authorization = `Bearer ${token}`
+    return config
+  } catch {
+    return config
   }
-  return config
 })
 
 API.interceptors.response.use(undefined, (err) => {
   if (err.response.status === 401) {
-    localStorage.setItem('token', '')
-    window.location = '/login'
+    // window.location = '/login'
   }
   return Promise.reject(err)
 })
