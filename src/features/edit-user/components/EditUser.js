@@ -14,10 +14,9 @@ import {
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
-import { getMeAssync, loginAsync } from '../authSlice'
 import { Link as ReactLink, useNavigate } from 'react-router-dom'
 
-export const Login = () => {
+export function EditUser() {
   const {
     handleSubmit,
     register,
@@ -26,21 +25,17 @@ export const Login = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState()
-  const [loginError, setLoginError] = useState(false)
+  const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
-    const flag = true
-    const res = await dispatch(loginAsync(data, flag))
-    if (res && !res.error) {
-      localStorage.setItem('token', res.payload.jwt)
+    console.log(data)
 
-      let userResponse = await dispatch(getMeAssync())
-      if (userResponse && !userResponse.error) {
-        navigate('/')
-      }
+    const res = await dispatch()
+    if (res && !res.error) {
+      navigate('/login', { replace: true })
     }
     if (res.error) {
-      setLoginError(res.error.message)
+      setRegistrationError(res.error.message)
     }
   }
 
@@ -52,6 +47,22 @@ export const Login = () => {
     <Container paddingTop="3rem">
       <form onSubmit={handleSubmit(onSubmit)}>
         <VStack spacing="3.5">
+          <FormControl isInvalid={errors.username} isRequired>
+            <FormLabel htmlFor="username" padding="0" margin="0">
+              Username
+            </FormLabel>
+            <Input
+              id="username"
+              placeholder="Your Username"
+              autoComplete="username"
+              {...register('username', {
+                required: 'This is required',
+                minLength: { value: 4, message: 'Minimum length should be 4' }
+              })}
+            />
+            <FormErrorMessage>{errors.username && errors.username.message}</FormErrorMessage>
+          </FormControl>
+
           <FormControl isInvalid={errors.email} isRequired>
             <FormLabel htmlFor="email" padding="0" margin="0">
               Email
@@ -60,7 +71,7 @@ export const Login = () => {
               id="email"
               placeholder="Your Email"
               autoComplete="email"
-              {...register('identifier', {
+              {...register('email', {
                 required: 'This is required',
                 minLength: { value: 4, message: 'Minimum length should be 4' }
               })}
@@ -92,15 +103,15 @@ export const Login = () => {
             <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
           </FormControl>
 
-          {loginError && <Box color="red.500">{loginError}</Box>}
+          {registrationError && <Box color="red.500">{registrationError}</Box>}
         </VStack>
         <Button colorScheme="teal" isLoading={isSubmitting} type="submit" width="100%" mt="6">
           Submit
         </Button>
       </form>
       <Box my="3">
-        <Link as={ReactLink} to="/register">
-          Don&apos;t have an account yet? Sign Up
+        <Link as={ReactLink} to="/login">
+          Already have an account?
         </Link>
       </Box>
     </Container>

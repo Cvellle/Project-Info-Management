@@ -1,8 +1,8 @@
 import API from '../../../services/axios'
 
-export const getProject = async (idProp) => {
+export const getUsers = async () => {
   try {
-    const response = await API.get('/projects/' + idProp + '?populate=*')
+    const response = await API.get('/users?populate=*')
     console.log(response.data)
     return response.data
   } catch (ex) {
