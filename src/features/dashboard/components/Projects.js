@@ -1,8 +1,23 @@
-import { Box } from '@chakra-ui/react'
-// import { useDispatch } from 'react-redux'
+import { Flex } from '@chakra-ui/layout'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { fetchItems, selectProjects } from '../dashboardSlice'
+import { ProjectItem } from './ProjectItem'
 
 export function Projects() {
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
+  const projectsSelector = useSelector(selectProjects)
 
-  return <Box>Projects</Box>
+  useEffect(() => {
+    dispatch(fetchItems())
+  }, [])
+
+  return (
+    <Flex flexWrap="wrap" w="calc(1222px + 15px)" m="31px auto">
+      {projectsSelector.map((project, i) => {
+        return <ProjectItem key={i} item={project} />
+      })}
+    </Flex>
+  )
 }

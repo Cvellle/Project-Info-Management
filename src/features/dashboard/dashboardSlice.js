@@ -31,13 +31,13 @@ export const dashboardSlice = createSlice({
       })
       .addCase(fetchItems.fulfilled, (state, action) => {
         state.status = 'idle'
-        state.projects += action.payload
+        state.projects = action.payload
       })
   }
 })
 
 export const { increment, decrement, editProject } = dashboardSlice.actions
 
-export const selectProjects = (state) => state.projects.projects
+export const selectProjects = (state) => state.dashboard.projects
 
 export default dashboardSlice.reducer
