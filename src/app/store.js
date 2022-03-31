@@ -8,7 +8,7 @@ import dashboardReducer from '../features/dashboard/dashboardSlice'
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['_persist']
+  blacklist: ['_persist', 'dashboard']
 }
 
 const rootReducer = combineReducers({

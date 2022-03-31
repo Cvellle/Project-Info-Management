@@ -15,6 +15,12 @@ export const registerAsync = createAsyncThunk('./api/registerAPI.js', async (dat
 
 export const loginAsync = createAsyncThunk('./api/loginAPI.js', async (data) => {
   const resData = await loginUser(data)
+  if (!resData.error) {
+    localStorage.setItem(
+      'persist:root',
+      JSON.stringify({ auth: JSON.stringify({ jwt: resData.jwt }) })
+    )
+  }
   return resData
 })
 
@@ -35,31 +41,38 @@ export const authSlice = createSlice({
           role: action.payload
         }
       }
+    },
+    logout: (state) => {
+      state = initialState
+      return state
     }
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(registerAsync.fulfilled, (state, action) => {
-        state = {
-          ...state,
-          jwt: action.payload.jwt,
-          currentUser: action.payload
-        }
-      })
-      .addCase(loginAsync.fulfilled, (state, action) => {
-        state.jwt = action.payload.jwt
-        state.currentUser = action.payload.user
-      })
-      .addCase(getMeAssync.fulfilled, (state, action) => {
-        state.currentUser = {
-          ...state.currentUser,
-          role: action.payload.name
-        }
-      })
+  extraReducers: {
+    [registerAsync.fulfilled]: (state, action) => {
+      state = {
+        ...state,
+        jwt: action.payload.jwt,
+        currentUser: action.payload
+      }
+    },
+    [loginAsync.fulfilled]: (state, action) => {
+      state.jwt = action.payload.jwt
+      state.currentUser = action.payload.user
+    },
+    [getMeAssync.fulfilled]: (state, action) => {
+      state.currentUser = {
+        ...state.currentUser,
+        role: action.payload.name
+      }
+    },
+    [getMeAssync.rejected]: (state) => {
+      state = initialState
+      return state
+    }
   }
 })
 
 export const authState = (state) => state.auth
-export const { setCurrentUser, setJwt } = authSlice.actions
+export const { setCurrentUser, setJwt, logout } = authSlice.actions
 
 export default authSlice.reducer
