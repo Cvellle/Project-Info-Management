@@ -24,7 +24,7 @@ const Header = () => {
   const dispatch = useDispatch()
 
   return (
-    <Box backgroundColor="#F0F0F0" padding={{ base: '0.5rem 0', md: '1.3rem 0' }}>
+    <Box backgroundColor="#F0F0F0" padding={{ base: '1rem 0', md: '1.3rem 0' }}>
       <Container maxW="1500px">
         <Flex alignItems="center" justifyContent="space-between">
           <Flex alignItems="center" position="relative">
@@ -32,13 +32,13 @@ const Header = () => {
               objectFit="contain"
               alt="Q Project Info"
               src={headerImage}
-              boxSize={{ base: '70px', md: '70px', lg: '80px' }}
+              boxSize={{ base: '70px', md: '75px', lg: '80px' }}
               position="absolute"
-              bottom={{ base: '-46px', md: '-38px', lg: '-42px' }}
+              bottom={{ base: '-40px', md: '-44px', lg: '-46px' }}
             />
             <Heading
               as="h1"
-              fontSize={['md', 'lg', 'xl']}
+              fontSize={['lg', 'xl']}
               paddingLeft={{ base: '85px', md: '85px', lg: '95px' }}
               fontWeight="extrabold">
               Q Project Info
@@ -68,9 +68,10 @@ const Header = () => {
                 <MenuButton
                   as={IconButton}
                   aria-label="Options"
-                  icon={<Icon as={GiHamburgerMenu} />}
+                  icon={<Icon as={GiHamburgerMenu} height="100%" />}
                   variant="outline"
                   display={{ base: 'block', md: 'none' }}
+                  height="1.9rem"
                 />
                 <MenuList>
                   <MenuItem>
