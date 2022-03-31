@@ -18,7 +18,12 @@ export function ProjectItem(props) {
   }
 
   return (
-    <Flex w="495px" h="114px" m="31px 15px" onClick={(e) => navigateToProject(props.item.id, e)}>
+    <Flex
+      w={{ base: '100%', md: '495px' }}
+      h="114px"
+      m="31px 15px"
+      onClick={(e) => navigateToProject(props.item.id, e)}
+      cursor="pointer">
       <Image
         objectFit="contain"
         alt="employee"
@@ -32,13 +37,13 @@ export function ProjectItem(props) {
         borderRadius="50%"
         m="auto 20px"
       />
-      <Center>
+      <Center w={{ base: '50%', md: 'auto' }}>
         <Box>
           <Heading as="h3" fontSize="24px" fontWeight="600" h="28px">
             {props.item.attributes.name}
           </Heading>
           {/* <Image objectFit="contain" alt="employee" src={usereImage} boxSize="96px" h="48" /> */}
-          <Text>props.item.attributes.name</Text>
+          <Text maxW={{ base: '40vw', md: 'auto' }}>props.item.attributes.name</Text>
         </Box>
       </Center>
       <Center>
@@ -53,7 +58,7 @@ export function ProjectItem(props) {
               onClick={(e) => seeInNewTab(props.item.id, e)}
             />
           </Link>
-          <Text>props.employees.length employees</Text>
+          <Text>{props.item.attributes.employees.data.length} employees</Text>
         </Box>
       </Center>
     </Flex>
