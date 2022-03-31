@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/layout'
+import { Grid } from '@chakra-ui/layout'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -32,11 +32,17 @@ export function Projects() {
   }
 
   return (
-    <Flex flexWrap="wrap" w="calc(1222px + 15px)" m="30px auto">
+    <Grid
+      padding="2.5rem 1rem"
+      gridTemplateColumns={{ base: '1fr', md: 'repeat(2,1fr)' }}
+      maxW="1280px"
+      m="auto"
+      rowGap="0.9rem"
+      columnGap="1.5rem">
       {filteredProjects &&
         filteredProjects.map((project, i) => {
           return <ProjectItem key={i} item={project} />
         })}
-    </Flex>
+    </Grid>
   )
 }
