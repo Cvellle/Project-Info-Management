@@ -24,16 +24,14 @@ export const Login = () => {
     formState: { errors, isSubmitting }
   } = useForm()
   const navigate = useNavigate()
+
   const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState()
   const [loginError, setLoginError] = useState(false)
 
   const onSubmit = async (data) => {
-    const flag = true
-    const res = await dispatch(loginAsync(data, flag))
+    const res = await dispatch(loginAsync(data))
     if (res && !res.error) {
-      localStorage.setItem('token', res.payload.jwt)
-
       let userResponse = await dispatch(getMeAssync())
       if (userResponse && !userResponse.error) {
         navigate('/')

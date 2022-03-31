@@ -10,66 +10,99 @@ import {
   MenuList,
   IconButton,
   MenuItem,
-  Icon
+  Icon,
+  Box,
+  Container
 } from '@chakra-ui/react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import { GiHamburgerMenu } from 'react-icons/gi'
+import { logout } from '../features/auth/authSlice'
 
 const Header = () => {
   const { auth } = useSelector((state) => state)
+  const dispatch = useDispatch()
 
   return (
-    <Flex backgroundColor="#F0F0F0" p={'20px 62px 20px 47px'} m="0" h="88px" align-items="center">
-      <Flex alignItems="center" justifyContent="space-between" w="100%">
-        <Image
-          objectFit="contain"
-          alt="Q Project Info"
-          src={headerImage}
-          boxSize="103px"
-          position="absolute"
-          top="11px"
-        />
-        <Flex alignItems="center" position="relative">
-          <Heading as="h1" size="md" paddingLeft="125px" fontSize="32px" fontWeight="900">
-            Q Project Info
-          </Heading>
+    <Box backgroundColor="#F0F0F0" padding={{ base: '1rem 0', md: '1.3rem 0' }}>
+      <Container maxW="1500px">
+        <Flex alignItems="center" justifyContent="space-between">
+          <Flex alignItems="center" position="relative">
+            <Image
+              objectFit="contain"
+              alt="Q Project Info"
+              src={headerImage}
+              boxSize={{ base: '70px', md: '75px', lg: '80px' }}
+              position="absolute"
+              bottom={{ base: '-40px', md: '-44px', lg: '-46px' }}
+            />
+            <Heading
+              as="h1"
+              fontSize={['lg', 'xl']}
+              paddingLeft={{ base: '85px', md: '85px', lg: '95px' }}
+              fontWeight="extrabold">
+              Q Project Info
+            </Heading>
+          </Flex>
+          {auth.jwt && (
+            <>
+              <Flex gap="1.5rem" display={{ base: 'none', md: 'flex' }}>
+                <Link
+                  as={NavLink}
+                  to="/"
+                  style={({ isActive }) => (isActive ? { fontWeight: 'bold' } : undefined)}>
+                  {`> My Projects`}
+                </Link>
+                <Link
+                  as={NavLink}
+                  to="/account"
+                  style={({ isActive }) => (isActive ? { fontWeight: 'bold' } : undefined)}>
+                  {`> Account`}
+                </Link>
+                <Link
+                  as={NavLink}
+                  to="/login"
+                  onClick={() => dispatch(logout())}>{`> Logout`}</Link>
+              </Flex>
+              <Menu>
+                <MenuButton
+                  as={IconButton}
+                  aria-label="Options"
+                  icon={<Icon as={GiHamburgerMenu} height="100%" />}
+                  variant="outline"
+                  display={{ base: 'block', md: 'none' }}
+                  height="1.9rem"
+                />
+                <MenuList>
+                  <MenuItem>
+                    <Link
+                      as={NavLink}
+                      to="/"
+                      style={({ isActive }) =>
+                        isActive ? { fontWeight: 'bold' } : undefined
+                      }>{`> My Projects`}</Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Link
+                      as={NavLink}
+                      to="/account"
+                      style={({ isActive }) => (isActive ? { fontWeight: 'bold' } : undefined)}>
+                      {`> Account`}
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Link
+                      as={NavLink}
+                      to="/login"
+                      onClick={() => dispatch(logout())}>{`> Logout`}</Link>
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            </>
+          )}
         </Flex>
-        {auth.jwt && (
-          <>
-            <Flex gap="1.5rem" display={{ base: 'none', md: 'flex' }}>
-              <Link as={NavLink} to="/projects">{`> My Projects`}</Link>
-              <Link as={NavLink} to="/account">
-                {`> Account`}
-              </Link>
-              <Link as={NavLink} to="/">{`> Logout`}</Link>
-            </Flex>
-            <Menu>
-              <MenuButton
-                as={IconButton}
-                aria-label="Options"
-                icon={<Icon as={GiHamburgerMenu} />}
-                variant="outline"
-                display={{ base: 'block', md: 'none' }}
-              />
-              <MenuList>
-                <MenuItem>
-                  <Link as={NavLink} to="/projects">{`> My Projects`}</Link>
-                </MenuItem>
-                <MenuItem>
-                  <Link as={NavLink} to="/account">
-                    {`> Account`}sdf
-                  </Link>
-                </MenuItem>
-                <MenuItem>
-                  <Link as={NavLink} to="/">{`> Logout`}</Link>
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </>
-        )}
-      </Flex>
-    </Flex>
+      </Container>
+    </Box>
   )
 }
 
