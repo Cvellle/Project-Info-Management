@@ -32,7 +32,7 @@ export function Projects() {
   }
 
   return (
-    <Flex flexWrap="wrap" w="calc(1222px + 15px)" m="31px auto">
+    <Flex flexWrap="wrap" w="calc(1222px + 15px)" m="30px auto">
       {filteredProjects &&
         filteredProjects.map((project, i) => {
           return <ProjectItem key={i} item={project} />
