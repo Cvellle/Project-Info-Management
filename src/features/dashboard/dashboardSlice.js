@@ -36,7 +36,7 @@ export const dashboardSlice = createSlice({
   }
 })
 
-export const { increment, decrement, editProject } = dashboardSlice.actions
+export const { editProject } = dashboardSlice.actions
 
 export const selectProjects = (state) => state.dashboard.projects
 

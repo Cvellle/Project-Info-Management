@@ -4,6 +4,7 @@ import authReducer from '../features/auth/authSlice'
 import storage from 'redux-persist/lib/storage'
 import { combineReducers } from 'redux'
 import dashboardReducer from '../features/dashboard/dashboardSlice'
+import usersSlice from 'features/edit-user/usersSlice'
 
 const persistConfig = {
   key: 'root',
@@ -13,7 +14,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   dashboard: dashboardReducer,
-  auth: authReducer
+  auth: authReducer,
+  users: usersSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

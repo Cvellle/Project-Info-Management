@@ -14,7 +14,6 @@ export function Projects() {
 
   useEffect(() => {
     dispatch(fetchItems())
-    filterProjectsFunction()
   }, [])
 
   useEffect(() => {
