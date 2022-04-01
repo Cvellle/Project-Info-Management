@@ -2,7 +2,7 @@ import { Flex, Box, Heading } from '@chakra-ui/layout'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { getUsersAssync, selectUsers } from '../usersSlice'
+import { getUsersAsync, selectUsers } from '../usersSlice'
 import { UserItem } from './UserItem'
 
 export function UsersList() {
@@ -10,7 +10,7 @@ export function UsersList() {
   const usersSelector = useSelector(selectUsers)
 
   useEffect(() => {
-    dispatch(getUsersAssync())
+    dispatch(getUsersAsync())
   }, [])
 
   return (
@@ -23,8 +23,8 @@ export function UsersList() {
         Users list
       </Heading>
       <Flex flexWrap="wrap" m="31px auto">
-        {usersSelector?.users.map((project, i) => {
-          return <UserItem item={project} key={i} />
+        {usersSelector?.users?.map((project) => {
+          return <UserItem item={project} key={project.id} />
         })}
       </Flex>
     </Box>

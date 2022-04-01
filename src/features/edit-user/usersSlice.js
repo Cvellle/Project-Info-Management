@@ -1,19 +1,28 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { getOneUser } from './api/getOneUserAPI'
 import { getUsers } from './api/getUsersAPI'
+import { updateUser } from './api/updateUserAPI'
 
 const initialState = {
-  users: []
+  users: [],
+  selectedUser: {}
 }
 
-export const getUsersAssync = createAsyncThunk('./api/getItems.js', async () => {
+export const getUsersAsync = createAsyncThunk('./api/getUsersAPI.js', async () => {
   const response = await getUsers()
+  return response
+})
+
+export const getOneUserAsync = createAsyncThunk('./api/getOneUserAPI.js', async (idToPass) => {
+  const response = await getOneUser(idToPass)
   return response
 })
 
 export const updateUserUsersAssync = createAsyncThunk(
   './api/updateUserAPI.js',
   async (idToUpdate, updateBody) => {
-    const response = await getUsers(idToUpdate, updateBody)
+    console.log(updateBody)
+    const response = await updateUser(idToUpdate, updateBody)
     return response
   }
 )
@@ -32,9 +41,21 @@ export const usersSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(getUsersAssync.fulfilled, (state, action) => {
-      state.users = action.payload
-    })
+    builder
+      .addCase(getUsersAsync.fulfilled, (state, action) => {
+        state.users = action.payload
+      })
+      .addCase(getOneUserAsync.fulfilled, (state, action) => {
+        state.selectedUser = {
+          ...state.selectedUser,
+          id: action.payload.id,
+          username: action.payload.attributes.username,
+          email: action.payload.attributes.email,
+          // role: action.payload.attributes.role.name,
+          blocked: action.payload.attributes.blocked,
+          confirmed: action.payload.attributes.confirmed
+        }
+      })
   }
 })
 

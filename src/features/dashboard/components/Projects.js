@@ -17,12 +17,12 @@ export function Projects() {
   }, [])
 
   useEffect(() => {
-    filterProjectsFunction()
+    projectsSelector.length && filterProjectsFunction()
   }, [projectsSelector])
 
   const filterProjectsFunction = () => {
-    let finalFilteredValue = projectsSelector.filter((project) => {
-      let projectEmails = project.attributes.employees.data.map(
+    let finalFilteredValue = projectsSelector?.filter((project) => {
+      let projectEmails = project?.attributes.employees.data.map(
         (employee) => employee.attributes.email
       )
       return projectEmails.includes(authSelector.currentUser.email)
