@@ -14,59 +14,43 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import { selectUsers } from '../usersSlice'
+import { getOneUserAsync, selectUsers, updateUserUsersAssync } from '../usersSlice'
 
 export function EditUser() {
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting }
+    // setValue
   } = useForm()
   const navigate = useNavigate()
   const dispatch = useDispatch()
-
-  const [currentUser, setCurrentUser] = useState({})
-
-  const usersSelector = useSelector(selectUsers)
   const params = useParams()
+  const selectedUser = useSelector(selectUsers).selectedUser
 
   useEffect(() => {
-    let current = usersSelector.users[params.id - 1]
-    setCurrentUser({
-      ...currentUser,
-      id: current.id,
-      username: current.username,
-      email: current.email,
-      role: current.role,
-      blocked: current.blocked,
-      confirmed: current.confirmed
-    })
+    dispatch(getOneUserAsync(params.id))
   }, [])
 
-  useEffect(() => {
-    console.log(currentUser)
-  }, [currentUser])
-
-  // const [showPassword, setShowPassword] = useState()
   const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
     console.log(data)
+    // try {
 
-    // updateUserUsersAssync()
+    // } catch (ex) {
+    //   throw Error(ex?.response?.data?.error?.message ?? 'Unknown error')
+    // }
 
-    const res = await dispatch()
+    const res = await dispatch(updateUserUsersAssync(params.id, data))
     if (res && !res.error) {
+      dispatch(updateUserUsersAssync(params.id, data))
       navigate('/login', { replace: true })
     }
     if (res.error) {
       setRegistrationError(res.error.message)
     }
   }
-
-  // const handleShowPassword = () => {
-  //   setShowPassword((prev) => !prev)
-  // }
 
   return (
     <Container paddingTop="3rem">
@@ -84,7 +68,7 @@ export function EditUser() {
                 required: 'This is required',
                 minLength: { value: 4, message: 'Minimum length should be 4' }
               })}
-              defaultValue={currentUser.username ?? ''}
+              defaultValue={selectedUser?.username ?? ''}
             />
             <FormErrorMessage>{errors.username && errors.username.message}</FormErrorMessage>
           </FormControl>
@@ -101,7 +85,7 @@ export function EditUser() {
                 required: 'This is required',
                 minLength: { value: 4, message: 'Minimum length should be 4' }
               })}
-              defaultValue={currentUser.email ?? ''}
+              defaultValue={selectedUser?.email ?? ''}
             />
             <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
           </FormControl>
@@ -118,36 +102,10 @@ export function EditUser() {
                 required: 'This is required',
                 minLength: { value: 4, message: 'Minimum length should be 4' }
               })}
-              defaultValue={currentUser?.role?.name ?? ''}
+              defaultValue={selectedUser?.role ?? ''}
             />
             <FormErrorMessage>{errors.role && errors.role.message}</FormErrorMessage>
           </FormControl>
-
-          {/* <FormControl isInvalid={errors.password} isRequired>
-            <FormLabel htmlFor="password" padding="0" margin="0">
-              Password
-            </FormLabel>
-            <InputGroup size="md">
-              <Input
-                pr="4.5rem"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Your Password"
-                autoComplete="current-password"
-                {...register('password', {
-                  required: 'This is required',
-                  minLength: { value: 2, message: 'Minimum length should be 8' }
-                })}
-                value={currentUser.password ?? ''}
-              />
-              <InputRightElement width="4.5rem">
-                <Button h="1.75rem" size="sm" onClick={handleShowPassword}>
-                  {showPassword ? 'Hide' : 'Show'}
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-            <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
-          </FormControl> */}
-
           {registrationError && <Box color="red.500">{registrationError}</Box>}
         </VStack>
         <Button colorScheme="teal" isLoading={isSubmitting} type="submit" width="100%" mt="6">
