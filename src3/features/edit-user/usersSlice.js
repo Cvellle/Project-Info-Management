@@ -43,7 +43,6 @@ export const usersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getUsersAsync.fulfilled, (state, action) => {
-        console.log(action.payload)
         state.users = action.payload
       })
       .addCase(getOneUserAsync.fulfilled, (state, action) => {
@@ -52,7 +51,7 @@ export const usersSlice = createSlice({
           id: action.payload.id,
           username: action.payload.username,
           email: action.payload.email,
-          // role: action.payload.role.name,
+          role: action.payload.role.name,
           blocked: action.payload.blocked,
           confirmed: action.payload.confirmed
         }

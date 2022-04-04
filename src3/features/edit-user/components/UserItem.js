@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom'
 export function UserItem(props) {
   // const dispatch = useDispatch()
   const navigate = useNavigate()
-  console.log(props?.item)
   let current = props?.item
 
   const navigateToProject = (idProp) => {
@@ -24,7 +23,7 @@ export function UserItem(props) {
       w={{ base: '100%' }}
       h="114px"
       m="31px 0px"
-      onClick={(e) => navigateToProject(current?.id, e)}
+      onClick={(e) => navigateToProject(current.id, e)}
       cursor="pointer"
       justifyContent="space-between">
       {/* <Image
@@ -34,7 +33,7 @@ export function UserItem(props) {
           apiURL
             .split('/')
             .slice(0, apiURL.split('/').length - 1)
-            .join('/') + current?.attributes.attributes.logo.data.attributes.url
+            .join('/') + current.logo.data.url
         }
         boxSize="77px"
         borderRadius="50%"
@@ -43,22 +42,22 @@ export function UserItem(props) {
       <Center w={{ base: '50%', md: 'auto' }}>
         <Box>
           <Heading as="h3" fontSize="24px" fontWeight="600" h="28px">
-            {current?.username}
+            {current.username}
           </Heading>
           {/* <Image objectFit="contain" alt="employee" src={usereImage} boxSize="96px" h="48" /> */}
-          <Text maxW={{ base: '40vw', md: 'auto' }}>{current?.email}</Text>
+          <Text maxW={{ base: '40vw', md: 'auto' }}>{current.email}</Text>
         </Box>
       </Center>
       <Center>
         <Box>
-          <Link to={'edit-user/' + current?.id} target="_blank">
+          <Link to={'edit-user/' + current.id} target="_blank">
             <Image
               objectFit="contain"
               alt="employee"
               src={newTab}
               boxSize="28px"
               ml="auto"
-              onClick={(e) => seeInNewTab(current?.id, e)}
+              onClick={(e) => seeInNewTab(current.id, e)}
             />
           </Link>
           <Text></Text>
