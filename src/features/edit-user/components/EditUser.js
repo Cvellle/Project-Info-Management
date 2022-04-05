@@ -5,8 +5,6 @@ import {
   Button,
   Input,
   Select,
-  // InputGroup,
-  // InputRightElement,
   Container,
   VStack,
   Box
@@ -15,6 +13,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
+
 import { updateUser } from '../api/updateUserAPI'
 import { editUser, getRolesAsync, selectUsers } from '../usersSlice'
 
@@ -37,16 +36,11 @@ export function EditUser() {
   }, [])
 
   useEffect(() => {
-    console.log(roles.find((roleObj) => roleObj.role == selectedUser.role))
-    setRoleId(roles(selectedUser.role))
+    const currentRoleObject = roles.find((roleObj) => roleObj.name == selectedUser.role)
+    setRoleId(currentRoleObject.id)
   }, [roles])
 
-  useEffect(() => {
-    console.log(selectedUser)
-  }, [selectedUser])
-
   const setRoleFunction = (e) => {
-    console.log(e.target.selectedIndex)
     setRoleId(e.target.selectedIndex + 1)
   }
 
