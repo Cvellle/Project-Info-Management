@@ -2,9 +2,8 @@ import API from '../../../services/axios'
 
 export const updateUser = async (idProp, data) => {
   try {
-    console.log(data)
     const response = await API.put('/users/' + idProp, data)
-    response && console.log(response.data)
+    console.log(response)
     return response.data
   } catch (ex) {
     throw Error(ex?.response?.data?.error?.message ?? 'Unknown error')
