@@ -109,21 +109,24 @@ export function EditUser() {
             <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
           </FormControl>
 
-          <Select
-            {...register('role')}
-            // autoComplete="current-role"
-            isInvalid={errors.role}
-            isRequired
-            // value={selectedRole ?? ''}
-            defaultValue={selectedUser?.role ?? ''}
-            onChange={(e) => setRoleFunction(e)}>
-            {roles &&
-              roles.map((role) => (
-                <option key={role.id} value={role.name}>
-                  {role.name}
-                </option>
-              ))}
-          </Select>
+          <FormControl isInvalid={errors.role} isRequired>
+            <FormLabel htmlFor="role" padding="0" margin="0">
+              role
+            </FormLabel>
+            <Select
+              {...register('role')}
+              autoComplete="current-role"
+              isInvalid={errors.role}
+              defaultValue={selectedUser?.role ?? ''}
+              onChange={(e) => setRoleFunction(e)}>
+              {roles &&
+                roles.map((role) => (
+                  <option key={role.id} value={role.name}>
+                    {role.name}
+                  </option>
+                ))}
+            </Select>
+          </FormControl>
 
           {registrationError && <Box color="red.500">{registrationError}</Box>}
         </VStack>
