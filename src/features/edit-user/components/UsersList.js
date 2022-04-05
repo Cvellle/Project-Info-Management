@@ -2,7 +2,7 @@ import { Flex, Box, Heading } from '@chakra-ui/layout'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { getUsersAsync, selectUsers } from '../usersSlice'
+import { getRolesAsync, getUsersAsync, selectUsers } from '../usersSlice'
 import { UserItem } from './UserItem'
 
 export function UsersList() {
@@ -11,6 +11,7 @@ export function UsersList() {
 
   useEffect(() => {
     dispatch(getUsersAsync())
+    dispatch(getRolesAsync())
   }, [])
 
   return (

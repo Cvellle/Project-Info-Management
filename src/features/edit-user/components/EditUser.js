@@ -9,13 +9,14 @@ import {
   VStack,
   Box
 } from '@chakra-ui/react'
+import { useWillUnmount } from 'hooks/useWillUnmount'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { updateUser } from '../api/updateUserAPI'
-import { editUser, getRolesAsync, selectUsers } from '../usersSlice'
+import { editUser, emptySelectedUser, selectUsers } from '../usersSlice'
 
 export function EditUser() {
   const {
@@ -30,15 +31,24 @@ export function EditUser() {
   const roles = useSelector(selectUsers).roles
 
   const [roleId, setRoleId] = useState()
+  // const [selectedRole, setSelectedRole] = useState()
 
   useEffect(() => {
-    dispatch(getRolesAsync())
+    // dispatch(getRolesAsync())
   }, [])
 
   useEffect(() => {
-    const currentRoleObject = roles.find((roleObj) => roleObj.name == selectedUser.role)
-    setRoleId(currentRoleObject.id)
-  }, [roles])
+    if (selectedUser?.role !== '') {
+      const currentRoleObject = roles.find((roleObj) => roleObj.name == selectedUser.role)
+      setRoleId(currentRoleObject.id)
+    }
+  }, [selectedUser])
+
+  const emptyUserFunction = () => {
+    dispatch(emptySelectedUser())
+  }
+
+  useWillUnmount(emptyUserFunction)
 
   const setRoleFunction = (e) => {
     setRoleId(e.target.selectedIndex + 1)
@@ -101,10 +111,11 @@ export function EditUser() {
 
           <Select
             {...register('role')}
-            autoComplete="current-role"
+            // autoComplete="current-role"
             isInvalid={errors.role}
             isRequired
-            defaultValue={selectedUser.role}
+            // value={selectedRole ?? ''}
+            defaultValue={selectedUser?.role ?? ''}
             onChange={(e) => setRoleFunction(e)}>
             {roles &&
               roles.map((role) => (

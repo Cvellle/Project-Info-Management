@@ -38,7 +38,6 @@ export const usersSlice = createSlice({
   initialState,
   reducers: {
     editUser: (state, action) => {
-      console.log(action.payload)
       state.selectedUser = {
         ...state.selectedUser,
         id: action.payload.id,
@@ -48,6 +47,19 @@ export const usersSlice = createSlice({
         blocked: action.payload.blocked,
         confirmed: action.payload.confirmed
       }
+    },
+    emptySelectedUser: (state) => {
+      state.selectedUser = {
+        ...state.selectedUser,
+        id: '',
+        username: '',
+        email: '',
+        role: '',
+        blocked: '',
+        confirmed: ''
+      }
+
+      console.log(state.selectedUser)
     }
   },
   extraReducers: (builder) => {
@@ -72,7 +84,7 @@ export const usersSlice = createSlice({
   }
 })
 
-export const { editUser } = usersSlice.actions
+export const { editUser, emptySelectedUser } = usersSlice.actions
 
 export const selectUsers = (state) => state.users
 
