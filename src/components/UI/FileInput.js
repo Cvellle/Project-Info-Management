@@ -1,14 +1,16 @@
-import { Input } from '@chakra-ui/react'
+import { Input, FormControl } from '@chakra-ui/react'
 
 const FileInput = ({ register, name, accept }) => {
   return (
-    <Input
-      type="file"
-      {...register(name)}
-      accept={accept}
-      padding="0.2rem"
-      placeholder="Choose Project Logo"
-    />
+    <FormControl isRequired>
+      <Input
+        type="file"
+        {...register(name)}
+        accept={accept}
+        padding="0.2rem"
+        placeholder="Choose Project Logo"
+      />
+    </FormControl>
   )
 }
 
