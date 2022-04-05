@@ -40,11 +40,8 @@ function App() {
           </Route>
 
           <Route element={<ProtectedRoutes authRoles={[admin, employee, projectManager]} />}>
-            {auth?.currentUser?.role === admin ? (
-              <Route path="/" element={<UsersList />} />
-            ) : (
-              <Route path="/" element={<Dashboard />} />
-            )}
+            {auth?.currentUser?.role === admin && <Route path="/" element={<UsersList />} />}
+            {auth?.currentUser?.role === employee && <Route path="/" element={<Dashboard />} />}
           </Route>
 
           <Route element={<ProtectedRoutes authRoles={[admin, employee, projectManager]} />}>
@@ -52,9 +49,9 @@ function App() {
             <Route path="/project/:id" element={<Project />} />
           </Route>
 
-          <Route element={<ProtectedRoutes authRoles={[admin]} />}>
+          {/* <Route element={<ProtectedRoutes authRoles={[admin]} />}>
             <Route path="/users" element={<UsersList />} />
-          </Route>
+          </Route> */}
 
           <Route element={<ProtectedRoutes authRoles={[admin]} />}>
             <Route path="/edit-user/:id" element={<EditUser />} />
