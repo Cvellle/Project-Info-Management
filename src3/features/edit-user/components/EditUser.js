@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
+
 import { getOneUserAsync, selectUsers, updateUserUsersAssync } from '../usersSlice'
 
 export function EditUser() {
@@ -21,21 +22,29 @@ export function EditUser() {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-    setValue
-  } = useForm()
+    setValue,
+    resetField
+  } = useForm({ defaultValues: null })
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const params = useParams()
   const selectedUser = useSelector(selectUsers).selectedUser
 
   useEffect(() => {
+    resetField('username')
+    resetField('email')
+    resetField('role')
+
     dispatch(getOneUserAsync(params.id))
   }, [])
 
   useEffect(() => {
+    // console
+    //   .log(selectedUser)
     //   [('username', 'email', 'role')].forEach(
     //     (el) => el && selectedUser[el] && setValue(el, selectedUser[el])
     //   )
+
     setValue('username', selectedUser.username)
     setValue('email', selectedUser.email)
     setValue('role', selectedUser.role)
@@ -44,7 +53,6 @@ export function EditUser() {
   const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
-    console.log(data)
     const res = await dispatch(updateUserUsersAssync(params.id, data))
     if (res && !res.error) {
       navigate('/login', { replace: true })
@@ -70,7 +78,7 @@ export function EditUser() {
                 required: 'This is required',
                 minLength: { value: 4, message: 'Minimum length should be 4' }
               })}
-              defaultValue={selectedUser?.username ?? ''}
+              defaultValue={' '}
             />
             <FormErrorMessage>{errors.username && errors.username.message}</FormErrorMessage>
           </FormControl>
@@ -87,7 +95,6 @@ export function EditUser() {
                 required: 'This is required',
                 minLength: { value: 4, message: 'Minimum length should be 4' }
               })}
-              defaultValue={selectedUser?.email ?? ''}
             />
             <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
           </FormControl>
@@ -104,7 +111,6 @@ export function EditUser() {
                 required: 'This is required',
                 minLength: { value: 4, message: 'Minimum length should be 4' }
               })}
-              defaultValue={selectedUser?.role ?? ''}
             />
             <FormErrorMessage>{errors.role && errors.role.message}</FormErrorMessage>
           </FormControl>

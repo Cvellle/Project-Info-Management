@@ -24,7 +24,6 @@ export function UsersList() {
       </Heading>
       <Flex flexWrap="wrap" m="31px auto">
         {usersSelector?.users?.map((project) => {
-          console.log(usersSelector?.users)
           return <UserItem item={project} key={project.id} />
         })}
       </Flex>

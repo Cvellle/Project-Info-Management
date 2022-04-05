@@ -1,8 +1,8 @@
 import API from '../../../services/axios'
 
-export const getUsers = async () => {
+export const registerAPI = async (data) => {
   try {
-    const response = await API.get('/profiles?populate=*')
+    const response = await API.post('/auth/local/register', data)
     return response.data
   } catch (ex) {
     throw Error(ex?.response?.data?.error?.message ?? 'Unknown error')

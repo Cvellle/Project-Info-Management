@@ -17,7 +17,6 @@ import { getMeAssync, authState } from './features/auth/authSlice'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { UsersList } from 'features/edit-user/components/UsersList'
-import { CreateProject } from 'features/Project/components/CreateProject'
 
 function App() {
   const dispatch = useDispatch()
@@ -45,7 +44,6 @@ function App() {
           </Route>
 
           <Route element={<ProtectedRoutes authRoles={[admin, employee, projectManager]} />}>
-            <Route path="/create-project" element={<CreateProject />} />
             <Route path="/project/:id" element={<Project />} />
           </Route>
 
