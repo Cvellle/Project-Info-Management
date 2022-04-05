@@ -1,9 +1,11 @@
-import { Flex, Box, Heading } from '@chakra-ui/layout'
+import { Flex, Box } from '@chakra-ui/layout'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { getRolesAsync, getUsersAsync, selectUsers } from '../usersSlice'
 import { UserItem } from './UserItem'
+import rocket from 'assets/rocket.png'
+import { PageDescription } from 'components/PageDescription'
 
 export function UsersList() {
   const dispatch = useDispatch()
@@ -15,19 +17,15 @@ export function UsersList() {
   }, [])
 
   return (
-    <Box m="auto" w={{ base: '100%', md: '70%' }}>
-      <Heading
-        as="h2"
-        fontSize={['lg', 'xl']}
-        paddingLeft={{ base: '85px', md: '85px', lg: '95px' }}
-        fontWeight="extrabold">
-        Users list
-      </Heading>
-      <Flex flexWrap="wrap" m="31px auto">
-        {usersSelector?.users?.map((project) => {
-          return <UserItem item={project} key={project.id} />
-        })}
-      </Flex>
+    <Box>
+      <PageDescription title="Users list" text="Edit existing users" image={rocket} />
+      <Box m="auto" w={{ base: '100%', md: '70%' }}>
+        <Flex flexWrap="wrap" m="31px auto">
+          {usersSelector?.users?.map((project) => {
+            return <UserItem item={project} key={project.id} />
+          })}
+        </Flex>
+      </Box>
     </Box>
   )
 }
