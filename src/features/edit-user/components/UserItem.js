@@ -11,18 +11,16 @@ export function UserItem(props) {
   const navigate = useNavigate()
   let current = props?.item
 
-  const navigateToProject = (idProp) => {
-    navigate('edit-user/' + idProp)
-  }
-
   const seeInNewTab = (idProp, e) => {
     window.open('edit-user/' + idProp)
     e.stopPropagation()
   }
 
-  const navigateFunction = (e) => {
-    dispatch(getOneUserAsync(current?.id))
-    navigateToProject(current?.id, e)
+  const navigateFunction = async () => {
+    const res = await dispatch(getOneUserAsync(current?.id))
+    if (res) {
+      navigate('edit-user/' + current?.id)
+    }
   }
 
   return (
