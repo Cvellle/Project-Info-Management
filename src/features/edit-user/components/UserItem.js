@@ -1,13 +1,14 @@
 import { Flex, Heading, Text, Image, Center, Box } from '@chakra-ui/react'
 // import { apiURL } from 'services/axios'
 import newTab from 'assets/new-tab.png'
+import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import { getOneUserAsync } from '../usersSlice'
 
 export function UserItem(props) {
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const navigate = useNavigate()
-  console.log(props?.item)
   let current = props?.item
 
   const navigateToProject = (idProp) => {
@@ -19,12 +20,17 @@ export function UserItem(props) {
     e.stopPropagation()
   }
 
+  const navigateFunction = (e) => {
+    dispatch(getOneUserAsync(current?.id))
+    navigateToProject(current?.id, e)
+  }
+
   return (
     <Flex
       w={{ base: '100%' }}
       h="114px"
       m="31px 0px"
-      onClick={(e) => navigateToProject(current?.id, e)}
+      onClick={(e) => navigateFunction(e)}
       cursor="pointer"
       justifyContent="space-between">
       {/* <Image

@@ -4,8 +4,7 @@ import {
   FormLabel,
   Button,
   Input,
-  // InputGroup,
-  // InputRightElement,
+  Select,
   Container,
   VStack,
   Box
@@ -14,40 +13,48 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getOneUserAsync, selectUsers, updateUserUsersAssync } from '../usersSlice'
+
+import { updateUser } from '../api/updateUserAPI'
+import { editUser, getRolesAsync, selectUsers } from '../usersSlice'
 
 export function EditUser() {
   const {
     handleSubmit,
     register,
-    formState: { errors, isSubmitting },
-    setValue
+    formState: { errors, isSubmitting }
   } = useForm()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const params = useParams()
   const selectedUser = useSelector(selectUsers).selectedUser
+  const roles = useSelector(selectUsers).roles
+
+  const [roleId, setRoleId] = useState()
 
   useEffect(() => {
-    dispatch(getOneUserAsync(params.id))
+    dispatch(getRolesAsync())
   }, [])
 
   useEffect(() => {
-    //   [('username', 'email', 'role')].forEach(
-    //     (el) => el && selectedUser[el] && setValue(el, selectedUser[el])
-    //   )
-    setValue('username', selectedUser.username)
-    setValue('email', selectedUser.email)
-    setValue('role', selectedUser.role)
-  }, [selectedUser])
+    const currentRoleObject = roles.find((roleObj) => roleObj.name == selectedUser.role)
+    setRoleId(currentRoleObject.id)
+  }, [roles])
+
+  const setRoleFunction = (e) => {
+    setRoleId(e.target.selectedIndex + 1)
+  }
 
   const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
-    console.log(data)
-    const res = await dispatch(updateUserUsersAssync(params.id, data))
+    let dataBody = {
+      data: { ...data, role: { id: roleId } }
+    }
+
+    const res = await updateUser(params.id, dataBody)
     if (res && !res.error) {
-      navigate('/login', { replace: true })
+      dispatch(editUser(data))
+      navigate('/', { replace: true })
     }
     if (res.error) {
       setRegistrationError(res.error.message)
@@ -92,22 +99,21 @@ export function EditUser() {
             <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
           </FormControl>
 
-          <FormControl isInvalid={errors.role} isRequired>
-            <FormLabel htmlFor="role" padding="0" margin="0">
-              Role
-            </FormLabel>
-            <Input
-              id="role"
-              placeholder="Your Email"
-              autoComplete="current-role"
-              {...register('role', {
-                required: 'This is required',
-                minLength: { value: 4, message: 'Minimum length should be 4' }
-              })}
-              defaultValue={selectedUser?.role ?? ''}
-            />
-            <FormErrorMessage>{errors.role && errors.role.message}</FormErrorMessage>
-          </FormControl>
+          <Select
+            {...register('role')}
+            autoComplete="current-role"
+            isInvalid={errors.role}
+            isRequired
+            defaultValue={selectedUser.role}
+            onChange={(e) => setRoleFunction(e)}>
+            {roles &&
+              roles.map((role) => (
+                <option key={role.id} value={role.name}>
+                  {role.name}
+                </option>
+              ))}
+          </Select>
+
           {registrationError && <Box color="red.500">{registrationError}</Box>}
         </VStack>
         <Button colorScheme="teal" isLoading={isSubmitting} type="submit" width="100%" mt="6">

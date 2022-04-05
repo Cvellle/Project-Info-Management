@@ -1,11 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getOneUser } from './api/getOneUserAPI'
+import { getRoles } from './api/getRolesAPI'
 import { getUsers } from './api/getUsersAPI'
 import { updateUser } from './api/updateUserAPI'
 
 const initialState = {
   users: [],
-  selectedUser: {}
+  selectedUser: {},
+  roles: []
 }
 
 export const getUsersAsync = createAsyncThunk('./api/getUsersAPI.js', async () => {
@@ -18,10 +20,14 @@ export const getOneUserAsync = createAsyncThunk('./api/getOneUserAPI.js', async 
   return response
 })
 
-export const updateUserUsersAssync = createAsyncThunk(
+export const getRolesAsync = createAsyncThunk('./api/getRolesAPI.js', async () => {
+  const response = await getRoles()
+  return response
+})
+
+export const updateUserUsersAsync = createAsyncThunk(
   './api/updateUserAPI.js',
   async (idToUpdate, updateBody) => {
-    console.log(updateBody)
     const response = await updateUser(idToUpdate, updateBody)
     return response
   }
@@ -32,19 +38,25 @@ export const usersSlice = createSlice({
   initialState,
   reducers: {
     editUser: (state, action) => {
-      let currentId = action.payload.id
-      state.users = [
-        ...state.users.slice(0, currentId - 1),
-        action.payload,
-        ...state.users.slice(currentId)
-      ]
+      console.log(action.payload)
+      state.selectedUser = {
+        ...state.selectedUser,
+        id: action.payload.id,
+        username: action.payload.username,
+        email: action.payload.email,
+        role: action.payload.role,
+        blocked: action.payload.blocked,
+        confirmed: action.payload.confirmed
+      }
     }
   },
   extraReducers: (builder) => {
     builder
       .addCase(getUsersAsync.fulfilled, (state, action) => {
-        console.log(action.payload)
         state.users = action.payload
+      })
+      .addCase(getRolesAsync.fulfilled, (state, action) => {
+        state.roles = action.payload.roles
       })
       .addCase(getOneUserAsync.fulfilled, (state, action) => {
         state.selectedUser = {
@@ -52,7 +64,7 @@ export const usersSlice = createSlice({
           id: action.payload.id,
           username: action.payload.username,
           email: action.payload.email,
-          // role: action.payload.role.name,
+          role: action.payload.role?.name,
           blocked: action.payload.blocked,
           confirmed: action.payload.confirmed
         }
