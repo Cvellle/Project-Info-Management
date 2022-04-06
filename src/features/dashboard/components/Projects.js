@@ -2,26 +2,44 @@ import { Grid } from '@chakra-ui/layout'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { fetchItems, selectProjects } from '../dashboardSlice'
+import { dashboardState, fetchItems } from '../dashboardSlice'
 import { ProjectItem } from './ProjectItem'
 import { authState } from 'features/auth/authSlice'
 
 export function Projects() {
-  const [filteredProjects, setFilteredProjects] = useState()
   const dispatch = useDispatch()
-  const projectsSelector = useSelector(selectProjects)
   const authSelector = useSelector(authState)
+  const dashboardSelector = useSelector(dashboardState)
+  const { filterBy, projects } = dashboardSelector
+  // local states
+  const [filteredProjects, setFilteredProjects] = useState()
+  const [searchedProjects, setSearchedProjects] = useState()
 
   useEffect(() => {
     dispatch(fetchItems())
   }, [])
 
   useEffect(() => {
-    projectsSelector.length && filterProjectsFunction()
-  }, [projectsSelector])
+    projects.length && filterProjectsFunction()
+  }, [projects])
 
+  useEffect(() => {
+    // search users by input - set new local state
+    let finalFilter = filteredProjects?.filter((project) => {
+      if (
+        dashboardSelector.filterBy?.userName &&
+        project.attributes.name !== dashboardSelector.filterBy?.userName
+      ) {
+        return false
+      }
+      return true
+    })
+    setSearchedProjects(finalFilter)
+  }, [filterBy])
+
+  // initial projects filter by current user
   const filterProjectsFunction = () => {
-    let finalFilteredValue = projectsSelector?.filter((project) => {
+    let finalFilteredValue = projects?.filter((project) => {
       let projectEmails = project?.attributes.employees.data.map(
         (employee) => employee.attributes.email
       )
@@ -29,6 +47,8 @@ export function Projects() {
     })
     setFilteredProjects(finalFilteredValue)
   }
+
+  let mapArray = searchedProjects ? searchedProjects : filteredProjects
 
   return (
     <Grid
@@ -38,10 +58,9 @@ export function Projects() {
       m="auto"
       rowGap="0.9rem"
       columnGap="1.5rem">
-      {filteredProjects &&
-        filteredProjects.map((project, i) => {
-          return <ProjectItem key={i} item={project} />
-        })}
+      {mapArray?.map((project, i) => {
+        return <ProjectItem key={i} item={project} />
+      })}
     </Grid>
   )
 }

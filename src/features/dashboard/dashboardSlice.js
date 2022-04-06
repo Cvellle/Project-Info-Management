@@ -3,7 +3,8 @@ import { getItems } from './api/getItems'
 
 const initialState = {
   projects: [],
-  status: 'idle'
+  status: 'idle',
+  filterBy: {}
 }
 
 export const fetchItems = createAsyncThunk('./api/getItems.js', async () => {
@@ -22,6 +23,9 @@ export const dashboardSlice = createSlice({
         action.payload,
         ...state.projects.slice(currentId)
       ]
+    },
+    setFilterBy: (state, action) => {
+      state.filterBy = { ...state.filterBy, userName: action.payload }
     }
   },
   extraReducers: (builder) => {
@@ -36,8 +40,9 @@ export const dashboardSlice = createSlice({
   }
 })
 
-export const { editProject } = dashboardSlice.actions
+export const { editProject, setFilterBy } = dashboardSlice.actions
 
 export const selectProjects = (state) => state.dashboard.projects
+export const dashboardState = (state) => state.dashboard
 
 export default dashboardSlice.reducer

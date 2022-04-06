@@ -8,17 +8,19 @@ import {
   VStack,
   Box
 } from '@chakra-ui/react'
-import { useWillUnmount } from 'hooks/useWillUnmount'
+// import { useWillUnmount } from 'hooks/useWillUnmount'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { updateMeAPI } from '../api/updateMeAPI'
-import { editUser, emptySelectedUser } from '../accountSlice'
+// import { editUser, emptySelectedUser } from '../accountSlice'
 import { authState, getMeAsync } from 'features/auth/authSlice'
 import { PageDescription } from 'components/PageDescription'
 import rocket from 'assets/rocket.png'
+import FileInput from 'components/UI/FileInput'
+import { uploadProfileImageAPI } from '../api/uploadProfileImageAPI'
 
 export function Account() {
   const {
@@ -32,12 +34,6 @@ export function Account() {
   const authSelector = useSelector(authState)
   const { currentUser } = authSelector
 
-  const emptyUserFunction = () => {
-    dispatch(emptySelectedUser())
-  }
-
-  useWillUnmount(emptyUserFunction)
-
   const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
@@ -45,12 +41,22 @@ export function Account() {
       data: { ...data }
     }
 
-    const res = await updateMeAPI(currentUser.id, dataBody)
-    if (res && !res.error) {
-      let editRes = await dispatch(editUser(data))
-      editRes && dispatch(getMeAsync())
-      editRes && navigate('/', { replace: true })
+    // check if file input is not empty, and spread body object
+    if (data.logo.length) {
+      const logoId = await uploadProfileImageAPI(data.logo[0])
+      dataBody = {
+        data: { ...data, userPhoto: { id: logoId } }
+      }
     }
+
+    // final update api call
+    const res = await updateMeAPI(currentUser.id, dataBody)
+
+    // if (res && !res.error) {
+    //   let editRes = await dispatch(editUser(data))
+    res && dispatch(getMeAsync())
+    res && navigate('/', { replace: true })
+    // }
     if (res.error) {
       setRegistrationError(res.error.message)
     }
@@ -62,6 +68,14 @@ export function Account() {
       <Container paddingTop="3rem">
         <form onSubmit={handleSubmit(onSubmit)}>
           <VStack spacing="3.5">
+            <FormControl isInvalid={errors.logo}>
+              <FormLabel htmlFor="logo" padding="0" margin="0">
+                Logo
+              </FormLabel>
+              <FileInput accept="image/*" name="logo" register={register} requiredProp={false} />
+              <FormErrorMessage>{errors.logo && errors.logo.message}</FormErrorMessage>
+            </FormControl>
+
             <FormControl isInvalid={errors.username} isRequired>
               <FormLabel htmlFor="username" padding="0" margin="0">
                 Username

@@ -1,8 +1,8 @@
 import { Input, FormControl } from '@chakra-ui/react'
 
-const FileInput = ({ register, name, accept }) => {
+const FileInput = ({ register, name, accept, requiredProp }) => {
   return (
-    <FormControl isRequired>
+    <FormControl isRequired={requiredProp}>
       <Input
         type="file"
         {...register(name)}
