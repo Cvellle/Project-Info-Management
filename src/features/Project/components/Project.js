@@ -32,7 +32,7 @@ export function Project() {
       <PageDescription
         title={
           <Flex gap="1rem">
-            {project.attributes.name}
+            {project?.attributes?.name}
             <Flex alignItems="center">
               <IconButton icon={<MdOpenInNew />} fontSize="md" bgColor="transparent" size="xs" />
               <Text color="gray.600" fontSize="sm">
@@ -41,7 +41,7 @@ export function Project() {
             </Flex>
           </Flex>
         }
-        text={project.attributes.description}
+        text={project?.attributes?.description}
         image={rocket}></PageDescription>
       <Tabs margin={{ base: '0', md: '2rem auto' }} maxW="1280px">
         <TabList bgColor="#EAEAEA" color="#8E8E8E">
