@@ -7,13 +7,13 @@ import FileInput from 'components/UI/FileInput'
 import FormTextarea from 'components/UI/FormTextarea'
 import { ModalComponent } from 'components/UI/ModalComponent'
 import ProjectEmployee from './ProjectEmployee'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { selectUsers } from 'features/edit-user/usersSlice'
 import { uploadLogo } from '../api/uploadLogo'
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
 import { createProject } from '../api/createProjectAPI'
 import { useNavigate } from 'react-router-dom'
+import { getUsersAsync } from 'features/edit-user/usersSlice'
 
 export const CreateProject = () => {
   const {
@@ -26,6 +26,12 @@ export const CreateProject = () => {
   const [isFiltering, setIsFiltering] = useState()
   const [filteredEmployees, setFilteredEmployees] = useState([])
   const navigate = useNavigate()
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getUsersAsync())
+  }, [])
 
   const { users } = useSelector(selectUsers)
 
@@ -42,6 +48,8 @@ export const CreateProject = () => {
   const filterEmployees = (e) => {
     if (e.target.value.length > 0) {
       setIsFiltering(true)
+    } else if (isFiltering === true && e.target.value.length <= 0) {
+      setIsFiltering(false)
     }
     const filteredEmployeesNew = employees.filter((emp) => emp.username.includes(e.target.value))
     setFilteredEmployees(filteredEmployeesNew)
