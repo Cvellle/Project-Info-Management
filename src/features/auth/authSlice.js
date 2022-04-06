@@ -24,8 +24,8 @@ export const loginAsync = createAsyncThunk('./api/loginAPI.js', async (data) => 
   return resData
 })
 
-export const getMeAsync = createAsyncThunk('./api/getMeAPI.js', async (prop) => {
-  const response = await getMeAPI(prop)
+export const getMeAsync = createAsyncThunk('./api/getMeAPI.js', async () => {
+  const response = await getMeAPI()
   return response
 })
 
@@ -60,6 +60,7 @@ export const authSlice = createSlice({
       state.currentUser = action.payload.user
     },
     [getMeAsync.fulfilled]: (state, action) => {
+      console.log(action.payload)
       state.currentUser = {
         ...state.currentUser,
         id: action.payload.id,
@@ -67,7 +68,8 @@ export const authSlice = createSlice({
         email: action.payload.email,
         blocked: action.payload.blocked,
         confirmed: action.payload.confirmed,
-        role: action.payload.role?.name
+        role: action.payload.role?.name,
+        userPhoto: action.payload.userPhoto
       }
     },
     [getMeAsync.rejected]: (state) => {

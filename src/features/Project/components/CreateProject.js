@@ -85,7 +85,7 @@ export const CreateProject = () => {
                     register={register}
                     errors={errors}
                   />
-                  <FileInput accept="image/*" name="logo" register={register} />
+                  <FileInput accept="image/*" name="logo" register={register} requiredProp={true} />
                 </Flex>
                 <FormTextarea
                   label="Project Description"

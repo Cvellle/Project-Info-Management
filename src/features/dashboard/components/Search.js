@@ -1,13 +1,19 @@
 import { Input, Flex, InputGroup, InputLeftElement, Link, Button } from '@chakra-ui/react'
 import { DiReact } from 'react-icons/di'
-
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { authState } from 'features/auth/authSlice'
-import { projectManager } from 'shared/constants'
 import { Link as ReactLink } from 'react-router-dom'
+
+import { projectManager } from 'shared/constants'
+import { setFilterBy } from '../dashboardSlice'
 
 export function Search() {
   const { currentUser } = useSelector(authState)
+  const dispatch = useDispatch()
+
+  const handleChange = (e) => {
+    dispatch(setFilterBy(e.target.value))
+  }
 
   return (
     <Flex justifyContent={{ base: 'center', md: 'flex-end' }} alignItems="center" gap="1rem">
@@ -15,7 +21,14 @@ export function Search() {
         <InputLeftElement pointerEvents="none" height="100%">
           <DiReact color="var(--chakra-colors-cyan-400)" />
         </InputLeftElement>
-        <Input placeholder="Search projects" size="sm" bgColor="#ffff" width="100%" maxW="" />
+        <Input
+          placeholder="Search projects"
+          size="sm"
+          bgColor="#ffff"
+          width="100%"
+          maxW=""
+          onChange={(e) => handleChange(e)}
+        />
       </InputGroup>
 
       {currentUser.role === projectManager && (
