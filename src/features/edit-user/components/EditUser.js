@@ -111,7 +111,7 @@ export function EditUser() {
 
           <FormControl isInvalid={errors.role} isRequired>
             <FormLabel htmlFor="role" padding="0" margin="0">
-              role
+              Role
             </FormLabel>
             <Select
               {...register('role')}

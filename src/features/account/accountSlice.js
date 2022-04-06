@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getOneUser } from './api/getOneUserAPI'
+import { getMeAPI } from 'features/auth/api/getMeAPI'
 import { getRoles } from './api/getRolesAPI'
 import { getUsers } from './api/getUsersAPI'
-import { updateUser } from './api/updateUserAPI'
+import { updateMeAPI } from './api/updateMeAPI'
 
 const initialState = {
   users: [],
@@ -15,8 +15,8 @@ export const getUsersAsync = createAsyncThunk('./api/getUsersAPI.js', async () =
   return response
 })
 
-export const getOneUserAsync = createAsyncThunk('./api/getOneUserAPI.js', async (idToPass) => {
-  const response = await getOneUser(idToPass)
+export const getMeAsync = createAsyncThunk('./api/getOneUserAPI.js', async () => {
+  const response = await getMeAPI()
   return response
 })
 
@@ -25,15 +25,15 @@ export const getRolesAsync = createAsyncThunk('./api/getRolesAPI.js', async () =
   return response
 })
 
-export const updateUserUsersAsync = createAsyncThunk(
-  './api/updateUserAPI.js',
+export const updateMeAsync = createAsyncThunk(
+  './api/updateMeAPI.js',
   async (idToUpdate, updateBody) => {
-    const response = await updateUser(idToUpdate, updateBody)
+    const response = await updateMeAPI(idToUpdate, updateBody)
     return response
   }
 )
 
-export const usersSlice = createSlice({
+export const accountSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
@@ -68,7 +68,7 @@ export const usersSlice = createSlice({
       .addCase(getRolesAsync.fulfilled, (state, action) => {
         state.roles = action.payload.roles
       })
-      .addCase(getOneUserAsync.fulfilled, (state, action) => {
+      .addCase(getMeAsync.fulfilled, (state, action) => {
         state.selectedUser = {
           ...state.selectedUser,
           id: action.payload.id,
@@ -82,8 +82,8 @@ export const usersSlice = createSlice({
   }
 })
 
-export const { editUser, emptySelectedUser } = usersSlice.actions
+export const { editUser, emptySelectedUser } = accountSlice.actions
 
 export const selectUsers = (state) => state.users
 
-export default usersSlice.reducer
+export default accountSlice.reducer

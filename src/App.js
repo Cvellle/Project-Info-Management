@@ -13,11 +13,12 @@ import Header from './components/Header'
 import { admin, employee, projectManager } from 'shared/constants'
 import { Project } from 'features/Project/components/Project'
 import { EditUser } from 'features/edit-user/components/EditUser'
-import { getMeAssync, authState } from './features/auth/authSlice'
+import { getMeAsync, authState } from './features/auth/authSlice'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { UsersList } from 'features/edit-user/components/UsersList'
 import { CreateProject } from 'features/Project/components/CreateProject'
+import { Account } from 'features/account/components/Account'
 
 function App() {
   const dispatch = useDispatch()
@@ -25,7 +26,7 @@ function App() {
 
   useEffect(() => {
     if (auth.jwt) {
-      dispatch(getMeAssync())
+      dispatch(getMeAsync())
     }
   }, [])
 
@@ -44,6 +45,7 @@ function App() {
               path="/"
               element={auth?.currentUser?.role === admin ? <UsersList /> : <Dashboard />}
             />
+            <Route path="/account" element={<Account />} />
           </Route>
 
           <Route element={<ProtectedRoutes authRoles={[admin, employee, projectManager]} />}>
