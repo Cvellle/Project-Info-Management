@@ -2,22 +2,19 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getProject } from './api/pojectAPI'
 
 const initialState = {
-  project: null,
-  selectedEmployees: []
+  selectedProject: null
 }
 
-export const getProjectAssync = createAsyncThunk('./api/pojectAPI.js', async (idToPass) => {
-  const response = await getProject(idToPass)
+export const getProjectAsync = createAsyncThunk('projects/getProject', async (id) => {
+  const response = await getProject(id)
   return response.data
 })
 
-export const dashboardSlice = createSlice({
+export const projectSlice = createSlice({
   name: 'project',
   initialState,
   reducers: {
-    editProject: (state, action) => {
-      console.log(action)
-      // let currentId = action.payload.id
+    editProject: (state) => {
       state.projects = [
         // ...state.projects.slice(0, currentId - 1),
         // action.payload,
@@ -26,14 +23,14 @@ export const dashboardSlice = createSlice({
     }
   },
   extraReducers: {
-    [getProject.fulfilled]: (state, action) => {
-      state.project = action.payload
+    [getProjectAsync.fulfilled]: (state, action) => {
+      state.selectedProject = action.payload
     }
   }
 })
 
-export const { increment, decrement, editProject } = dashboardSlice.actions
+export const { editProject } = projectSlice.actions
 
-export const selectProject = (state) => state.project.project
+export const selectedProject = (state) => state.project.selectedProject
 
-export default dashboardSlice.reducer
+export default projectSlice.reducer

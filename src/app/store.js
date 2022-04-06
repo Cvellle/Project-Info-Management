@@ -6,6 +6,7 @@ import { combineReducers } from 'redux'
 import dashboardReducer from '../features/dashboard/dashboardSlice'
 import usersSlice from 'features/edit-user/usersSlice'
 import accountSlice from 'features/account/accountSlice'
+import projectSlice from 'features/Project/projectSlice'
 
 const persistConfig = {
   key: 'root',
@@ -17,7 +18,8 @@ const rootReducer = combineReducers({
   dashboard: dashboardReducer,
   auth: authReducer,
   users: usersSlice,
-  account: accountSlice
+  account: accountSlice,
+  project: projectSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
