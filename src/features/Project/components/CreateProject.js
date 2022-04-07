@@ -14,6 +14,7 @@ import { useState, useEffect } from 'react'
 import { createProject } from '../api/createProjectAPI'
 import { useNavigate } from 'react-router-dom'
 import { getUsersAsync } from 'features/edit-user/usersSlice'
+import { authState } from 'features/auth/authSlice'
 
 export const CreateProject = () => {
   const url = process.env.REACT_APP_BACKEND_URL
@@ -27,6 +28,8 @@ export const CreateProject = () => {
   const [isFiltering, setIsFiltering] = useState()
   const [filteredEmployees, setFilteredEmployees] = useState([])
   const navigate = useNavigate()
+  const { currentUser } = useSelector(authState)
+  console.log(currentUser)
 
   const dispatch = useDispatch()
 
@@ -60,12 +63,18 @@ export const CreateProject = () => {
     try {
       const logoId = await uploadLogo(data.logo[0])
       const modifiedEmployees = employees.map((employee) => ({ id: employee.id }))
-      await createProject({ ...data, logo: logoId, employees: modifiedEmployees })
+      await createProject({
+        ...data,
+        logo: logoId,
+        employees: modifiedEmployees,
+        project_manager: currentUser.id
+      })
       navigate('/')
     } catch (ex) {
       console.log(ex)
     }
   }
+
   return (
     <>
       <PageDescription title="Create Project" text="Create a new project" image={rocket} />
@@ -118,6 +127,7 @@ export const CreateProject = () => {
                 </Flex>
 
                 {(isFiltering ? filteredEmployees : employees).map((employee) => {
+                  console.log(employee)
                   return (
                     <ProjectEmployee
                       employee={employee}
@@ -139,7 +149,7 @@ export const CreateProject = () => {
                   <Flex flexDirection="column" gap="2rem">
                     {users.map((user) => (
                       <ProjectEmployee
-                        user={user}
+                        employee={user}
                         id={user.id}
                         name={user.username}
                         key={user.id}
