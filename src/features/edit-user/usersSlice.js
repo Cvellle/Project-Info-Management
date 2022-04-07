@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { employee } from 'shared/constants'
 import { getOneUser } from './api/getOneUserAPI'
 import { getRoles } from './api/getRolesAPI'
 import { getUsers } from './api/getUsersAPI'
@@ -85,5 +86,7 @@ export const usersSlice = createSlice({
 export const { editUser, emptySelectedUser } = usersSlice.actions
 
 export const selectUsers = (state) => state.users
+export const selectEmployees = (state) =>
+  state.users.users.filter((user) => user.role.name === employee)
 
 export default usersSlice.reducer

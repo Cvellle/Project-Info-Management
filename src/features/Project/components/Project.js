@@ -7,14 +7,15 @@ import {
   TabList,
   TabPanels,
   TabPanel,
-  Heading
+  Heading,
+  Avatar,
+  AvatarGroup
 } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { PageDescription } from 'components/PageDescription'
 import { getProjectAsync } from '../projectSlice'
-import rocket from '../../../assets/rocket.png'
 import { MdOpenInNew } from 'react-icons/md'
 import { selectedProject } from '../projectSlice'
 
@@ -26,6 +27,8 @@ export function Project() {
   useEffect(() => {
     dispatch(getProjectAsync(params.id))
   }, [])
+
+  const url = process.env.REACT_APP_BACKEND_URL
 
   return (
     <>
@@ -42,7 +45,33 @@ export function Project() {
           </Flex>
         }
         text={project?.attributes?.description}
-        image={rocket}></PageDescription>
+        image={`${url}${project?.attributes.logo.data.attributes.url}`}>
+        <Flex gap={{ base: '1rem' }} justifyContent={{ base: 'space-around' }}>
+          <Flex flexDirection="column" gap="0.4rem">
+            <Heading as="h4" fontSize={['sm', 'lg']}>
+              Project Manager
+            </Heading>
+            <Avatar
+              size="sm"
+              src={`${url}${project?.attributes.project_manager.data.attributes.userPhoto.data.attributes.url}`}
+            />
+          </Flex>
+          <Flex flexDirection="column" gap="0.24em">
+            <Heading as="h4" fontSize={['sm', 'lg']}>
+              Employees
+            </Heading>
+            <AvatarGroup size="sm" max={3}>
+              {project?.attributes.employees.data.map((employee) => (
+                <Avatar
+                  key={employee.id}
+                  name={employee.attributes.username}
+                  src={`${url}${employee.attributes.userPhoto?.data?.attributes.url}`}
+                />
+              ))}
+            </AvatarGroup>
+          </Flex>
+        </Flex>
+      </PageDescription>
       <Tabs margin={{ base: '0', md: '2rem auto' }} maxW="1280px">
         <TabList bgColor="#EAEAEA" color="#8E8E8E">
           <Tab
