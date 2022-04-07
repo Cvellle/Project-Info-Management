@@ -120,7 +120,7 @@ export const CreateProject = () => {
                 {(isFiltering ? filteredEmployees : employees).map((employee) => {
                   return (
                     <ProjectEmployee
-                      user={employee}
+                      employee={employee}
                       id={employee.id}
                       name={employee.username}
                       key={employee.id}
