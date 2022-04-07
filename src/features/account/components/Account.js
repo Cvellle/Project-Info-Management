@@ -6,16 +6,14 @@ import {
   Input,
   Container,
   VStack,
-  Box
+  Box,
+  Avatar
 } from '@chakra-ui/react'
-// import { useWillUnmount } from 'hooks/useWillUnmount'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 
 import { updateMeAPI } from '../api/updateMeAPI'
-// import { editUser, emptySelectedUser } from '../accountSlice'
 import { authState, getMeAsync } from 'features/auth/authSlice'
 import { PageDescription } from 'components/PageDescription'
 import rocket from 'assets/rocket.png'
@@ -28,7 +26,6 @@ export function Account() {
     register,
     formState: { errors, isSubmitting }
   } = useForm()
-  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const authSelector = useSelector(authState)
@@ -55,7 +52,6 @@ export function Account() {
     // if (res && !res.error) {
     //   let editRes = await dispatch(editUser(data))
     res && dispatch(getMeAsync())
-    res && navigate('/', { replace: true })
     // }
     if (res.error) {
       setRegistrationError(res.error.message)
@@ -66,6 +62,14 @@ export function Account() {
     <Box>
       <PageDescription title="Account" text="Edit your own profile" image={rocket} />
       <Container paddingTop="3rem">
+        <Avatar
+          name={currentUser.userName}
+          src={'https://projets-info-backend.herokuapp.com' + currentUser?.userPhoto?.url}
+          m="10px auto"
+          h="200px"
+          w="200px"
+          d="block"
+        />
         <form onSubmit={handleSubmit(onSubmit)}>
           <VStack spacing="3.5">
             <FormControl isInvalid={errors.logo}>
