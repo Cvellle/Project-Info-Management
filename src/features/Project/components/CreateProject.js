@@ -8,7 +8,7 @@ import FormTextarea from 'components/UI/FormTextarea'
 import { ModalComponent } from 'components/UI/ModalComponent'
 import ProjectEmployee from './ProjectEmployee'
 import { useSelector, useDispatch } from 'react-redux'
-import { selectUsers } from 'features/edit-user/usersSlice'
+import { selectEmployees } from 'features/edit-user/usersSlice'
 import { uploadLogo } from '../api/uploadLogo'
 import { useState, useEffect } from 'react'
 import { createProject } from '../api/createProjectAPI'
@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom'
 import { getUsersAsync } from 'features/edit-user/usersSlice'
 
 export const CreateProject = () => {
+  const url = process.env.REACT_APP_BACKEND_URL
   const {
     handleSubmit,
     register,
@@ -33,7 +34,7 @@ export const CreateProject = () => {
     dispatch(getUsersAsync())
   }, [])
 
-  const { users } = useSelector(selectUsers)
+  const users = useSelector(selectEmployees)
 
   const addEmployee = (employee) => {
     const employeesNew = [...employees, employee]
@@ -117,14 +118,13 @@ export const CreateProject = () => {
                 </Flex>
 
                 {(isFiltering ? filteredEmployees : employees).map((employee) => {
-                  const user = users.find((user) => user.id === employee.id)
                   return (
                     <ProjectEmployee
-                      user={user}
-                      id={user.id}
-                      name={user.username}
-                      key={user.id}
-                      src="https://projets-info-backend.herokuapp.com/uploads/356_3562377_personal_user_2f0fd4ecaa.png"
+                      user={employee}
+                      id={employee.id}
+                      name={employee.username}
+                      key={employee.id}
+                      src={`${url}${employee.userPhoto.url}`}
                       removeEmployee={removeEmployee}
                       isAddDisabled={true}
                     />
@@ -143,7 +143,7 @@ export const CreateProject = () => {
                         id={user.id}
                         name={user.username}
                         key={user.id}
-                        src="https://projets-info-backend.herokuapp.com/uploads/356_3562377_personal_user_2f0fd4ecaa.png"
+                        src={`${url}${user.userPhoto.url}`}
                         addEmployee={addEmployee}
                         removeEmployee={removeEmployee}
                         isAddDisabled={false}

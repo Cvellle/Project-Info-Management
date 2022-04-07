@@ -3,11 +3,19 @@ import { useState } from 'react'
 import { GrAddCircle } from 'react-icons/gr'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 
-const ProjectEmployee = ({ id, src, name, addEmployee, removeEmployee, user, isAddDisabled }) => {
+const ProjectEmployee = ({
+  id,
+  src,
+  name,
+  addEmployee,
+  removeEmployee,
+  employee,
+  isAddDisabled
+}) => {
   const [isAdded, setIsAdded] = useState(isAddDisabled ? true : false)
 
   const handlerClick = () => {
-    isAdded ? removeEmployee(id) : addEmployee(user)
+    isAdded ? removeEmployee(id) : addEmployee(employee)
     setIsAdded((prev) => !prev)
   }
 
