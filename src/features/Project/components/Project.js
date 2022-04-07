@@ -65,7 +65,7 @@ export function Project() {
                 <Avatar
                   key={employee.id}
                   name={employee.attributes.username}
-                  src={`${url}${employee.attributes.userPhoto.data.attributes.url}`}
+                  src={`${url}${employee.attributes.userPhoto?.data?.attributes.url}`}
                 />
               ))}
             </AvatarGroup>
