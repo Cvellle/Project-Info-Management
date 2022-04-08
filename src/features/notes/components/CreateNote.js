@@ -15,12 +15,13 @@ import {
 import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+
 import { PageDescription } from 'components/PageDescription'
-import { getProjectAsync } from '../projectSlice'
 import rocket from '../../../assets/rocket.png'
 import { MdOpenInNew } from 'react-icons/md'
-import { selectedProject } from '../projectSlice'
 import { useForm } from 'react-hook-form'
+import { getCatgoriesAsync, notesState } from '../notesSlice'
+import { getProjectAsync, selectedProject } from 'features/Project/projectSlice'
 
 export function CreateNote() {
   const {
@@ -33,8 +34,16 @@ export function CreateNote() {
   const params = useParams()
 
   const project = useSelector(selectedProject)
+  const notesSelector = useSelector(notesState)
+
+  const { notes } = notesSelector
 
   useEffect(() => {
+    notes && console.log(notes)
+  }, [notes])
+
+  useEffect(() => {
+    dispatch(getCatgoriesAsync())
     dispatch(getProjectAsync(params.id))
   }, [])
 

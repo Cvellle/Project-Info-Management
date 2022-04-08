@@ -27,8 +27,8 @@ export function Projects() {
     // search users by input - set new local state
     let finalFilter = filteredProjects?.filter((project) => {
       if (
-        dashboardSelector.filterBy?.userName &&
-        project.attributes.name !== dashboardSelector.filterBy?.userName
+        dashboardSelector.filterBy?.name &&
+        !project.attributes.name.includes(dashboardSelector.filterBy?.name)
       ) {
         return false
       }

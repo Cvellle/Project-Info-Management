@@ -25,7 +25,7 @@ export const dashboardSlice = createSlice({
       ]
     },
     setFilterBy: (state, action) => {
-      state.filterBy = { ...state.filterBy, userName: action.payload }
+      state.filterBy = { ...state.filterBy, name: action.payload }
     }
   },
   extraReducers: (builder) => {
