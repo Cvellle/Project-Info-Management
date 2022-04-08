@@ -32,7 +32,6 @@ export function Project() {
 
   const url = process.env.REACT_APP_BACKEND_URL
 
-export const CreateProject = () => {
   return (
     <>
       <PageDescription
