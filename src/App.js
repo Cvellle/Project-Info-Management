@@ -20,6 +20,7 @@ import { UsersList } from 'features/edit-user/components/UsersList'
 import { CreateProject } from 'features/Project/components/CreateProject'
 import { Account } from 'features/account/components/Account'
 import { CreateNote } from 'features/notes/components/CreateNote'
+import EditProject from 'features/Project/components/EditProject'
 
 function App() {
   const dispatch = useDispatch()
@@ -54,6 +55,10 @@ function App() {
             <Route path="/project/:id/" element={<Project />}>
               {/* <Route path="add-note" element={<CreateNote />} /> */}
             </Route>
+          </Route>
+
+          <Route element={<ProtectedRoutes authRoles={[projectManager]} />}>
+            <Route path="/project/:id/edit" element={<EditProject />} />
           </Route>
 
           <Route element={<ProtectedRoutes authRoles={[employee, projectManager]} />}>

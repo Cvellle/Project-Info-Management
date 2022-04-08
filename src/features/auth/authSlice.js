@@ -60,7 +60,6 @@ export const authSlice = createSlice({
       state.currentUser = action.payload.user
     },
     [getMeAsync.fulfilled]: (state, action) => {
-      console.log(action.payload)
       state.currentUser = {
         ...state.currentUser,
         id: action.payload.id,
