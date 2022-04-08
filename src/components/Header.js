@@ -56,7 +56,7 @@ const Header = () => {
                   as={NavLink}
                   to="/"
                   style={({ isActive }) => (isActive ? { fontWeight: 'bold' } : undefined)}>
-                  {auth.currentUser.role === 'admin' ? `> Users List` : `> My Projects`}
+                  {auth?.currentUser?.role === 'admin' ? `> Users List` : `> My Projects`}
                 </Link>
                 <Link
                   as={NavLink}
@@ -84,7 +84,7 @@ const Header = () => {
                       as={NavLink}
                       to="/"
                       style={({ isActive }) => (isActive ? { fontWeight: 'bold' } : undefined)}>
-                      {auth.currentUser.role === 'admin' ? `> Users List` : `> My Projects`}
+                      {auth?.currentUser?.role === 'admin' ? `> Users List` : `> My Projects`}
                     </Link>
                   </MenuItem>
                   <MenuItem>

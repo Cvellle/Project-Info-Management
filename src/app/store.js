@@ -7,6 +7,7 @@ import dashboardReducer from '../features/dashboard/dashboardSlice'
 import usersSlice from 'features/edit-user/usersSlice'
 import accountSlice from 'features/account/accountSlice'
 import projectSlice from 'features/Project/projectSlice'
+import notesSlice from 'features/notes/notesSlice'
 
 const persistConfig = {
   key: 'root',
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
   auth: authReducer,
   users: usersSlice,
   account: accountSlice,
-  project: projectSlice
+  project: projectSlice,
+  notes: notesSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
