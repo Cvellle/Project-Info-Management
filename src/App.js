@@ -13,10 +13,13 @@ import Header from './components/Header'
 import { admin, employee, projectManager } from 'shared/constants'
 import { Project } from 'features/Project/components/Project'
 import { EditUser } from 'features/edit-user/components/EditUser'
-import { getMeAssync, authState } from './features/auth/authSlice'
+import { getMeAsync, authState } from './features/auth/authSlice'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { UsersList } from 'features/edit-user/components/UsersList'
+import { CreateProject } from 'features/Project/components/CreateProject'
+import { Account } from 'features/account/components/Account'
+import { CreateNote } from 'features/notes/components/CreateNote'
 
 function App() {
   const dispatch = useDispatch()
@@ -24,7 +27,7 @@ function App() {
 
   useEffect(() => {
     if (auth.jwt) {
-      dispatch(getMeAssync())
+      dispatch(getMeAsync())
     }
   }, [])
 
@@ -39,19 +42,22 @@ function App() {
           </Route>
 
           <Route element={<ProtectedRoutes authRoles={[admin, employee, projectManager]} />}>
-            {auth?.currentUser?.role === admin ? (
-              <Route path="/" element={<UsersList />} />
-            ) : (
-              <Route path="/" element={<Dashboard />} />
-            )}
+            <Route
+              path="/"
+              element={auth?.currentUser?.role === admin ? <UsersList /> : <Dashboard />}
+            />
+            <Route path="/account" element={<Account />} />
           </Route>
 
           <Route element={<ProtectedRoutes authRoles={[admin, employee, projectManager]} />}>
-            <Route path="/project/:id" element={<Project />} />
+            <Route path="/create-project" element={<CreateProject />} />
+            <Route path="/project/:id/" element={<Project />}>
+              {/* <Route path="add-note" element={<CreateNote />} /> */}
+            </Route>
           </Route>
 
-          <Route element={<ProtectedRoutes authRoles={[admin]} />}>
-            <Route path="/users" element={<UsersList />} />
+          <Route element={<ProtectedRoutes authRoles={[employee, projectManager]} />}>
+            <Route path="/project/:id/add-note" element={<CreateNote />} />
           </Route>
 
           <Route element={<ProtectedRoutes authRoles={[admin]} />}>

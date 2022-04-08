@@ -7,8 +7,7 @@ import { MdOpenInNew } from 'react-icons/md'
 export function ProjectItem(props) {
   const navigate = useNavigate()
 
-  const navigateToProject = (idProp, e) => {
-    console.log(e.target)
+  const navigateToProject = (idProp) => {
     navigate('project/' + idProp)
   }
 
@@ -35,7 +34,7 @@ export function ProjectItem(props) {
             apiURL
               .split('/')
               .slice(0, apiURL.split('/').length - 1)
-              .join('/') + props.item.attributes.logo.data.attributes.url
+              .join('/') + props?.item?.attributes?.logo?.data?.attributes.url
           }
           boxSize={{ base: '50px', md: '70px' }}
           borderRadius="50%"

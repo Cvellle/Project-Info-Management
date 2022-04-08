@@ -14,7 +14,7 @@ import {
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
-import { getMeAssync, loginAsync } from '../authSlice'
+import { getMeAsync, loginAsync } from '../authSlice'
 import { Link as ReactLink, useNavigate } from 'react-router-dom'
 
 export const Login = () => {
@@ -32,7 +32,7 @@ export const Login = () => {
   const onSubmit = async (data) => {
     const res = await dispatch(loginAsync(data))
     if (res && !res.error) {
-      let userResponse = await dispatch(getMeAssync())
+      let userResponse = await dispatch(getMeAsync())
       if (userResponse && !userResponse.error) {
         navigate('/')
       }

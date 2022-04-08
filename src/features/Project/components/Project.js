@@ -1,21 +1,20 @@
-import { Flex } from '@chakra-ui/layout'
-import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { PageDescription } from 'components/PageDescription'
+import rocket from '../../../assets/rocket.png'
+import ProjectForm from './ProjectForm'
+import { Box } from '@chakra-ui/react'
 
-import { getProjectAssync } from '../projectSlice'
-
-export function Project() {
-  const dispatch = useDispatch()
-  const params = useParams()
-
-  useEffect(() => {
-    dispatch(getProjectAssync(params.id))
-  }, [])
-
+export const CreateProject = () => {
   return (
-    <Flex flexWrap="wrap" w="calc(1222px + 15px)" m="31px auto">
-      s
-    </Flex>
+    <>
+      <PageDescription title="Create Project" text="Create a new project" image={rocket} />
+      <Box
+        bgColor="#F8F8F8"
+        maxW="1280px"
+        m={{ base: 'auto', md: '2rem auto' }}
+        padding={{ base: '2rem 0.6rem', md: '3rem' }}
+        borderRadius="0.4rem">
+        <ProjectForm status="create" />
+      </Box>
+    </>
   )
 }

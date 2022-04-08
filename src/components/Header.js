@@ -15,19 +15,24 @@ import {
   Container
 } from '@chakra-ui/react'
 import { useSelector, useDispatch } from 'react-redux'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { logout } from '../features/auth/authSlice'
 
 const Header = () => {
   const { auth } = useSelector((state) => state)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   return (
     <Box backgroundColor="#F0F0F0" padding={{ base: '1rem 0', md: '1.3rem 0' }}>
       <Container maxW="1500px">
         <Flex alignItems="center" justifyContent="space-between">
-          <Flex alignItems="center" position="relative">
+          <Flex
+            alignItems="center"
+            position="relative"
+            cursor="pointer"
+            onClick={() => navigate('/')}>
             <Image
               objectFit="contain"
               alt="Q Project Info"
@@ -51,7 +56,7 @@ const Header = () => {
                   as={NavLink}
                   to="/"
                   style={({ isActive }) => (isActive ? { fontWeight: 'bold' } : undefined)}>
-                  {auth.currentUser.role === 'admin' ? `> Users List` : `> My Projects`}
+                  {auth?.currentUser?.role === 'admin' ? `> Users List` : `> My Projects`}
                 </Link>
                 <Link
                   as={NavLink}
@@ -79,7 +84,7 @@ const Header = () => {
                       as={NavLink}
                       to="/"
                       style={({ isActive }) => (isActive ? { fontWeight: 'bold' } : undefined)}>
-                      {auth.currentUser.role === 'admin' ? `> Users List` : `> My Projects`}
+                      {auth?.currentUser?.role === 'admin' ? `> Users List` : `> My Projects`}
                     </Link>
                   </MenuItem>
                   <MenuItem>

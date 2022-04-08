@@ -1,19 +1,35 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { employee } from 'shared/constants'
+import { getOneUser } from './api/getOneUserAPI'
+import { getRoles } from './api/getRolesAPI'
 import { getUsers } from './api/getUsersAPI'
+import { updateUser } from './api/updateUserAPI'
 
 const initialState = {
-  users: []
+  users: [],
+  selectedUser: {},
+  roles: []
 }
 
-export const getUsersAssync = createAsyncThunk('./api/getItems.js', async () => {
+export const getUsersAsync = createAsyncThunk('./api/getUsersAPI.js', async () => {
   const response = await getUsers()
   return response
 })
 
-export const updateUserUsersAssync = createAsyncThunk(
+export const getOneUserAsync = createAsyncThunk('./api/getOneUserAPI.js', async (idToPass) => {
+  const response = await getOneUser(idToPass)
+  return response
+})
+
+export const getRolesAsync = createAsyncThunk('./api/getRolesAPI.js', async () => {
+  const response = await getRoles()
+  return response
+})
+
+export const updateUserUsersAsync = createAsyncThunk(
   './api/updateUserAPI.js',
   async (idToUpdate, updateBody) => {
-    const response = await getUsers(idToUpdate, updateBody)
+    const response = await updateUser(idToUpdate, updateBody)
     return response
   }
 )
@@ -23,23 +39,54 @@ export const usersSlice = createSlice({
   initialState,
   reducers: {
     editUser: (state, action) => {
-      let currentId = action.payload.id
-      state.users = [
-        ...state.users.slice(0, currentId - 1),
-        action.payload,
-        ...state.users.slice(currentId)
-      ]
+      state.selectedUser = {
+        ...state.selectedUser,
+        id: action.payload.id,
+        username: action.payload.username,
+        email: action.payload.email,
+        role: action.payload.role,
+        blocked: action.payload.blocked,
+        confirmed: action.payload.confirmed
+      }
+    },
+    emptySelectedUser: (state) => {
+      state.selectedUser = {
+        ...state.selectedUser,
+        id: '',
+        username: '',
+        email: '',
+        role: '',
+        blocked: '',
+        confirmed: ''
+      }
     }
   },
   extraReducers: (builder) => {
-    builder.addCase(getUsersAssync.fulfilled, (state, action) => {
-      state.users = action.payload
-    })
+    builder
+      .addCase(getUsersAsync.fulfilled, (state, action) => {
+        state.users = action.payload
+      })
+      .addCase(getRolesAsync.fulfilled, (state, action) => {
+        state.roles = action.payload.roles
+      })
+      .addCase(getOneUserAsync.fulfilled, (state, action) => {
+        state.selectedUser = {
+          ...state.selectedUser,
+          id: action.payload.id,
+          username: action.payload.username,
+          email: action.payload.email,
+          role: action.payload.role?.name,
+          blocked: action.payload.blocked,
+          confirmed: action.payload.confirmed
+        }
+      })
   }
 })
 
-export const { editUser } = usersSlice.actions
+export const { editUser, emptySelectedUser } = usersSlice.actions
 
 export const selectUsers = (state) => state.users
+export const selectEmployees = (state) =>
+  state.users.users.filter((user) => user.role.name === employee)
 
 export default usersSlice.reducer

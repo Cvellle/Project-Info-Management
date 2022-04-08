@@ -1,6 +1,6 @@
 import API from '../../../services/axios'
 
-export const updateUser = async (idProp, data) => {
+export const updateMeAPI = async (idProp, data) => {
   try {
     const response = await API.put('/users/' + idProp, data)
     return response.data

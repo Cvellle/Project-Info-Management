@@ -1,8 +1,8 @@
 import API from '../../../services/axios'
 
-export const updateUser = async (idProp, data) => {
+export const getRoles = async () => {
   try {
-    const response = await API.put('/users/' + idProp, data)
+    const response = await API.get('/users-permissions/roles?populate=*')
     return response.data
   } catch (ex) {
     throw Error(ex?.response?.data?.error?.message ?? 'Unknown error')
