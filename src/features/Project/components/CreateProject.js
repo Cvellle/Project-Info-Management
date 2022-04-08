@@ -134,7 +134,7 @@ export const CreateProject = () => {
                       id={employee.id}
                       name={employee.username}
                       key={employee.id}
-                      src={`${url}${employee.userPhoto.url}`}
+                      src={`${url && url + employee?.userPhoto?.url}`}
                       removeEmployee={removeEmployee}
                       isAddDisabled={true}
                     />
@@ -153,7 +153,7 @@ export const CreateProject = () => {
                         id={user.id}
                         name={user.username}
                         key={user.id}
-                        src={`${url}${user.userPhoto.url}`}
+                        src={`${url && url}${user?.userPhoto?.url}`}
                         addEmployee={addEmployee}
                         removeEmployee={removeEmployee}
                         isAddDisabled={false}
