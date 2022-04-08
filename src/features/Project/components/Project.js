@@ -9,7 +9,8 @@ import {
   TabPanel,
   Heading,
   Avatar,
-  AvatarGroup
+  AvatarGroup,
+  Link
 } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -18,6 +19,7 @@ import { PageDescription } from 'components/PageDescription'
 import { getProjectAsync } from '../projectSlice'
 import { MdOpenInNew } from 'react-icons/md'
 import { selectedProject } from '../projectSlice'
+import { Link as ReactLink } from 'react-router-dom'
 
 export function Project() {
   const dispatch = useDispatch()
@@ -36,12 +38,14 @@ export function Project() {
         title={
           <Flex gap="1rem">
             {project?.attributes?.name}
-            <Flex alignItems="center">
-              <IconButton icon={<MdOpenInNew />} fontSize="md" bgColor="transparent" size="xs" />
-              <Text color="gray.600" fontSize="sm">
-                EDIT
-              </Text>
-            </Flex>
+            <Link as={ReactLink} to={`edit`}>
+              <Flex alignItems="center">
+                <IconButton icon={<MdOpenInNew />} fontSize="md" bgColor="transparent" size="xs" />
+                <Text color="gray.600" fontSize="sm">
+                  EDIT
+                </Text>
+              </Flex>
+            </Link>
           </Flex>
         }
         text={project?.attributes?.description}
@@ -53,7 +57,7 @@ export function Project() {
             </Heading>
             <Avatar
               size="sm"
-              src={`${url}${project?.attributes.project_manager.data.attributes.userPhoto.data.attributes.url}`}
+              src={`${url}${project?.attributes.project_manager.data?.attributes.userPhoto.data.attributes.url}`}
             />
           </Flex>
           <Flex flexDirection="column" gap="0.24em">
