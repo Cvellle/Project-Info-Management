@@ -12,7 +12,7 @@ import {
   Box,
   VStack
 } from '@chakra-ui/react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
@@ -22,6 +22,8 @@ import { MdOpenInNew } from 'react-icons/md'
 import { useForm } from 'react-hook-form'
 import { getCatgoriesAsync, notesState } from '../notesSlice'
 import { getProjectAsync, selectedProject } from 'features/Project/projectSlice'
+import { createNoteAPI } from '../api/createNoteAPI'
+import { uploadFilesAPI } from '../api/uploadFilesAPI'
 
 export function CreateNote() {
   const {
@@ -29,7 +31,7 @@ export function CreateNote() {
     register,
     formState: { errors, isSubmitting }
   } = useForm()
-  //   const navigate = useNavigate()
+
   const dispatch = useDispatch()
   const params = useParams()
 
@@ -53,21 +55,28 @@ export function CreateNote() {
     hiddenFileInput.current.click()
   }
 
-  //   const [registrationError, setRegistrationError] = useState(false)
+  const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
     console.log(data)
-    // let dataBody = {
-    //   data: { ...data, role: { id: roleId } }
-    // }
+    let dataBody = {
+      data: { ...data }
+    }
+    // check if file input is not empty, and spread body object
+    if (data.files.length) {
+      const filesId = await uploadFilesAPI(data.files[0])
+      dataBody = {
+        data: { ...data, userPhoto: { id: filesId } }
+      }
+    }
 
-    // const res = await updateUser(params.id, dataBody)
-    // if (res && !res.error) {
-    //   //   navigate('/', { replace: true })
-    // }
-    // if (res.error) {
-    //   setRegistrationError(res.error.message)
-    // }
+    const res = await createNoteAPI(params.id, dataBody)
+    if (res && !res.error) {
+      console.log('success', res)
+    }
+    if (res.error) {
+      setRegistrationError(res.error.message)
+    }
   }
 
   return (
@@ -93,24 +102,25 @@ export function CreateNote() {
             Create a new Note
           </Heading>
         </Flex>
-        <Flex pl="45px" flexWrap={'wrap'}>
+        <Flex pl="45px" flexWrap={'wrap'} margin={{ base: '0', md: '49px 0' }}>
           <Heading as="h5" fontSize={['sm', 'lg', 'xl']}>
             Note info
           </Heading>
           <Flex pl="84px" justifyContent={{ md: 'center' }}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)} d="flex" flexWrap="wrap" maxW="624px">
               <VStack spacing="3.5">
                 <FormControl isInvalid={errors.username} isRequired>
                   <FormLabel htmlFor="title" padding="0" margin="0">
                     Note title
                   </FormLabel>
                   <Input
+                    w={{ base: 'auto', md: '624px' }}
                     id="title"
                     placeholder="Hello"
                     autoComplete="title"
                     {...register('title', {
-                      required: 'This is required',
-                      minLength: { value: 4, message: 'Minimum length should be 4' }
+                      required: 'This is required'
+                      // minLength: { value: 4, message: 'Minimum length should be 4' }
                     })}
                     defaultValue={''}
                   />
@@ -121,12 +131,13 @@ export function CreateNote() {
                     Note description
                   </FormLabel>
                   <Input
+                    w={{ base: 'auto', md: '624px' }}
                     id="description"
                     placeholder="Hello"
                     autoComplete="description"
                     {...register('description', {
-                      required: 'This is required',
-                      minLength: { value: 4, message: 'Minimum length should be 4' }
+                      required: 'This is required'
+                      // minLength: { value: 4, message: 'Minimum length should be 4' }
                     })}
                     defaultValue={''}
                   />
@@ -142,28 +153,27 @@ export function CreateNote() {
                     {...register('category')}
                     autoComplete="current-category"
                     isInvalid={errors.category}
-                    defaultValue={''}
-                    //   onChange={(e) => setCategoryFunction(e)}
-                  >
-                    {
-                      //   categories &&
-                      //     categories.map((category) => (
-                      //       <option key={category.id} value={category.name}>
-                      //         {category.name}
-                      //       </option>
-                      //     ))
-                    }
+                    defaultValue={''}>
+                    <option value="" hidden></option>
+                    {notes?.data?.map((note) => {
+                      let noteAttr = note.attributes
+                      return (
+                        <option key={note.id} value={noteAttr.name}>
+                          {noteAttr.name}
+                        </option>
+                      )
+                    })}
                   </Select>
                 </FormControl>
 
                 <FormControl
-                  isInvalid={errors.email}
-                  isRequired
                   position={'relative'}
                   h="50px"
                   w="127px"
                   d="block"
-                  cursor="pointer">
+                  cursor="pointer"
+                  isInvalid={errors.filesInput}
+                  mr="auto">
                   <Input
                     t="0"
                     l="0"
@@ -173,17 +183,14 @@ export function CreateNote() {
                     cursor="pointer"
                     w="100%"
                     h="100%"
-                    id="files"
-                    display="none"
-                    placeholder="Upload files"
-                    autoComplete="files"
+                    id="filesInput"
+                    placeholder="Upload filesInput"
                     type="file"
-                    accept={'image/*'}
-                    {...register('files', {
-                      required: 'This is required',
-                      minLength: { value: 4, message: 'Minimum length should be 4' }
-                    })}
-                    defaultValue={''}
+                    name="filesInput"
+                    accept={
+                      'image/*,.pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                    }
+                    {...register('filesInput')}
                     ref={hiddenFileInput}
                   />
                   <Button
@@ -196,11 +203,20 @@ export function CreateNote() {
                     l="0">
                     Upload files
                   </Button>
-                  <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
+                  <FormErrorMessage>
+                    {errors.filesInput && errors.filesInput.message}
+                  </FormErrorMessage>
                 </FormControl>
-                {/* {registrationError && <Box color="red.500">{registrationError} */}
+                {registrationError && <Box color="red.500">{registrationError}</Box>}
               </VStack>
-              <Button colorScheme="teal" isLoading={isSubmitting} type="submit" width="100%" mt="6">
+              <Button
+                colorScheme="teal"
+                isLoading={isSubmitting}
+                type="submit"
+                width="101px"
+                h="28px"
+                mt="6"
+                ml="auto">
                 Update User
               </Button>
             </form>
