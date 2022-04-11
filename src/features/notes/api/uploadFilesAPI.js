@@ -1,6 +1,6 @@
 import API from 'services/axios'
 
-export const uploadLogo = async (img) => {
+export const uploadFilesAPI = async (img) => {
   try {
     const fd = new FormData()
     fd.append('files', img)

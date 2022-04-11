@@ -1,6 +1,6 @@
 import { createProject } from '../api/createProjectAPI'
 import { updateProjectAPI } from '../api/updateProjectAPI'
-import { uploadLogo } from 'features/notes/api/uploadLogo'
+import { uploadLogo } from 'features/Project/api/uploadLogo'
 
 export const method = async ({ id, status, data, employees, currentUser }) => {
   try {

@@ -48,11 +48,7 @@ export function Account() {
 
     // final update api call
     const res = await updateMeAPI(currentUser.id, dataBody)
-
-    // if (res && !res.error) {
-    //   let editRes = await dispatch(editUser(data))
-    res && dispatch(getMeAsync())
-    // }
+    res && !res.error && dispatch(getMeAsync())
     if (res.error) {
       setRegistrationError(res.error.message)
     }
