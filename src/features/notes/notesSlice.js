@@ -1,13 +1,20 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getCategoriesAPI } from './api/getCategoriesAPI'
+import { getProjecAPI } from './api/getProjecAPI'
 
 const initialState = {
-  notes: null
+  notes: null,
+  selectedProject: null
 }
 
 export const getCatgoriesAsync = createAsyncThunk('./api/getCategoriesAPI.js', async () => {
   const response = await getCategoriesAPI()
   return response
+})
+
+export const getProjectAsync = createAsyncThunk('projects/getProject', async (id) => {
+  const response = await getProjecAPI(id)
+  return response.data
 })
 
 export const notesSlice = createSlice({
@@ -17,6 +24,9 @@ export const notesSlice = createSlice({
   extraReducers: {
     [getCatgoriesAsync.fulfilled]: (state, action) => {
       state.notes = action.payload
+    },
+    [getProjectAsync.fulfilled]: (state, action) => {
+      state.selectedProject = action.payload
     }
   }
 })

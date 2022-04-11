@@ -20,59 +20,67 @@ import { PageDescription } from 'components/PageDescription'
 import rocket from '../../../assets/rocket.png'
 import { MdOpenInNew } from 'react-icons/md'
 import { useForm } from 'react-hook-form'
-import { getCatgoriesAsync, notesState } from '../notesSlice'
-import { getProjectAsync, selectedProject } from 'features/Project/projectSlice'
+import { getCatgoriesAsync, getProjectAsync, notesState } from '../notesSlice'
 import { createNoteAPI } from '../api/createNoteAPI'
 import { uploadFilesAPI } from '../api/uploadFilesAPI'
+// import FileInput from 'components/UI/FileInput'
 
 export function CreateNote() {
+  // react-hooks-form
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting }
   } = useForm()
-
+  // additional hooks
   const dispatch = useDispatch()
   const params = useParams()
-
-  const project = useSelector(selectedProject)
+  // selectors
   const notesSelector = useSelector(notesState)
-
-  const { notes } = notesSelector
-
-  useEffect(() => {
-    notes && console.log(notes)
-  }, [notes])
+  // states from store
+  const { notes, selectedProject } = notesSelector
 
   useEffect(() => {
     dispatch(getCatgoriesAsync())
     dispatch(getProjectAsync(params.id))
   }, [])
 
-  const hiddenFileInput = useRef(null)
+  useEffect(() => {
+    console.log(selectedProject)
+  }, [selectedProject])
 
-  const handleClick = () => {
-    hiddenFileInput.current.click()
-  }
+  // input overlay click
+  const hiddenFileInput = useRef(null)
+  console.log(hiddenFileInput)
+
+  // const handleClick = () => {
+  //   hiddenFileInput.current.click()
+  // }
 
   const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
     console.log(data)
+    console.log(selectedProject)
     let dataBody = {
-      data: { ...data }
+      data: {
+        ...data,
+        project: { id: selectedProject?.id },
+        author: { id: selectedProject?.attributes?.project_manager?.data?.id }
+      }
     }
     // check if file input is not empty, and spread body object
     if (data.files.length) {
       const filesId = await uploadFilesAPI(data.files[0])
-      dataBody = {
-        data: { ...data, userPhoto: { id: filesId } }
-      }
+      filesId &&
+        (dataBody = {
+          data: { ...data, files: { id: filesId } }
+        })
     }
-
+    console.log(dataBody)
     const res = await createNoteAPI(params.id, dataBody)
     if (res && !res.error) {
-      console.log('success', res)
+      // console.log('success', res)
     }
     if (res.error) {
       setRegistrationError(res.error.message)
@@ -84,7 +92,7 @@ export function CreateNote() {
       <PageDescription
         title={
           <Flex gap="1rem">
-            {project?.attributes?.name}
+            {selectedProject?.attributes?.name}
             <Flex alignItems="center">
               <IconButton icon={<MdOpenInNew />} fontSize="md" bgColor="transparent" size="xs" />
               <Text color="gray.600" fontSize="sm">
@@ -93,12 +101,15 @@ export function CreateNote() {
             </Flex>
           </Flex>
         }
-        text={project?.attributes?.description}
+        text={selectedProject?.attributes?.description}
         image={rocket}></PageDescription>
       <Box margin={{ base: '0', md: '2rem auto' }} maxW="1280px">
         <Flex bgColor="#EAEAEA" color="#8E8E8E" alignItems="center" minH="75px">
-          <Button bgColor="#EAEAEA">{String.fromCharCode(8592)} Go back</Button>
-          <Heading as="h4" fontSize={['sm', 'lg', 'xl']}>
+          <Button bgColor="#EAEAEA" color="black">
+            {String.fromCharCode(8592)}
+            {'< Go back'}
+          </Button>
+          <Heading as="h4" fontSize={['sm', '24px']} fontWeight="600" color="black">
             Create a new Note
           </Heading>
         </Flex>
@@ -107,7 +118,11 @@ export function CreateNote() {
             Note info
           </Heading>
           <Flex pl="84px" justifyContent={{ md: 'center' }}>
-            <form onSubmit={handleSubmit(onSubmit)} d="flex" flexWrap="wrap" maxW="624px">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              w={{ base: 'auto', md: '624px' }}
+              d="flex"
+              flex-wrap="wrap">
               <VStack spacing="3.5">
                 <FormControl isInvalid={errors.username} isRequired>
                   <FormLabel htmlFor="title" padding="0" margin="0">
@@ -169,55 +184,55 @@ export function CreateNote() {
                 <FormControl
                   position={'relative'}
                   h="50px"
-                  w="127px"
+                  w="100%"
                   d="block"
-                  cursor="pointer"
-                  isInvalid={errors.filesInput}
+                  isInvalid={errors.files}
                   mr="auto">
-                  <Input
-                    t="0"
-                    l="0"
-                    position={'absolute'}
-                    zIndex="2"
-                    opacity="0"
-                    cursor="pointer"
-                    w="100%"
-                    h="100%"
-                    id="filesInput"
-                    placeholder="Upload filesInput"
-                    type="file"
-                    name="filesInput"
-                    accept={
-                      'image/*,.pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-                    }
-                    {...register('filesInput')}
-                    ref={hiddenFileInput}
-                  />
-                  <Button
-                    onClick={handleClick}
-                    position={'absolute'}
-                    w="100%"
-                    h="100%"
-                    bgColor="#EAEAEA"
-                    t="0"
-                    l="0">
-                    Upload files
-                  </Button>
-                  <FormErrorMessage>
-                    {errors.filesInput && errors.filesInput.message}
-                  </FormErrorMessage>
+                  <Box w="180px" cursor="pointer">
+                    <Input
+                      type="file"
+                      {...register('files')}
+                      accept={
+                        'image/*,.pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                      }
+                      // ref={hiddenFileInput}
+                      // placeholder="Choose Files"
+                      // t="0"
+                      // l="0"
+                      // position={'absolute'}
+                      // zIndex="2"
+                      // opacity="0"
+                      // cursor="pointer"
+                      // w="0px"
+                      // h="0%"
+                    />
+                    {/* <Button
+                      onClick={handleClick}
+                      position={'absolute'}
+                      w="180px"
+                      h="100%"
+                      bgColor="#EAEAEA"
+                      t="0"
+                      l="0">
+                      Upload files
+                    </Button> */}
+                  </Box>
+                  <FormErrorMessage>{errors.files && errors.files.message}</FormErrorMessage>
                 </FormControl>
+
                 {registrationError && <Box color="red.500">{registrationError}</Box>}
               </VStack>
               <Button
                 colorScheme="teal"
                 isLoading={isSubmitting}
                 type="submit"
-                width="101px"
-                h="28px"
+                width="149px"
+                h="49px"
+                d="block"
                 mt="6"
-                ml="auto">
-                Update User
+                ml="auto"
+                mr="{{ base: '0', md: '-191px' }}">
+                SAVE NOTE
               </Button>
             </form>
           </Flex>
