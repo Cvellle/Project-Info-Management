@@ -41,9 +41,9 @@ export function ProjectItem(props) {
         />
         <VStack alignItems="flex-start">
           <Heading as="h3" fontSize={['md', 'xl']} fontWeight="600">
-            {props.item.attributes.name}
+            {props.item?.attributes?.name}
           </Heading>
-          <Text>{props.item.attributes.name}</Text>
+          <Text>{props.item?.attributes?.name}</Text>
         </VStack>
       </Flex>
 
@@ -56,7 +56,9 @@ export function ProjectItem(props) {
             onClick={(e) => seeInNewTab(props.item.id, e)}
           />
         </Link>
-        <Text fontSize={['xs', 'sm']}>{props.item.attributes.employees.data.length} employees</Text>
+        <Text fontSize={['xs', 'sm']}>
+          {props.item.attributes?.employees?.data.length} employees
+        </Text>
       </Flex>
     </Flex>
   )

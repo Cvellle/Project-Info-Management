@@ -7,9 +7,9 @@ const initialState = {
   filterBy: {}
 }
 
-export const fetchItems = createAsyncThunk('./api/getItems.js', async () => {
-  const response = await getItems()
-  return response.data
+export const fetchItems = createAsyncThunk('./api/getItems.js', async (payloadProp) => {
+  const response = await getItems(payloadProp)
+  return await response.data
 })
 
 export const dashboardSlice = createSlice({
@@ -24,6 +24,9 @@ export const dashboardSlice = createSlice({
         ...state.projects.slice(currentId)
       ]
     },
+    addProject: (state, action) => {
+      state.projects = [...state.projects, action.payload]
+    },
     setFilterBy: (state, action) => {
       state.filterBy = { ...state.filterBy, name: action.payload }
     }
@@ -34,13 +37,14 @@ export const dashboardSlice = createSlice({
         state.status = 'loading'
       })
       .addCase(fetchItems.fulfilled, (state, action) => {
+        console.log(action.payload)
         state.status = 'idle'
         state.projects = action.payload
       })
   }
 })
 
-export const { editProject, setFilterBy } = dashboardSlice.actions
+export const { editProject, setFilterBy, addProject } = dashboardSlice.actions
 
 export const selectProjects = (state) => state.dashboard.projects
 export const dashboardState = (state) => state.dashboard

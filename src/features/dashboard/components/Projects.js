@@ -11,21 +11,21 @@ export function Projects() {
   const authSelector = useSelector(authState)
   const dashboardSelector = useSelector(dashboardState)
   const { filterBy, projects } = dashboardSelector
+  const { currentUser } = authSelector
   // local states
-  const [filteredProjects, setFilteredProjects] = useState()
   const [searchedProjects, setSearchedProjects] = useState()
 
   useEffect(() => {
-    dispatch(fetchItems())
+    dispatch(fetchItems({ role: currentUser.role, id: currentUser.id }))
   }, [])
 
   useEffect(() => {
-    projects.length && filterProjectsFunction()
+    console.log(projects)
   }, [projects])
 
   useEffect(() => {
     // search users by input - set new local state
-    let finalFilter = filteredProjects?.filter((project) => {
+    let finalFilter = projects?.filter((project) => {
       if (
         dashboardSelector.filterBy?.name &&
         !project.attributes.name.includes(dashboardSelector.filterBy?.name)
@@ -37,18 +37,7 @@ export function Projects() {
     setSearchedProjects(finalFilter)
   }, [filterBy])
 
-  // initial projects filter by current user
-  const filterProjectsFunction = () => {
-    let finalFilteredValue = projects?.filter((project) => {
-      let projectEmails = project?.attributes.employees.data.map(
-        (employee) => employee.attributes.email
-      )
-      return projectEmails.includes(authSelector.currentUser.email)
-    })
-    setFilteredProjects(finalFilteredValue)
-  }
-
-  let mapArray = searchedProjects ? searchedProjects : filteredProjects
+  let mapArray = searchedProjects ? projects : projects
 
   return (
     <Grid
