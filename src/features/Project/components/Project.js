@@ -57,7 +57,10 @@ export function Project() {
             </Heading>
             <Avatar
               size="sm"
-              src={`${url}${project?.attributes.project_manager.data?.attributes.userPhoto.data.attributes.url}`}
+              src={`${url && url}${
+                project?.attributes?.project_manager?.data?.attributes?.userPhoto?.data?.attributes
+                  .url
+              }`}
             />
           </Flex>
           <Flex flexDirection="column" gap="0.24em">

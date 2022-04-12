@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router-dom'
 import { getUsersAsync } from 'features/edit-user/usersSlice'
 import { authState } from 'features/auth/authSlice'
 import { method } from './method'
+import { fetchItems } from 'features/dashboard/dashboardSlice'
 
 const ProjectForm = ({ defValues, status, id }) => {
   const url = process.env.REACT_APP_BACKEND_URL
@@ -28,11 +29,10 @@ const ProjectForm = ({ defValues, status, id }) => {
   const {
     handleSubmit,
     register,
-    getValues,
     reset,
     formState: { errors, isSubmitting }
   } = useForm()
-  console.log(getValues())
+
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [employees, setEmployees] = useState([])
   const [isFiltering, setIsFiltering] = useState()
@@ -79,10 +79,19 @@ const ProjectForm = ({ defValues, status, id }) => {
   }
 
   const onSubmit = async (data) => {
-    if (method({ status, employees, currentUser, data, id })) {
-      navigate('/')
-    } else {
-      console.log('error')
+    let res = await method({ status, employees, currentUser, data, id })
+    try {
+      if (res && !res.error) {
+        let newRes = dispatch(
+          fetchItems({
+            role: currentUser.role,
+            id: currentUser.id
+          })
+        )
+        newRes && !newRes.error && navigate('/')
+      }
+    } catch {
+      !res.error && console.log('error')
     }
   }
 

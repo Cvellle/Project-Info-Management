@@ -65,8 +65,8 @@ export function CreateNote() {
     let dataBody = {
       data: {
         ...data,
-        project: { id: selectedProject?.id },
-        author: { id: selectedProject?.attributes?.project_manager?.data?.id }
+        project: selectedProject?.id,
+        author: selectedProject?.attributes?.project_manager?.data?.id
       }
     }
     // check if file input is not empty, and spread body object
