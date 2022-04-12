@@ -13,7 +13,6 @@ export function Projects() {
   const { filterBy, projects } = dashboardSelector
   const { currentUser } = authSelector
   // local states
-  // const [filteredProjects, setFilteredProjects] = useState()
   const [searchedProjects, setSearchedProjects] = useState()
 
   useEffect(() => {
