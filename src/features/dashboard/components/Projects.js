@@ -24,7 +24,10 @@ export function Projects() {
   }, [projects])
 
   useEffect(() => {
-    // search users by input - set new local state
+    filterFunction()
+  }, [filterBy])
+
+  const filterFunction = () => {
     let finalFilter = projects?.filter((project) => {
       if (
         dashboardSelector.filterBy?.name &&
@@ -35,9 +38,9 @@ export function Projects() {
       return true
     })
     setSearchedProjects(finalFilter)
-  }, [filterBy])
+  }
 
-  let mapArray = searchedProjects ? projects : projects
+  let mapArray = searchedProjects ? searchedProjects : projects
 
   return (
     <Grid
