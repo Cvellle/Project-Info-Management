@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { PageDescription } from 'components/PageDescription'
 import rocket from '../../../assets/rocket.png'
@@ -23,7 +23,6 @@ import { useForm } from 'react-hook-form'
 import { getCatgoriesAsync, getProjectAsync, notesState } from '../notesSlice'
 import { createNoteAPI } from '../api/createNoteAPI'
 import { uploadFilesAPI } from '../api/uploadFilesAPI'
-// import FileInput from 'components/UI/FileInput'
 
 export function CreateNote() {
   // react-hooks-form
@@ -35,19 +34,16 @@ export function CreateNote() {
   // additional hooks
   const dispatch = useDispatch()
   const params = useParams()
+  const navigate = useNavigate()
   // selectors
   const notesSelector = useSelector(notesState)
   // states from store
-  const { notes, selectedProject } = notesSelector
+  const { notes, selectedProject, categories } = notesSelector
 
   useEffect(() => {
     dispatch(getCatgoriesAsync())
     dispatch(getProjectAsync(params.id))
   }, [])
-
-  useEffect(() => {
-    console.log(selectedProject)
-  }, [selectedProject])
 
   // input overlay click
   const hiddenFileInput = useRef(null)
@@ -60,27 +56,28 @@ export function CreateNote() {
   const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
-    console.log(data)
-    console.log(selectedProject)
+    // create body object
     let dataBody = {
-      data: {
-        ...data,
-        project: selectedProject?.id,
-        author: selectedProject?.attributes?.project_manager?.data?.id
-      }
+      ...data,
+      category: categories.data.find((el) => el?.attributes?.name == data.category).id,
+      project: selectedProject?.id,
+      author: selectedProject?.attributes?.project_manager?.data?.id
     }
+
     // check if file input is not empty, and spread body object
     if (data.files.length) {
       const filesId = await uploadFilesAPI(data.files[0])
       filesId &&
         (dataBody = {
-          data: { ...data, files: { id: filesId } }
+          ...dataBody,
+          files: { id: filesId }
         })
     }
-    console.log(dataBody)
-    const res = await createNoteAPI(params.id, dataBody)
+
+    // if success, navigate to the project page
+    const res = await createNoteAPI(dataBody)
     if (res && !res.error) {
-      // console.log('success', res)
+      navigate('project/' + params.id, { replace: true })
     }
     if (res.error) {
       setRegistrationError(res.error.message)
@@ -106,23 +103,30 @@ export function CreateNote() {
       <Box margin={{ base: '0', md: '2rem auto' }} maxW="1280px">
         <Flex bgColor="#EAEAEA" color="#8E8E8E" alignItems="center" minH="75px">
           <Button bgColor="#EAEAEA" color="black">
-            {String.fromCharCode(8592)}
             {'< Go back'}
           </Button>
           <Heading as="h4" fontSize={['sm', '24px']} fontWeight="600" color="black">
             Create a new Note
           </Heading>
         </Flex>
-        <Flex pl="45px" flexWrap={'wrap'} margin={{ base: '0', md: '49px 0' }}>
+        <Flex
+          pl={{ base: '0', md: '45px' }}
+          flexWrap={'wrap'}
+          margin={{ base: '0', md: '49px 0' }}
+          justifyContent={{ base: 'center', md: 'unset' }}>
           <Heading as="h5" fontSize={['sm', 'lg', 'xl']}>
             Note info
           </Heading>
-          <Flex pl="84px" justifyContent={{ md: 'center' }}>
+          <Flex
+            pl={{ base: '0', md: '-84px' }}
+            justifyContent={{ md: 'center' }}
+            w={{ base: '100%', md: 'auto' }}>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              w={{ base: 'auto', md: '624px' }}
+              w={{ base: '100vw', md: '624px' }}
               d="flex"
-              flex-wrap="wrap">
+              flex-wrap="wrap"
+              m="auto">
               <VStack spacing="3.5">
                 <FormControl isInvalid={errors.username} isRequired>
                   <FormLabel htmlFor="title" padding="0" margin="0">
@@ -231,7 +235,7 @@ export function CreateNote() {
                 d="block"
                 mt="6"
                 ml="auto"
-                mr="{{ base: '0', md: '-191px' }}">
+                mr={{ base: '0', md: '-191px' }}>
                 SAVE NOTE
               </Button>
             </form>
