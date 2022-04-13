@@ -14,16 +14,17 @@ import {
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
-import { getMeAsync, loginAsync } from '../authSlice'
+import { getMeAsync, loginAsync, setCurrentUser } from '../authSlice'
 import { Link as ReactLink, useNavigate } from 'react-router-dom'
 
 export const Login = () => {
+  const navigate = useNavigate()
+
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting }
   } = useForm()
-  const navigate = useNavigate()
 
   const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState()
@@ -34,7 +35,8 @@ export const Login = () => {
     if (res && !res.error) {
       let userResponse = await dispatch(getMeAsync())
       if (userResponse && !userResponse.error) {
-        navigate('/')
+        let currentUserRes = await dispatch(setCurrentUser(userResponse.payload))
+        currentUserRes && navigate('/')
       }
     }
     if (res.error) {

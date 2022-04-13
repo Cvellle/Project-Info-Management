@@ -45,10 +45,11 @@ export function Account() {
         data: { ...data, userPhoto: { id: logoId } }
       }
     }
-
     // final update api call
     const res = await updateMeAPI(currentUser.id, dataBody)
-    res && !res.error && dispatch(getMeAsync())
+    if (res && !res.error) {
+      dispatch(getMeAsync())
+    }
     if (res.error) {
       setRegistrationError(res.error.message)
     }

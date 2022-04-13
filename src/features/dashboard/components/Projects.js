@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { dashboardState, fetchItems } from '../dashboardSlice'
 import { ProjectItem } from './ProjectItem'
 import { authState } from 'features/auth/authSlice'
+import { useDidUpdate } from 'hooks/useDidUpdate'
 
 export function Projects() {
   const dispatch = useDispatch()
@@ -19,14 +20,6 @@ export function Projects() {
     dispatch(fetchItems({ role: currentUser.role, id: currentUser.id }))
   }, [])
 
-  useEffect(() => {
-    console.log(projects)
-  }, [projects])
-
-  useEffect(() => {
-    filterFunction()
-  }, [filterBy])
-
   const filterFunction = () => {
     let finalFilter = projects?.filter((project) => {
       if (
@@ -39,6 +32,8 @@ export function Projects() {
     })
     setSearchedProjects(finalFilter)
   }
+
+  useDidUpdate(filterFunction, [filterBy])
 
   let mapArray = searchedProjects ? searchedProjects : projects
 

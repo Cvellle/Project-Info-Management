@@ -49,7 +49,7 @@ export function Project() {
           </Flex>
         }
         text={project?.attributes?.description}
-        image={`${url}${project?.attributes.logo.data.attributes.url}`}>
+        image={`${url && url}${project?.attributes?.logo?.data?.attributes?.url}`}>
         <Flex gap={{ base: '1rem' }} justifyContent={{ base: 'space-around' }}>
           <Flex flexDirection="column" gap="0.4rem">
             <Heading as="h4" fontSize={['sm', 'lg']}>
@@ -59,7 +59,7 @@ export function Project() {
               size="sm"
               src={`${url && url}${
                 project?.attributes?.project_manager?.data?.attributes?.userPhoto?.data?.attributes
-                  .url
+                  ?.url
               }`}
             />
           </Flex>
@@ -72,7 +72,7 @@ export function Project() {
                 <Avatar
                   key={employee.id}
                   name={employee.attributes.username}
-                  src={`${url}${employee.attributes.userPhoto?.data?.attributes.url}`}
+                  src={`${url}${employee?.attributes?.userPhoto?.data?.attributes.url}`}
                 />
               ))}
             </AvatarGroup>
