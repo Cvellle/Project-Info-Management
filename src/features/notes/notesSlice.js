@@ -4,6 +4,7 @@ import { getProjecAPI } from './api/getProjecAPI'
 
 const initialState = {
   notes: null,
+  categories: [],
   selectedProject: null
 }
 
@@ -17,15 +18,20 @@ export const getProjectAsync = createAsyncThunk('projects/getProject', async (id
   return response.data
 })
 
+export const getNotesAsync = createAsyncThunk('projects/getProject', async (id) => {
+  const response = await getProjecAPI(id)
+  return response.data
+})
+
 export const notesSlice = createSlice({
   name: 'notes',
   initialState,
   reducers: {},
   extraReducers: {
     [getCatgoriesAsync.fulfilled]: (state, action) => {
-      state.notes = action.payload
+      state.categories = action.payload
     },
-    [getProjectAsync.fulfilled]: (state, action) => {
+    [getNotesAsync.fulfilled]: (state, action) => {
       state.selectedProject = action.payload
     }
   }
