@@ -29,6 +29,9 @@ export const dashboardSlice = createSlice({
     },
     setFilterBy: (state, action) => {
       state.filterBy = { ...state.filterBy, name: action.payload }
+    },
+    resetProjects: (state) => {
+      state.projects = []
     }
   },
   extraReducers: (builder) => {
@@ -37,14 +40,13 @@ export const dashboardSlice = createSlice({
         state.status = 'loading'
       })
       .addCase(fetchItems.fulfilled, (state, action) => {
-        console.log(action.payload)
         state.status = 'idle'
         state.projects = action.payload
       })
   }
 })
 
-export const { editProject, setFilterBy, addProject } = dashboardSlice.actions
+export const { editProject, setFilterBy, addProject, resetProjects } = dashboardSlice.actions
 
 export const selectProjects = (state) => state.dashboard.projects
 export const dashboardState = (state) => state.dashboard

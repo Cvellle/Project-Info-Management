@@ -1,4 +1,4 @@
-import { Flex, Heading, Text, Image, VStack, IconButton } from '@chakra-ui/react'
+import { Flex, Heading, Text, Avatar, VStack, IconButton } from '@chakra-ui/react'
 import { apiURL } from 'services/axios'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
@@ -27,14 +27,14 @@ export function ProjectItem(props) {
       alignItems="center"
       justifyContent="space-between">
       <Flex alignItems="center" gap="0.8rem">
-        <Image
+        <Avatar
           objectFit="contain"
           alt="employee"
           src={
             apiURL
               .split('/')
               .slice(0, apiURL.split('/').length - 1)
-              .join('/') + props?.item?.attributes?.logo?.data?.attributes.url
+              .join('/') + props?.item?.attributes?.logo?.data?.attributes?.url
           }
           boxSize={{ base: '50px', md: '70px' }}
           borderRadius="50%"
