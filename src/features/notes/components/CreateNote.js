@@ -38,12 +38,16 @@ export function CreateNote() {
   // selectors
   const notesSelector = useSelector(notesState)
   // states from store
-  const { notes, selectedProject, categories } = notesSelector
+  const { selectedProject, categories } = notesSelector
 
   useEffect(() => {
     dispatch(getCatgoriesAsync())
     dispatch(getProjectAsync(params.id))
   }, [])
+
+  useEffect(() => {
+    console.log(categories)
+  }, [categories])
 
   // input overlay click
   const hiddenFileInput = useRef(null)
@@ -174,7 +178,7 @@ export function CreateNote() {
                     isInvalid={errors.category}
                     defaultValue={''}>
                     <option value="" hidden></option>
-                    {notes?.data?.map((note) => {
+                    {categories?.data?.map((note) => {
                       let noteAttr = note.attributes
                       return (
                         <option key={note.id} value={noteAttr.name}>
