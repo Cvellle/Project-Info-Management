@@ -17,9 +17,10 @@ import { NotFound } from 'components/NotFound'
 import theme from './theme/theme'
 import ProtectedRoutes from './routes/ProtectedRoute'
 import Header from './components/Header'
-import { admin, employee, projectManager } from 'shared/constants'
+import { admin, authenticated, employee, projectManager } from 'shared/constants'
 import { Project } from 'features/Project/components/Project'
 import { EditUser } from 'features/edit-user/components/EditUser'
+import { Unauthorized } from 'components/Unauthorized'
 
 function App() {
   const dispatch = useDispatch()
@@ -39,11 +40,23 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          <Route element={<ProtectedRoutes authRoles={[admin, employee, projectManager]} />}>
+          <Route
+            element={
+              <ProtectedRoutes authRoles={[authenticated, admin, employee, projectManager]} />
+            }>
             <Route
               path="/"
-              element={auth?.currentUser?.role === admin ? <UsersList /> : <Dashboard />}
+              element={
+                auth?.currentUser?.role === admin ? (
+                  <UsersList />
+                ) : auth?.currentUser?.role === authenticated ? (
+                  <Unauthorized />
+                ) : (
+                  <Dashboard />
+                )
+              }
             />
+
             <Route path="/account" element={<Account />} />
           </Route>
 
