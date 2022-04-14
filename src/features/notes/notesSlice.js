@@ -23,8 +23,8 @@ export const getProjectAsync = createAsyncThunk('projects/getProject', async (id
   return response.data
 })
 
-export const getNotesAsync = createAsyncThunk('projects/getNotesAPI', async () => {
-  const response = await getNotesAPI()
+export const getNotesAsync = createAsyncThunk('projects/getNotesAPI', async (id) => {
+  const response = await getNotesAPI(id)
   return response
 })
 
@@ -56,7 +56,7 @@ export const notesSlice = createSlice({
       state.categories = action.payload
     },
     [getNotesAsync.fulfilled]: (state, action) => {
-      state.selectedProject = action.payload
+      state.notes = action.payload
     }
   }
 })
@@ -64,5 +64,6 @@ export const notesSlice = createSlice({
 export const { editProject, setFilterBy, setSortBy } = notesSlice.actions
 
 export const notesState = (state) => state.notes
+export const notes = (state) => state.notes.notes
 
 export default notesSlice.reducer

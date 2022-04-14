@@ -20,8 +20,7 @@ import { getProjectAsync } from '../projectSlice'
 import { MdOpenInNew } from 'react-icons/md'
 import { selectedProject } from '../projectSlice'
 import { Link as ReactLink } from 'react-router-dom'
-import { CategoryHeader } from './CategoryHeader'
-import { getNotesAsync } from 'features/notes/notesSlice'
+import CategoryTab from './category/CategoryTab'
 
 export function Project() {
   const dispatch = useDispatch()
@@ -30,7 +29,6 @@ export function Project() {
 
   useEffect(() => {
     dispatch(getProjectAsync(params.id))
-    dispatch(getNotesAsync())
   }, [])
 
   const url = process.env.REACT_APP_BACKEND_URL
@@ -108,9 +106,8 @@ export function Project() {
           </Tab>
         </TabList>
         <TabPanels>
-          <TabPanel>
-            <CategoryHeader />
-            Project Management
+          <TabPanel bgColor="#F8F8F8">
+            <CategoryTab />
           </TabPanel>
           <TabPanel>Development</TabPanel>
           <TabPanel>DevOps</TabPanel>

@@ -55,13 +55,15 @@ export function Account() {
     }
   }
 
+  const url = process.env.REACT_APP_BACKEND_URL
+
   return (
     <Box>
       <PageDescription title="Account" text="Edit your own profile" image={rocket} />
       <Container paddingTop="3rem">
         <Avatar
           name={currentUser.userName}
-          src={'https://projets-info-backend.herokuapp.com' + currentUser?.userPhoto?.url}
+          src={`${url}${currentUser?.userPhoto?.url}`}
           m="10px auto"
           h="200px"
           w="200px"

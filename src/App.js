@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom'
 import '@fontsource/poppins'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
 import { authState, getMeAsync } from './features/auth/authSlice'
 import { UsersList } from 'features/edit-user/components/UsersList'
 import { CreateProject } from 'features/Project/components/CreateProject'
