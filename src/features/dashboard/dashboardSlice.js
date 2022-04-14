@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getItems } from './api/getItems'
+import { getProjects } from './api/getProjects'
 
 const initialState = {
   projects: [],
@@ -7,8 +7,8 @@ const initialState = {
   filterBy: {}
 }
 
-export const fetchItems = createAsyncThunk('./api/getItems.js', async (payloadProp) => {
-  const response = await getItems(payloadProp)
+export const fetchItems = createAsyncThunk('projects/getProjects', async (payloadProp) => {
+  const response = await getProjects(payloadProp)
   return await response.data
 })
 
