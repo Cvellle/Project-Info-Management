@@ -1,6 +1,6 @@
 import API from '../../../services/axios'
 
-export const getProjecAPI = async (id) => {
+export const getProjectAPI = async (id) => {
   try {
     const response = await API.get(
       `/projects/${id}?populate=logo,project_manager,project_manager.userPhoto,employees,employees.userPhoto`

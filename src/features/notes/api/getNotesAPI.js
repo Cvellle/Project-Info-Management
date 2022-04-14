@@ -1,0 +1,10 @@
+import API from '../../../services/axios'
+
+export const getNotesAPI = async () => {
+  try {
+    const response = await API.get('/notes?populate=*')
+    return response.data.data
+  } catch (ex) {
+    throw Error(ex?.response?.data?.error?.message ?? 'Unknown error')
+  }
+}

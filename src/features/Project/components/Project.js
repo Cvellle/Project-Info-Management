@@ -20,6 +20,8 @@ import { getProjectAsync } from '../projectSlice'
 import { MdOpenInNew } from 'react-icons/md'
 import { selectedProject } from '../projectSlice'
 import { Link as ReactLink } from 'react-router-dom'
+import { CategoryHeader } from './CategoryHeader'
+import { getNotesAsync } from 'features/notes/notesSlice'
 
 export function Project() {
   const dispatch = useDispatch()
@@ -28,6 +30,7 @@ export function Project() {
 
   useEffect(() => {
     dispatch(getProjectAsync(params.id))
+    dispatch(getNotesAsync())
   }, [])
 
   const url = process.env.REACT_APP_BACKEND_URL
@@ -79,6 +82,7 @@ export function Project() {
           </Flex>
         </Flex>
       </PageDescription>
+
       <Tabs margin={{ base: '0', md: '2rem auto' }} maxW="1280px">
         <TabList bgColor="#EAEAEA" color="#8E8E8E">
           <Tab
@@ -104,7 +108,10 @@ export function Project() {
           </Tab>
         </TabList>
         <TabPanels>
-          <TabPanel>Project Management</TabPanel>
+          <TabPanel>
+            <CategoryHeader />
+            Project Management
+          </TabPanel>
           <TabPanel>Development</TabPanel>
           <TabPanel>DevOps</TabPanel>
         </TabPanels>

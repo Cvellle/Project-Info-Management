@@ -24,5 +24,6 @@ export const projectSlice = createSlice({
 export const { editProject } = projectSlice.actions
 
 export const selectedProject = (state) => state.project.selectedProject
+export const projectState = (state) => state.project
 
 export default projectSlice.reducer
