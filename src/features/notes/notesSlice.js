@@ -1,11 +1,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+
 import { getCategoriesAPI } from './api/getCategoriesAPI'
-import { getProjecAPI } from './api/getProjecAPI'
+import { getNotesAPI } from './api/getNotesAPI'
+import { getProjectAPI } from './api/getProjectAPI'
 
 const initialState = {
-  notes: null,
+  notes: [],
+  filtered: [],
   categories: [],
-  selectedProject: null
+  selectedProject: null,
+  filterBy: {},
+  sortBy: {}
 }
 
 export const getCatgoriesAsync = createAsyncThunk('./api/getCategoriesAPI.js', async () => {
@@ -14,20 +19,39 @@ export const getCatgoriesAsync = createAsyncThunk('./api/getCategoriesAPI.js', a
 })
 
 export const getProjectAsync = createAsyncThunk('projects/getProject', async (id) => {
-  const response = await getProjecAPI(id)
+  const response = await getProjectAPI(id)
   return response.data
 })
 
-export const getNotesAsync = createAsyncThunk('projects/getProject', async (id) => {
-  const response = await getProjecAPI(id)
-  return response.data
+export const getNotesAsync = createAsyncThunk('projects/getNotesAPI', async () => {
+  const response = await getNotesAPI()
+  return response
 })
 
 export const notesSlice = createSlice({
   name: 'notes',
   initialState,
-  reducers: {},
+  reducers: {
+    setFilterBy: (state, action) => {
+      state.filterBy = {
+        ...state.filterBy,
+        [action.payload.filterProp]: action.payload.filterBy
+      }
+    },
+    setSortBy: (state, action) => {
+      state.sortBy = {
+        ...state.sortBy,
+        sortKind: action.payload.sortKind,
+        sortBy: action.payload.sortBy
+      }
+    }
+  },
   extraReducers: {
+    [getNotesAsync.fulfilled]: (state, action) => {
+      state.notes = action.payload
+      state.filtered = action.payload
+      console.log(state.filtered)
+    },
     [getCatgoriesAsync.fulfilled]: (state, action) => {
       state.categories = action.payload
     },
@@ -37,7 +61,7 @@ export const notesSlice = createSlice({
   }
 })
 
-export const { editProject } = notesSlice.actions
+export const { editProject, setFilterBy, setSortBy } = notesSlice.actions
 
 export const notesState = (state) => state.notes
 

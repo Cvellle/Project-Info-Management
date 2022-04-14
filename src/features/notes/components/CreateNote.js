@@ -45,10 +45,6 @@ export function CreateNote() {
     dispatch(getProjectAsync(params.id))
   }, [])
 
-  useEffect(() => {
-    console.log(categories)
-  }, [categories])
-
   // input overlay click
   const hiddenFileInput = useRef(null)
   console.log(hiddenFileInput)
@@ -63,6 +59,7 @@ export function CreateNote() {
     // create body object
     let dataBody = {
       ...data,
+      files: null,
       category: categories.data.find((el) => el?.attributes?.name == data.category).id,
       project: selectedProject?.id,
       author: selectedProject?.attributes?.project_manager?.data?.id
@@ -81,7 +78,7 @@ export function CreateNote() {
     // if success, navigate to the project page
     const res = await createNoteAPI(dataBody)
     if (res && !res.error) {
-      navigate('project/' + params.id, { replace: true })
+      navigate('/project/' + params.id, { replace: true })
     }
     if (res.error) {
       setRegistrationError(res.error.message)
@@ -122,15 +119,15 @@ export function CreateNote() {
             Note info
           </Heading>
           <Flex
-            pl={{ base: '0', md: '-84px' }}
-            justifyContent={{ md: 'center' }}
+            pl={{ base: '0', md: '84px' }}
+            justifyContent={{ base: 'center', md: 'auto' }}
             w={{ base: '100%', md: 'auto' }}>
             <form
               onSubmit={handleSubmit(onSubmit)}
               w={{ base: '100vw', md: '624px' }}
               d="flex"
               flex-wrap="wrap"
-              m="auto">
+              margin={'auto'}>
               <VStack spacing="3.5">
                 <FormControl isInvalid={errors.username} isRequired>
                   <FormLabel htmlFor="title" padding="0" margin="0">

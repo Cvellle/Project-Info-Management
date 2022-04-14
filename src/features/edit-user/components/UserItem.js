@@ -1,13 +1,10 @@
 import { Flex, Heading, Text, Image, Center, Box } from '@chakra-ui/react'
 // import { apiURL } from 'services/axios'
 import newTab from 'assets/new-tab.png'
-import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
-import { getOneUserAsync } from '../usersSlice'
 
 export function UserItem(props) {
-  const dispatch = useDispatch()
   const navigate = useNavigate()
   let current = props?.item
 
@@ -17,10 +14,7 @@ export function UserItem(props) {
   }
 
   const navigateFunction = async () => {
-    const res = await dispatch(getOneUserAsync(current?.id))
-    if (res) {
-      navigate('edit-user/' + current?.id)
-    }
+    navigate('edit-user/' + current?.id)
   }
 
   return (
