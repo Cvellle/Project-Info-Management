@@ -1,12 +1,17 @@
 import API from '../../../services/axios'
 
-export const getNotesAPI = async (id) => {
+export const getNotesAPI = async (id, name, sort) => {
   try {
     const params = new URLSearchParams([
-      ['populate', ['notes', 'notes.author', 'notes.author.userPhoto']]
+      ['populate', ['author', 'author.userPhoto']],
+      ['filters[project][id][$eq]', id],
+      ['filters[title][$containsi]', name],
+      ['sort[0]', sort]
     ])
-    const response = await API.get(`projects/${id}`, { params })
-    return response.data.data.attributes.notes
+
+    const response = await API.get(`notes`, { params })
+
+    return response.data
   } catch (ex) {
     throw Error(ex?.response?.data?.error?.message ?? 'Unknown error')
   }

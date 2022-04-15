@@ -1,24 +1,26 @@
 import { CategoryHeader } from './CategoryHeader'
 import { useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { getNotesAsync } from 'features/notes/notesSlice'
-import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { notesState, notes } from 'features/notes/notesSlice'
+import { Spinner, Center } from '@chakra-ui/react'
+
 import CategoryNotes from './CategoryNotes'
-import { notes } from 'features/notes/notesSlice'
 
 const CategoryTab = () => {
   const { id } = useParams()
-  const dispatch = useDispatch()
   const categoryNotes = useSelector(notes)
-
-  useEffect(() => {
-    dispatch(getNotesAsync(id))
-  }, [])
+  const { status } = useSelector(notesState)
 
   return (
     <>
       <CategoryHeader id={id} />
-      {categoryNotes && <CategoryNotes notes={categoryNotes?.data} />}
+      {status === 'pending' ? (
+        <Center padding="1rem">
+          <Spinner size="xl" />
+        </Center>
+      ) : (
+        categoryNotes && <CategoryNotes notes={categoryNotes?.data} />
+      )}
     </>
   )
 }
