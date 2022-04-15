@@ -1,7 +1,6 @@
 import API from '../../../services/axios'
 
 export const getNotesAPI = async (id, name, sort, category) => {
-  console.log(category)
   try {
     const params = new URLSearchParams([
       ['populate', ['author', 'author.userPhoto']],

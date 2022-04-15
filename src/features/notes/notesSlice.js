@@ -27,7 +27,6 @@ export const getNotesAsync = createAsyncThunk(
   'projects/getNotesAPI',
   async ({ id, name = '', sort = 'createdAt:desc', category }) => {
     const response = await getNotesAPI(id, name, sort, category)
-    console.log(response)
     return response
   }
 )
