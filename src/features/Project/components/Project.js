@@ -97,9 +97,10 @@ export function Project() {
       </PageDescription>
 
       <Tabs margin={{ base: '0', md: '2rem auto' }} maxW="1280px">
-        <TabList bgColor="#EAEAEA" color="#8E8E8E">
+        <TabList bgColor="#EAEAEA" color="#8E8E8E" d="flex" flexWrap="wrap">
           {categories?.data.map((category) => (
             <Tab
+              minWidth={{ base: '100%', md: 'auto' }}
               key={category.id}
               _selected={{ bgColor: '#DDDDDD', color: 'black' }}
               padding={{ base: '1rem 0.8rem', md: '1rem 1.5rem' }}>
