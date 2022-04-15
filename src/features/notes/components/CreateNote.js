@@ -39,7 +39,6 @@ export function CreateNote() {
   const notesSelector = useSelector(notesState)
   // states from store
   const { selectedProject, categories } = notesSelector
-  console.log(selectedProject)
 
   useEffect(() => {
     dispatch(getProjectAsync(params.id))
@@ -52,7 +51,6 @@ export function CreateNote() {
   const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
-    console.log(selectedProject)
     // create body object
     let dataBody = {
       ...data,
@@ -61,7 +59,6 @@ export function CreateNote() {
       project: selectedProject?.id,
       author: selectedProject?.attributes?.project_manager?.data?.id
     }
-    console.log(dataBody)
 
     // check if file input is not empty, and spread body object
     if (data.files.length) {

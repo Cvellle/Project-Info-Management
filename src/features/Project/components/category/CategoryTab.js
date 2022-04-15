@@ -17,6 +17,7 @@ const CategoryTab = ({ category }) => {
   const { status } = useSelector(notesState)
 
   const [notesLocal, setNotesLocal] = useState()
+  const [filtered, setFiltered] = useState()
 
   useEffect(() => {
     a()
@@ -28,15 +29,17 @@ const CategoryTab = ({ category }) => {
     setNotesLocal(b.payload)
   }
 
+  let toMap = filtered ? filtered : notesLocal
+
   return (
     <>
-      <CategoryHeader id={id} category={category} />
+      <CategoryHeader id={id} category={category} valueChangeHandler={setFiltered} />
       {status === 'pending' ? (
         <Center padding="1rem">
           <Spinner size="xl" />
         </Center>
       ) : (
-        notesLocal && <CategoryNotes notes={notesLocal?.data} />
+        notesLocal && <CategoryNotes notes={toMap?.data} />
       )}
     </>
   )

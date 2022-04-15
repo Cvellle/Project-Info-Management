@@ -5,20 +5,35 @@ import { Link as ReactLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getNotesAsync } from 'features/notes/notesSlice'
 import { selectedProject } from 'features/Project/projectSlice'
+import { authState } from 'features/auth/authSlice'
+import { projectManager } from 'shared/constants'
 
-export function CategoryHeader({ category }) {
+export function CategoryHeader({ category, valueChangeHandler }) {
+  //hooks
+  const dispatch = useDispatch()
+  // local states
   const [name, setName] = useState('')
   const [sort, setSort] = useState('createdAt:desc')
+  // selectors
   const project = useSelector(selectedProject)
-
+  const authSelector = useSelector(authState)
+  // redux states
+  const { currentUser } = authSelector
+  // handlers
   const handleChange = (event) => setName(event.target.value)
   const selectSort = (event) => setSort(event.target.value)
-  const dispatch = useDispatch()
+
+  const filterResults = async () => {
+    let notesResponse = await dispatch(
+      getNotesAsync({ id: project.id, name, sort: sort, category })
+    )
+    // two way binding - send results to upper component - CategoryTab
+    valueChangeHandler(notesResponse.payload)
+  }
 
   useEffect(() => {
-    console.log('s')
     const timeoutID = setTimeout(() => {
-      dispatch(getNotesAsync({ id: project.id, name, sort, category }))
+      filterResults()
     }, 500)
 
     return () => {
@@ -59,9 +74,11 @@ export function CategoryHeader({ category }) {
         to="add-note"
         _hover={{ textDecoration: 'none' }}
         ml={{ base: 'none', md: 'auto' }}>
-        <Button colorScheme="teal" fontWeight="medium" size="sm">
-          ADD NOTE
-        </Button>
+        {currentUser?.role === projectManager && (
+          <Button colorScheme="teal" fontWeight="medium" size="sm">
+            ADD NOTE
+          </Button>
+        )}
       </Link>
     </Flex>
   )

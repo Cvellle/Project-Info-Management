@@ -8,6 +8,8 @@ export function Info({ title, text, image }) {
         alt="employee"
         src={image}
         boxSize={{ base: '60px', lg: '75px' }}
+        fallbackSrc="https://via.placeholder.com/150"
+        borderRadius="50%"
       />
       <Center>
         <Flex gap="0.4rem" flexDirection="column">
