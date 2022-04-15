@@ -42,8 +42,12 @@ export function CategoryHeader({ category, valueChangeHandler }) {
   }, [name, project, sort])
 
   return (
-    <Flex justifyContent={{ base: 'center', md: 'flex-start' }} alignItems="center" gap="1rem">
-      <InputGroup justifySelf="flex-end" width={{ base: '80%', md: '245px' }}>
+    <Flex
+      justifyContent={{ base: 'center', md: 'flex-start' }}
+      alignItems="center"
+      gap="1rem"
+      flexWrap="wrap">
+      <InputGroup justifySelf="flex-end" width={{ base: '100%', md: '245px' }}>
         <InputLeftElement pointerEvents="none" height="100%">
           <DiReact color="var(--chakra-colors-cyan-400)" />
         </InputLeftElement>
@@ -62,7 +66,7 @@ export function CategoryHeader({ category, valueChangeHandler }) {
         name="sort"
         autoComplete="current-role"
         defaultValue={''}
-        w="245px"
+        width={{ base: '100%', md: '245px' }}
         onChange={selectSort}>
         <option value="createdAt:desc">{'Most recent'}</option>
         <option value="createdAt:asc">{'Least recent'}</option>
@@ -73,9 +77,16 @@ export function CategoryHeader({ category, valueChangeHandler }) {
         size="sm"
         to="add-note"
         _hover={{ textDecoration: 'none' }}
-        ml={{ base: 'none', md: 'auto' }}>
+        ml={{ base: 'none', md: 'auto' }}
+        width={{ base: '100%', md: '94px' }}
+        height={{ base: '40px', md: '28px' }}>
         {currentUser?.role === projectManager && (
-          <Button colorScheme="teal" fontWeight="medium" size="sm">
+          <Button
+            colorScheme="teal"
+            fontWeight="medium"
+            size="sm"
+            width={{ base: '100%' }}
+            height={{ base: '100%' }}>
             ADD NOTE
           </Button>
         )}

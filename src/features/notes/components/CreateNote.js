@@ -234,7 +234,8 @@ export function CreateNote() {
                 d="block"
                 mt="6"
                 ml="auto"
-                mr={{ base: '0', md: '-191px' }}>
+                mr={{ base: 'auto', md: '-191px' }}
+                mb={{ base: '50px', md: '0' }}>
                 SAVE NOTE
               </Button>
             </form>
