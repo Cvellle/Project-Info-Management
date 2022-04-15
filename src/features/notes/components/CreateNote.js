@@ -10,11 +10,12 @@ import {
   Input,
   Select,
   Box,
-  VStack
+  VStack,
+  Link
 } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, NavLink } from 'react-router-dom'
 
 import { PageDescription } from 'components/PageDescription'
 import rocket from '../../../assets/rocket.png'
@@ -98,9 +99,11 @@ export function CreateNote() {
         image={rocket}></PageDescription>
       <Box margin={{ base: '0', md: '2rem auto' }} maxW="1280px">
         <Flex bgColor="#EAEAEA" color="#8E8E8E" alignItems="center" minH="75px">
-          <Button bgColor="#EAEAEA" color="black">
-            {'< Go back'}
-          </Button>
+          <Link as={NavLink} to={`/project/${params.id}`}>
+            <Button bgColor="#EAEAEA" color="black">
+              {'< Go back'}
+            </Button>
+          </Link>
           <Heading as="h4" fontSize={['sm', '24px']} fontWeight="600" color="black">
             Create a new Note
           </Heading>
