@@ -1,25 +1,25 @@
 import { ChakraProvider } from '@chakra-ui/react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import '@fontsource/poppins'
-import { Dashboard } from './features/dashboard/components/Dashboard'
-import { Register } from './features/auth/components/Register'
-import { Login } from './features/auth/components/Login'
-import { NotAuthenticated } from 'routes/NotAuthenticated'
-import { Unauthorized } from 'components/Unauthorized'
-import { NotFound } from 'components/NotFound'
-import theme from './theme/theme'
-import ProtectedRoutes from './routes/ProtectedRoute'
-import Header from './components/Header'
-import { admin, employee, projectManager } from 'shared/constants'
-import { Project } from 'features/Project/components/Project'
-import { EditUser } from 'features/edit-user/components/EditUser'
-import { getMeAsync, authState } from './features/auth/authSlice'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { authState, getMeAsync } from './features/auth/authSlice'
 import { UsersList } from 'features/edit-user/components/UsersList'
 import { CreateProject } from 'features/Project/components/CreateProject'
 import { Account } from 'features/account/components/Account'
 import { CreateNote } from 'features/notes/components/CreateNote'
+import EditProject from 'features/Project/components/EditProject'
+import { Dashboard } from './features/dashboard/components/Dashboard'
+import { Register } from './features/auth/components/Register'
+import { Login } from './features/auth/components/Login'
+import { NotFound } from 'components/NotFound'
+import theme from './theme/theme'
+import ProtectedRoutes from './routes/ProtectedRoute'
+import Header from './components/Header'
+import { admin, authenticated, employee, projectManager } from 'shared/constants'
+import { Project } from 'features/Project/components/Project'
+import { EditUser } from 'features/edit-user/components/EditUser'
+import { Unauthorized } from 'components/Unauthorized'
 
 function App() {
   const dispatch = useDispatch()
@@ -36,16 +36,26 @@ function App() {
       <div>
         <Header />
         <Routes>
-          <Route element={<NotAuthenticated />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-          <Route element={<ProtectedRoutes authRoles={[admin, employee, projectManager]} />}>
+          <Route
+            element={
+              <ProtectedRoutes authRoles={[authenticated, admin, employee, projectManager]} />
+            }>
             <Route
               path="/"
-              element={auth?.currentUser?.role === admin ? <UsersList /> : <Dashboard />}
+              element={
+                auth?.currentUser?.role === admin ? (
+                  <UsersList />
+                ) : auth?.currentUser?.role === authenticated ? (
+                  <Unauthorized />
+                ) : (
+                  <Dashboard />
+                )
+              }
             />
+
             <Route path="/account" element={<Account />} />
           </Route>
 
@@ -56,6 +66,10 @@ function App() {
             </Route>
           </Route>
 
+          <Route element={<ProtectedRoutes authRoles={[projectManager]} />}>
+            <Route path="/project/:id/edit" element={<EditProject />} />
+          </Route>
+
           <Route element={<ProtectedRoutes authRoles={[employee, projectManager]} />}>
             <Route path="/project/:id/add-note" element={<CreateNote />} />
           </Route>
@@ -64,9 +78,7 @@ function App() {
             <Route path="/edit-user/:id" element={<EditUser />} />
           </Route>
 
-          <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/404" element={<NotFound />} />
-          <Route path="*" element={<Navigate to="404" />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </ChakraProvider>

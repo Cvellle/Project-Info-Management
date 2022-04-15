@@ -12,62 +12,75 @@ import {
   Box,
   VStack
 } from '@chakra-ui/react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import { PageDescription } from 'components/PageDescription'
 import rocket from '../../../assets/rocket.png'
 import { MdOpenInNew } from 'react-icons/md'
 import { useForm } from 'react-hook-form'
-import { getCatgoriesAsync, notesState } from '../notesSlice'
-import { getProjectAsync, selectedProject } from 'features/Project/projectSlice'
+import { getProjectAsync, notesState } from '../notesSlice'
+import { createNoteAPI } from '../api/createNoteAPI'
+import { uploadFilesAPI } from '../api/uploadFilesAPI'
 
 export function CreateNote() {
+  // react-hooks-form
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting }
   } = useForm()
-  //   const navigate = useNavigate()
+  // additional hooks
   const dispatch = useDispatch()
   const params = useParams()
-
-  const project = useSelector(selectedProject)
+  const navigate = useNavigate()
+  // selectors
   const notesSelector = useSelector(notesState)
-
-  const { notes } = notesSelector
-
-  useEffect(() => {
-    notes && console.log(notes)
-  }, [notes])
+  // states from store
+  const { selectedProject, categories } = notesSelector
+  console.log(selectedProject)
 
   useEffect(() => {
-    dispatch(getCatgoriesAsync())
     dispatch(getProjectAsync(params.id))
   }, [])
 
+  // input overlay click
   const hiddenFileInput = useRef(null)
+  console.log(hiddenFileInput)
 
-  const handleClick = () => {
-    hiddenFileInput.current.click()
-  }
-
-  //   const [registrationError, setRegistrationError] = useState(false)
+  const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
-    console.log(data)
-    // let dataBody = {
-    //   data: { ...data, role: { id: roleId } }
-    // }
+    console.log(selectedProject)
+    // create body object
+    let dataBody = {
+      ...data,
+      files: null,
+      category: categories.data.find((el) => el?.attributes?.name == data.category).id,
+      project: selectedProject?.id,
+      author: selectedProject?.attributes?.project_manager?.data?.id
+    }
+    console.log(dataBody)
 
-    // const res = await updateUser(params.id, dataBody)
-    // if (res && !res.error) {
-    //   //   navigate('/', { replace: true })
-    // }
-    // if (res.error) {
-    //   setRegistrationError(res.error.message)
-    // }
+    // check if file input is not empty, and spread body object
+    if (data.files.length) {
+      const filesId = await uploadFilesAPI(data.files[0])
+      filesId &&
+        (dataBody = {
+          ...dataBody,
+          files: { id: filesId }
+        })
+    }
+
+    // if success, navigate to the project page
+    const res = await createNoteAPI(dataBody)
+    if (res && !res.error) {
+      navigate('/project/' + params.id, { replace: true })
+    }
+    if (res.error) {
+      setRegistrationError(res.error.message)
+    }
   }
 
   return (
@@ -75,7 +88,7 @@ export function CreateNote() {
       <PageDescription
         title={
           <Flex gap="1rem">
-            {project?.attributes?.name}
+            {selectedProject?.attributes?.name}
             <Flex alignItems="center">
               <IconButton icon={<MdOpenInNew />} fontSize="md" bgColor="transparent" size="xs" />
               <Text color="gray.600" fontSize="sm">
@@ -84,33 +97,48 @@ export function CreateNote() {
             </Flex>
           </Flex>
         }
-        text={project?.attributes?.description}
+        text={selectedProject?.attributes?.description}
         image={rocket}></PageDescription>
       <Box margin={{ base: '0', md: '2rem auto' }} maxW="1280px">
         <Flex bgColor="#EAEAEA" color="#8E8E8E" alignItems="center" minH="75px">
-          <Button bgColor="#EAEAEA">{String.fromCharCode(8592)} Go back</Button>
-          <Heading as="h4" fontSize={['sm', 'lg', 'xl']}>
+          <Button bgColor="#EAEAEA" color="black">
+            {'< Go back'}
+          </Button>
+          <Heading as="h4" fontSize={['sm', '24px']} fontWeight="600" color="black">
             Create a new Note
           </Heading>
         </Flex>
-        <Flex pl="45px" flexWrap={'wrap'}>
+        <Flex
+          pl={{ base: '0', md: '45px' }}
+          flexWrap={'wrap'}
+          margin={{ base: '0', md: '49px 0' }}
+          justifyContent={{ base: 'center', md: 'unset' }}>
           <Heading as="h5" fontSize={['sm', 'lg', 'xl']}>
             Note info
           </Heading>
-          <Flex pl="84px" justifyContent={{ md: 'center' }}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+          <Flex
+            pl={{ base: '0', md: '84px' }}
+            justifyContent={{ base: 'center', md: 'auto' }}
+            w={{ base: '100%', md: 'auto' }}>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              w={{ base: '100vw', md: '624px' }}
+              d="flex"
+              flex-wrap="wrap"
+              margin={'auto'}>
               <VStack spacing="3.5">
                 <FormControl isInvalid={errors.username} isRequired>
                   <FormLabel htmlFor="title" padding="0" margin="0">
                     Note title
                   </FormLabel>
                   <Input
+                    w={{ base: 'auto', md: '624px' }}
                     id="title"
                     placeholder="Hello"
                     autoComplete="title"
                     {...register('title', {
-                      required: 'This is required',
-                      minLength: { value: 4, message: 'Minimum length should be 4' }
+                      required: 'This is required'
+                      // minLength: { value: 4, message: 'Minimum length should be 4' }
                     })}
                     defaultValue={''}
                   />
@@ -121,12 +149,13 @@ export function CreateNote() {
                     Note description
                   </FormLabel>
                   <Input
+                    w={{ base: 'auto', md: '624px' }}
                     id="description"
                     placeholder="Hello"
                     autoComplete="description"
                     {...register('description', {
-                      required: 'This is required',
-                      minLength: { value: 4, message: 'Minimum length should be 4' }
+                      required: 'This is required'
+                      // minLength: { value: 4, message: 'Minimum length should be 4' }
                     })}
                     defaultValue={''}
                   />
@@ -142,66 +171,71 @@ export function CreateNote() {
                     {...register('category')}
                     autoComplete="current-category"
                     isInvalid={errors.category}
-                    defaultValue={''}
-                    //   onChange={(e) => setCategoryFunction(e)}
-                  >
-                    {
-                      //   categories &&
-                      //     categories.map((category) => (
-                      //       <option key={category.id} value={category.name}>
-                      //         {category.name}
-                      //       </option>
-                      //     ))
-                    }
+                    defaultValue={''}>
+                    <option value="" hidden></option>
+                    {categories?.data?.map((note) => {
+                      let noteAttr = note.attributes
+                      return (
+                        <option key={note.id} value={noteAttr.name}>
+                          {noteAttr.name}
+                        </option>
+                      )
+                    })}
                   </Select>
                 </FormControl>
 
                 <FormControl
-                  isInvalid={errors.email}
-                  isRequired
                   position={'relative'}
                   h="50px"
-                  w="127px"
+                  w="100%"
                   d="block"
-                  cursor="pointer">
-                  <Input
-                    t="0"
-                    l="0"
-                    position={'absolute'}
-                    zIndex="2"
-                    opacity="0"
-                    cursor="pointer"
-                    w="100%"
-                    h="100%"
-                    id="files"
-                    display="none"
-                    placeholder="Upload files"
-                    autoComplete="files"
-                    type="file"
-                    accept={'image/*'}
-                    {...register('files', {
-                      required: 'This is required',
-                      minLength: { value: 4, message: 'Minimum length should be 4' }
-                    })}
-                    defaultValue={''}
-                    ref={hiddenFileInput}
-                  />
-                  <Button
-                    onClick={handleClick}
-                    position={'absolute'}
-                    w="100%"
-                    h="100%"
-                    bgColor="#EAEAEA"
-                    t="0"
-                    l="0">
-                    Upload files
-                  </Button>
-                  <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
+                  isInvalid={errors.files}
+                  mr="auto">
+                  <Box w="180px" cursor="pointer">
+                    <Input
+                      type="file"
+                      {...register('files')}
+                      accept={
+                        'image/*,.pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                      }
+                      // ref={hiddenFileInput}
+                      // placeholder="Choose Files"
+                      // t="0"
+                      // l="0"
+                      // position={'absolute'}
+                      // zIndex="2"
+                      // opacity="0"
+                      // cursor="pointer"
+                      // w="0px"
+                      // h="0%"
+                    />
+                    {/* <Button
+                      onClick={handleClick}
+                      position={'absolute'}
+                      w="180px"
+                      h="100%"
+                      bgColor="#EAEAEA"
+                      t="0"
+                      l="0">
+                      Upload files
+                    </Button> */}
+                  </Box>
+                  <FormErrorMessage>{errors.files && errors.files.message}</FormErrorMessage>
                 </FormControl>
-                {/* {registrationError && <Box color="red.500">{registrationError} */}
+
+                {registrationError && <Box color="red.500">{registrationError}</Box>}
               </VStack>
-              <Button colorScheme="teal" isLoading={isSubmitting} type="submit" width="100%" mt="6">
-                Update User
+              <Button
+                colorScheme="teal"
+                isLoading={isSubmitting}
+                type="submit"
+                width="149px"
+                h="49px"
+                d="block"
+                mt="6"
+                ml="auto"
+                mr={{ base: '0', md: '-191px' }}>
+                SAVE NOTE
               </Button>
             </form>
           </Flex>

@@ -4,81 +4,61 @@ import {
   FormLabel,
   Button,
   Input,
+  Select,
   Container,
   VStack,
   Box,
-  Avatar
+  Spinner,
+  Center
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { updateMeAPI } from '../api/updateMeAPI'
-import { authState, getMeAsync } from 'features/auth/authSlice'
-import { PageDescription } from 'components/PageDescription'
-import rocket from 'assets/rocket.png'
-import FileInput from 'components/UI/FileInput'
-import { uploadProfileImageAPI } from '../api/uploadProfileImageAPI'
+import { updateUser } from '../api/updateUserAPI'
+import { editUser, selectUsers } from '../usersSlice'
 
-export function Account() {
+export function EditUserForm() {
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting }
   } = useForm()
+  const navigate = useNavigate()
   const dispatch = useDispatch()
+  const params = useParams()
+  const selectedUser = useSelector(selectUsers).selectedUser
+  const roles = useSelector(selectUsers).roles
 
-  const authSelector = useSelector(authState)
-  const { currentUser } = authSelector
+  const [roleId, setRoleId] = useState()
+
+  const setRoleFunction = (e) => {
+    setRoleId(e.target.selectedIndex + 1)
+  }
 
   const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
     let dataBody = {
-      data: { ...data }
+      data: { ...data, role: { id: roleId } }
     }
 
-    // check if file input is not empty, and spread body object
-    if (data.logo.length) {
-      const logoId = await uploadProfileImageAPI(data.logo[0])
-      dataBody = {
-        data: { ...data, userPhoto: { id: logoId } }
-      }
-    }
-    // final update api call
-    const res = await updateMeAPI(currentUser.id, dataBody)
+    const res = await updateUser(params.id, dataBody)
     if (res && !res.error) {
-      dispatch(getMeAsync())
+      dispatch(editUser(data))
+      navigate('/', { replace: true })
     }
     if (res.error) {
       setRegistrationError(res.error.message)
     }
   }
 
-  const url = process.env.REACT_APP_BACKEND_URL
-
   return (
-    <Box>
-      <PageDescription title="Account" text="Edit your own profile" image={rocket} />
-      <Container paddingTop="3rem">
-        <Avatar
-          name={currentUser.userName}
-          src={`${url}${currentUser?.userPhoto?.url}`}
-          m="10px auto"
-          h="200px"
-          w="200px"
-          d="block"
-        />
+    <Container paddingTop="3rem">
+      {selectedUser?.role ? (
         <form onSubmit={handleSubmit(onSubmit)}>
           <VStack spacing="3.5">
-            <FormControl isInvalid={errors.logo}>
-              <FormLabel htmlFor="logo" padding="0" margin="0">
-                Logo
-              </FormLabel>
-              <FileInput accept="image/*" name="logo" register={register} requiredProp={false} />
-              <FormErrorMessage>{errors.logo && errors.logo.message}</FormErrorMessage>
-            </FormControl>
-
             <FormControl isInvalid={errors.username} isRequired>
               <FormLabel htmlFor="username" padding="0" margin="0">
                 Username
@@ -91,7 +71,7 @@ export function Account() {
                   required: 'This is required',
                   minLength: { value: 4, message: 'Minimum length should be 4' }
                 })}
-                defaultValue={currentUser?.username ?? ''}
+                defaultValue={selectedUser?.username ?? ''}
               />
               <FormErrorMessage>{errors.username && errors.username.message}</FormErrorMessage>
             </FormControl>
@@ -108,9 +88,28 @@ export function Account() {
                   required: 'This is required',
                   minLength: { value: 4, message: 'Minimum length should be 4' }
                 })}
-                defaultValue={currentUser?.email ?? ''}
+                defaultValue={selectedUser?.email ?? ''}
               />
               <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl isInvalid={errors.role} isRequired>
+              <FormLabel htmlFor="role" padding="0" margin="0">
+                Role
+              </FormLabel>
+              <Select
+                {...register('role')}
+                autoComplete="current-role"
+                isInvalid={errors.role}
+                defaultValue={selectedUser?.role ?? ''}
+                onChange={(e) => setRoleFunction(e)}>
+                {roles &&
+                  roles.map((role) => (
+                    <option key={role.id} value={role.name}>
+                      {role.name}
+                    </option>
+                  ))}
+              </Select>
             </FormControl>
 
             {registrationError && <Box color="red.500">{registrationError}</Box>}
@@ -119,7 +118,11 @@ export function Account() {
             Update User
           </Button>
         </form>
-      </Container>
-    </Box>
+      ) : (
+        <Center h="60vh">
+          <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
+        </Center>
+      )}
+    </Container>
   )
 }

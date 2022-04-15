@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { registerAPI } from './api/registerAPI'
 import { loginUser } from './api/loginAPI'
 import { getMeAPI } from './api/getMeAPI'
+import { resetProjects } from 'features/dashboard/dashboardSlice'
 
 const initialState = {
   currentUser: null,
@@ -34,15 +35,18 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     setCurrentUser: (state, action) => {
-      state = {
-        ...state,
-        currentUser: {
-          ...state.currentUser,
-          role: action.payload
-        }
+      state.currentUser = {
+        id: action.payload.id,
+        username: action.payload.username,
+        email: action.payload.email,
+        blocked: action.payload.blocked,
+        confirmed: action.payload.confirmed,
+        role: action.payload.role?.name,
+        userPhoto: action.payload.userPhoto
       }
     },
-    logout: (state) => {
+    logout: (state, { dispatch }) => {
+      dispatch(resetProjects())
       state = initialState
       return state
     }
@@ -60,7 +64,6 @@ export const authSlice = createSlice({
       state.currentUser = action.payload.user
     },
     [getMeAsync.fulfilled]: (state, action) => {
-      console.log(action.payload)
       state.currentUser = {
         ...state.currentUser,
         id: action.payload.id,

@@ -5,27 +5,23 @@ import { useDispatch, useSelector } from 'react-redux'
 import { dashboardState, fetchItems } from '../dashboardSlice'
 import { ProjectItem } from './ProjectItem'
 import { authState } from 'features/auth/authSlice'
+import { useDidUpdate } from 'hooks/useDidUpdate'
 
 export function Projects() {
   const dispatch = useDispatch()
   const authSelector = useSelector(authState)
   const dashboardSelector = useSelector(dashboardState)
   const { filterBy, projects } = dashboardSelector
+  const { currentUser } = authSelector
   // local states
-  const [filteredProjects, setFilteredProjects] = useState()
   const [searchedProjects, setSearchedProjects] = useState()
 
   useEffect(() => {
-    dispatch(fetchItems())
+    dispatch(fetchItems({ role: currentUser.role, id: currentUser.id }))
   }, [])
 
-  useEffect(() => {
-    projects.length && filterProjectsFunction()
-  }, [projects])
-
-  useEffect(() => {
-    // search users by input - set new local state
-    let finalFilter = filteredProjects?.filter((project) => {
+  const filterFunction = () => {
+    let finalFilter = projects?.filter((project) => {
       if (
         dashboardSelector.filterBy?.name &&
         !project.attributes.name.includes(dashboardSelector.filterBy?.name)
@@ -35,20 +31,11 @@ export function Projects() {
       return true
     })
     setSearchedProjects(finalFilter)
-  }, [filterBy])
-
-  // initial projects filter by current user
-  const filterProjectsFunction = () => {
-    let finalFilteredValue = projects?.filter((project) => {
-      let projectEmails = project?.attributes.employees.data.map(
-        (employee) => employee.attributes.email
-      )
-      return projectEmails.includes(authSelector.currentUser.email)
-    })
-    setFilteredProjects(finalFilteredValue)
   }
 
-  let mapArray = searchedProjects ? searchedProjects : filteredProjects
+  useDidUpdate(filterFunction, [filterBy])
+
+  let mapArray = searchedProjects ? searchedProjects : projects
 
   return (
     <Grid

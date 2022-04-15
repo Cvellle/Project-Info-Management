@@ -1,8 +1,8 @@
 import API from 'services/axios'
 
-export const createProject = async (data) => {
+export const updateProjectAPI = async (projectId, data) => {
   try {
-    const response = await API.post('/projects', { data })
+    const response = await API.put(`/projects/${projectId}`, { data })
     const { id } = response.data.data
     return id
   } catch (ex) {
