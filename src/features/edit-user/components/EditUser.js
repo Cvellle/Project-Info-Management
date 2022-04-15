@@ -23,7 +23,7 @@ export function EditUser() {
   useEffect(() => {
     if (selectedUser?.role !== '') {
       const currentRoleObject = roles.find((roleObj) => roleObj.name == selectedUser.role)
-      setRoleId(currentRoleObject.id)
+      setRoleId(currentRoleObject?.id)
     }
   }, [selectedUser])
 

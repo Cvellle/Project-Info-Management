@@ -14,22 +14,32 @@ import {
 } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+// import { useParams } from 'react-router-dom'
 import { PageDescription } from 'components/PageDescription'
-import { getProjectAsync } from '../projectSlice'
+// import { getProjectAsync } from '../projectSlice'
 import { MdOpenInNew } from 'react-icons/md'
 import { selectedProject } from '../projectSlice'
 import { Link as ReactLink } from 'react-router-dom'
 import CategoryTab from './category/CategoryTab'
+import { getCatgoriesAsync, notesState } from 'features/notes/notesSlice'
 
 export function Project() {
+  // hooks
   const dispatch = useDispatch()
-  const params = useParams()
+  // const params = useParams()
+  // selectors
+  const notesSelector = useSelector(notesState)
   const project = useSelector(selectedProject)
+  // states
+  const { categories } = notesSelector
 
   useEffect(() => {
-    dispatch(getProjectAsync(params.id))
+    dispatch(getCatgoriesAsync())
   }, [])
+
+  useEffect(() => {
+    console.log(categories)
+  }, [categories])
 
   const url = process.env.REACT_APP_BACKEND_URL
 
@@ -106,11 +116,19 @@ export function Project() {
           </Tab>
         </TabList>
         <TabPanels>
-          <TabPanel bgColor="#F8F8F8">
-            <CategoryTab />
+          {categories?.data.map((category) => (
+            <TabPanel key={category.id} bgColor="#F8F8F8">
+              <CategoryTab category={category.id} />
+            </TabPanel>
+          ))}
+
+          {/* <TabPanel bgColor="#F8F8F8">
+            <CategoryTab category="Projectxx Management" />
           </TabPanel>
-          <TabPanel>Development</TabPanel>
-          <TabPanel>DevOps</TabPanel>
+          <TabPanel>
+            <CategoryTab category="DevOpss" />
+          </TabPanel>
+          <TabPanel>DevOps</TabPanel> */}
         </TabPanels>
       </Tabs>
     </>
