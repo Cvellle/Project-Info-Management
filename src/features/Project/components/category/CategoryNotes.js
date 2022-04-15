@@ -8,7 +8,7 @@ const CategoryNotes = ({ notes }) => {
       flexWrap="wrap"
       marginTop="1.5rem"
       marginBottom="1.5rem">
-      {notes.map((note) => (
+      {notes?.map((note) => (
         <Note data={note} key={note.id} />
       ))}
     </Flex>

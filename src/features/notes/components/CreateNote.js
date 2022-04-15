@@ -20,7 +20,7 @@ import { PageDescription } from 'components/PageDescription'
 import rocket from '../../../assets/rocket.png'
 import { MdOpenInNew } from 'react-icons/md'
 import { useForm } from 'react-hook-form'
-import { getCatgoriesAsync, getProjectAsync, notesState } from '../notesSlice'
+import { getProjectAsync, notesState } from '../notesSlice'
 import { createNoteAPI } from '../api/createNoteAPI'
 import { uploadFilesAPI } from '../api/uploadFilesAPI'
 
@@ -42,17 +42,12 @@ export function CreateNote() {
   console.log(selectedProject)
 
   useEffect(() => {
-    dispatch(getCatgoriesAsync())
     dispatch(getProjectAsync(params.id))
   }, [])
 
   // input overlay click
   const hiddenFileInput = useRef(null)
   console.log(hiddenFileInput)
-
-  // const handleClick = () => {
-  //   hiddenFileInput.current.click()
-  // }
 
   const [registrationError, setRegistrationError] = useState(false)
 

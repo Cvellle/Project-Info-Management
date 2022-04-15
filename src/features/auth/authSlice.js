@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { registerAPI } from './api/registerAPI'
 import { loginUser } from './api/loginAPI'
 import { getMeAPI } from './api/getMeAPI'
-// import { resetProjects } from 'features/dashboard/dashboardSlice'
+import { resetProjects } from 'features/dashboard/dashboardSlice'
 
 const initialState = {
   currentUser: null,
@@ -45,8 +45,8 @@ export const authSlice = createSlice({
         userPhoto: action.payload.userPhoto
       }
     },
-    logout: (state) => {
-      // dispatch(resetProjects())
+    logout: (state, { dispatch }) => {
+      dispatch(resetProjects())
       state = initialState
       return state
     }

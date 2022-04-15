@@ -25,8 +25,9 @@ export const getProjectAsync = createAsyncThunk('projects/getProject', async (id
 
 export const getNotesAsync = createAsyncThunk(
   'projects/getNotesAPI',
-  async ({ id, name = '', sort = 'createdAt:desc' }) => {
-    const response = await getNotesAPI(id, name, sort)
+  async ({ id, name = '', sort = 'createdAt:desc', category }) => {
+    const response = await getNotesAPI(id, name, sort, category)
+    console.log(response)
     return response
   }
 )
@@ -50,8 +51,8 @@ export const notesSlice = createSlice({
     }
   },
   extraReducers: {
-    [getNotesAsync.pending]: (state) => {
-      state.status = 'pending'
+    [getProjectAsync.fulfilled]: (state, action) => {
+      state.selectedProject = action.payload
     },
     [getCatgoriesAsync.fulfilled]: (state, action) => {
       state.categories = action.payload

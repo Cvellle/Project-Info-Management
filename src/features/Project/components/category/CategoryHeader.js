@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getNotesAsync } from 'features/notes/notesSlice'
 import { selectedProject } from 'features/Project/projectSlice'
 
-export function CategoryHeader() {
+export function CategoryHeader({ category }) {
   const [name, setName] = useState('')
   const [sort, setSort] = useState('createdAt:desc')
   const project = useSelector(selectedProject)
@@ -16,8 +16,9 @@ export function CategoryHeader() {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    console.log('s')
     const timeoutID = setTimeout(() => {
-      dispatch(getNotesAsync({ id: project.id, name, sort }))
+      dispatch(getNotesAsync({ id: project.id, name, sort, category }))
     }, 500)
 
     return () => {
