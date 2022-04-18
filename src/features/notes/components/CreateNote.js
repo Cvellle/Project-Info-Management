@@ -11,7 +11,8 @@ import {
   Select,
   Box,
   VStack,
-  Link
+  Link,
+  Center
 } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -21,15 +22,17 @@ import { PageDescription } from 'components/PageDescription'
 import rocket from '../../../assets/rocket.png'
 import { MdOpenInNew } from 'react-icons/md'
 import { useForm } from 'react-hook-form'
-import { getProjectAsync, notesState } from '../notesSlice'
+import { getCatgoriesAsync, getProjectAsync, notesState, postCategoryAsync } from '../notesSlice'
 import { createNoteAPI } from '../api/createNoteAPI'
 import { uploadFilesAPI } from '../api/uploadFilesAPI'
+import { ModalComponent } from 'components/UI/ModalComponent'
 
 export function CreateNote() {
   // react-hooks-form
   const {
     handleSubmit,
     register,
+    setValue,
     formState: { errors, isSubmitting }
   } = useForm()
   // additional hooks
@@ -40,6 +43,10 @@ export function CreateNote() {
   const notesSelector = useSelector(notesState)
   // states from store
   const { selectedProject, categories } = notesSelector
+  // local states
+  const [isOpen, setIsOpen] = useState(false)
+  const [registrationError, setRegistrationError] = useState(false)
+  const [newCategory, setNewCategory] = useState()
 
   useEffect(() => {
     dispatch(getProjectAsync(params.id))
@@ -49,7 +56,32 @@ export function CreateNote() {
   const hiddenFileInput = useRef(null)
   console.log(hiddenFileInput)
 
-  const [registrationError, setRegistrationError] = useState(false)
+  const setIsOpenFunction = () => {
+    setIsOpen(true)
+  }
+
+  const onClose = () => {
+    setIsOpen(false)
+  }
+
+  const setNewCategoryFunction = (e) => {
+    setNewCategory(e.target.value)
+  }
+
+  const postNewCategory = () => {
+    let response = dispatch(
+      postCategoryAsync({
+        data: {
+          name: newCategory
+        }
+      })
+    )
+    if (response && !response.error) {
+      setIsOpen(false)
+      dispatch(getCatgoriesAsync())
+      setValue('category', newCategory)
+    }
+  }
 
   const onSubmit = async (data) => {
     // create body object
@@ -169,6 +201,7 @@ export function CreateNote() {
                   </FormLabel>
                   <Select
                     {...register('category')}
+                    name="category"
                     autoComplete="current-category"
                     isInvalid={errors.category}
                     defaultValue={''}>
@@ -182,6 +215,20 @@ export function CreateNote() {
                       )
                     })}
                   </Select>
+                  <Center
+                    cursor="pointer"
+                    onClick={setIsOpenFunction}
+                    background="teal"
+                    borderRadius="50%"
+                    d="inline-flex"
+                    height="35px"
+                    width="35px"
+                    mt="20px">
+                    <Box>+</Box>
+                  </Center>
+                  <Center d="inline-flex" opacity="0.8" ml="10px">
+                    Add new category
+                  </Center>
                 </FormControl>
 
                 <FormControl
@@ -242,6 +289,22 @@ export function CreateNote() {
           </Flex>
         </Flex>
       </Box>
+      <ModalComponent
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Add Category"
+        confirmText="Submit"
+        action={postNewCategory}>
+        <Box position="absolute">
+          <Input
+            placeholder="Add new category"
+            size="sm"
+            bgColor="#ffff"
+            name="addCategory"
+            onChange={(e) => setNewCategoryFunction(e)}
+          />
+        </Box>
+      </ModalComponent>
     </>
   )
 }

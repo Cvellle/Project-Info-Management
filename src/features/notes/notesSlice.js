@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getCategoriesAPI } from './api/getCategoriesAPI'
 import { getNotesAPI } from './api/getNotesAPI'
 import { getProjectAPI } from './api/getProjectAPI'
+import { postCategoryAPI } from './api/postCategoryAPI'
 
 const initialState = {
   status: 'idle',
@@ -31,6 +32,11 @@ export const getNotesAsync = createAsyncThunk(
   }
 )
 
+export const postCategoryAsync = createAsyncThunk('./api/postCategoryAPI.js', async (name) => {
+  const response = await postCategoryAPI(name)
+  return response.data.data
+})
+
 export const notesSlice = createSlice({
   name: 'notes',
   initialState,
@@ -47,6 +53,9 @@ export const notesSlice = createSlice({
         sortKind: action.payload.sortKind,
         sortBy: action.payload.sortBy
       }
+    },
+    resetNotes: (state) => {
+      state.notes = []
     }
   },
   extraReducers: {
@@ -63,7 +72,7 @@ export const notesSlice = createSlice({
   }
 })
 
-export const { editProject, setFilterBy, setSortBy } = notesSlice.actions
+export const { editProject, setFilterBy, setSortBy, resetNotes } = notesSlice.actions
 
 export const notesState = (state) => state.notes
 export const notes = (state) => state.notes.notes
