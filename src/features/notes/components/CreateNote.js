@@ -278,7 +278,7 @@ export function CreateNote() {
                     type="file"
                     {...register('files')}
                     accept={
-                      'image/*,.pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                      'image/*,video/*,audio/*,.pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
                     }
                     opacity="0"
                     zIndex="-5"
