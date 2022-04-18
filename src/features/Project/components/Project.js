@@ -21,10 +21,11 @@ import { PageDescription } from 'components/PageDescription'
 import { MdOpenInNew } from 'react-icons/md'
 import { selectedProject } from '../projectSlice'
 import CategoryTab from './category/CategoryTab'
-import { getCatgoriesAsync, notesState } from 'features/notes/notesSlice'
+import { getCatgoriesAsync, notesState, resetNotes } from 'features/notes/notesSlice'
 import { getProjectAsync } from 'features/Project/projectSlice'
 import { authState } from 'features/auth/authSlice'
 import { projectManager } from 'shared/constants'
+import { useWillUnmount } from 'hooks/useWillUnmount'
 
 export function Project() {
   // hooks
@@ -42,6 +43,12 @@ export function Project() {
     dispatch(getCatgoriesAsync())
     dispatch(getProjectAsync(params.id))
   }, [])
+
+  const resetNotesFunction = () => {
+    dispatch(resetNotes())
+  }
+
+  useWillUnmount(resetNotesFunction)
 
   const url = process.env.REACT_APP_BACKEND_URL
 
