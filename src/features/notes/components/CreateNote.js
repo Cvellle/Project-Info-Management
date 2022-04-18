@@ -33,6 +33,7 @@ export function CreateNote() {
     handleSubmit,
     register,
     setValue,
+    watch,
     formState: { errors, isSubmitting }
   } = useForm()
   // additional hooks
@@ -47,6 +48,25 @@ export function CreateNote() {
   const [isOpen, setIsOpen] = useState(false)
   const [registrationError, setRegistrationError] = useState(false)
   const [newCategory, setNewCategory] = useState()
+
+  let files = watch('files')
+
+  const previewFiles = () => {
+    const filesArr = Object.values(files)
+    return filesArr.map((file) => (
+      <Text
+        key={file.name}
+        gap="0.5rem"
+        alignItems="center"
+        bgColor="#ede7fd"
+        width="fit-content"
+        padding="0.1rem 0.5rem"
+        marginBottom="0.5rem"
+        borderRadius="0.2rem">
+        {file.name}
+      </Text>
+    ))
+  }
 
   useEffect(() => {
     dispatch(getProjectAsync(params.id))
@@ -94,13 +114,19 @@ export function CreateNote() {
     }
 
     // check if file input is not empty, and spread body object
+    let files = []
     if (data.files.length) {
-      const filesId = await uploadFilesAPI(data.files[0])
-      filesId &&
-        (dataBody = {
-          ...dataBody,
-          files: { id: filesId }
-        })
+      for (const file in data.files) {
+        if (typeof data.files[file] === 'object') {
+          const fileId = await uploadFilesAPI(data.files[file])
+          if (fileId) {
+            files.push(fileId)
+          }
+        }
+      }
+      if (files.length > 0) {
+        dataBody = { ...dataBody, files }
+      }
     }
 
     // if success, navigate to the project page
@@ -231,42 +257,37 @@ export function CreateNote() {
                   </Center>
                 </FormControl>
 
-                <FormControl
-                  position={'relative'}
-                  h="50px"
-                  w="100%"
-                  d="block"
-                  isInvalid={errors.files}
-                  mr="auto">
-                  <Box w="180px" cursor="pointer">
-                    <Input
-                      type="file"
-                      {...register('files')}
-                      accept={
-                        'image/*,.pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-                      }
-                      // ref={hiddenFileInput}
-                      // placeholder="Choose Files"
-                      // t="0"
-                      // l="0"
-                      // position={'absolute'}
-                      // zIndex="2"
-                      // opacity="0"
-                      // cursor="pointer"
-                      // w="0px"
-                      // h="0%"
-                    />
-                    {/* <Button
-                      onClick={handleClick}
-                      position={'absolute'}
-                      w="180px"
-                      h="100%"
-                      bgColor="#EAEAEA"
-                      t="0"
-                      l="0">
+                <FormControl position={'relative'} isInvalid={errors.files}>
+                  <Button bgColor="#EAEAEA" cursor="pointer" width="180px" padding="0">
+                    <FormLabel
+                      htmlFor="files"
+                      width="100%"
+                      height="100%"
+                      textAlign="center"
+                      cursor="pointer"
+                      fontWeight="bold"
+                      margin="0"
+                      padding="0.7rem">
                       Upload files
-                    </Button> */}
-                  </Box>
+                    </FormLabel>
+                  </Button>
+
+                  <Input
+                    id="files"
+                    multiple
+                    type="file"
+                    {...register('files')}
+                    accept={
+                      'image/*,.pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                    }
+                    opacity="0"
+                    zIndex="-5"
+                  />
+                  {files?.length > 0 && (
+                    <Flex flexWrap="wrap" gap="1rem" maxWidth="70%">
+                      {previewFiles()}
+                    </Flex>
+                  )}
                   <FormErrorMessage>{errors.files && errors.files.message}</FormErrorMessage>
                 </FormControl>
 
