@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getProject } from './api/pojectAPI'
 
 const initialState = {
-  selectedProject: null
+  selectedProject: null,
+  loading: true
 }
 
 export const getProjectAsync = createAsyncThunk('projects/getProject', async (id) => {
@@ -13,7 +14,12 @@ export const getProjectAsync = createAsyncThunk('projects/getProject', async (id
 export const projectSlice = createSlice({
   name: 'project',
   initialState,
-  reducers: {},
+  reducers: {
+    emptyProject: (state) => {
+      state = initialState
+      return state
+    }
+  },
   extraReducers: {
     [getProjectAsync.fulfilled]: (state, action) => {
       state.selectedProject = action.payload
@@ -21,7 +27,7 @@ export const projectSlice = createSlice({
   }
 })
 
-export const { editProject } = projectSlice.actions
+export const { emptyProject } = projectSlice.actions
 
 export const selectedProject = (state) => state.project.selectedProject
 export const projectState = (state) => state.project

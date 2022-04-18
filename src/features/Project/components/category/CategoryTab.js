@@ -26,7 +26,7 @@ const CategoryTab = ({ category }) => {
 
   let getNotes = async () => {
     let notesResult = await dispatch(
-      getNotesAsync({ id: project.id, name, sort: 'createdAt:desc', category })
+      getNotesAsync({ id: project?.id, name, sort: 'createdAt:desc', category })
     )
     setNotesLocal(notesResult.payload)
   }

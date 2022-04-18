@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Input, Flex, InputGroup, InputLeftElement, Link, Button, Select } from '@chakra-ui/react'
+import { Input, Flex, InputGroup, InputLeftElement, Select } from '@chakra-ui/react'
 import { DiReact } from 'react-icons/di'
-import { Link as ReactLink } from 'react-router-dom'
+// import { Link as ReactLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getNotesAsync } from 'features/notes/notesSlice'
 import { selectedProject } from 'features/Project/projectSlice'
-import { authState } from 'features/auth/authSlice'
-import { projectManager } from 'shared/constants'
+// import { authState } from 'features/auth/authSlice'
+// import { projectManager } from 'shared/constants'
 
 export function CategoryHeader({ category, valueChangeHandler }) {
   //hooks
@@ -16,16 +16,16 @@ export function CategoryHeader({ category, valueChangeHandler }) {
   const [sort, setSort] = useState('createdAt:desc')
   // selectors
   const project = useSelector(selectedProject)
-  const authSelector = useSelector(authState)
+  // const authSelector = useSelector(authState)
   // redux states
-  const { currentUser } = authSelector
+  // const { currentUser } = authSelector
   // handlers
   const handleChange = (event) => setName(event.target.value)
   const selectSort = (event) => setSort(event.target.value)
 
   const filterResults = async () => {
     let notesResponse = await dispatch(
-      getNotesAsync({ id: project.id, name, sort: sort, category })
+      getNotesAsync({ id: project?.id, name, sort: sort, category })
     )
     // two way binding - send results to upper component - CategoryTab
     valueChangeHandler(notesResponse.payload)
@@ -71,26 +71,6 @@ export function CategoryHeader({ category, valueChangeHandler }) {
         <option value="createdAt:desc">{'Most recent'}</option>
         <option value="createdAt:asc">{'Least recent'}</option>
       </Select>
-
-      <Link
-        as={ReactLink}
-        size="sm"
-        to="add-note"
-        _hover={{ textDecoration: 'none' }}
-        ml={{ base: 'none', md: 'auto' }}
-        width={{ base: '100%', md: '94px' }}
-        height={{ base: '40px', md: '28px' }}>
-        {currentUser?.role === projectManager && (
-          <Button
-            colorScheme="teal"
-            fontWeight="medium"
-            size="sm"
-            width={{ base: '100%' }}
-            height={{ base: '100%' }}>
-            ADD NOTE
-          </Button>
-        )}
-      </Link>
     </Flex>
   )
 }
