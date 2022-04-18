@@ -1,10 +1,11 @@
-import { Avatar, Flex, Heading, Text, Link, Button, Image } from '@chakra-ui/react'
+import { Avatar, Flex, Heading, Text, Link, Button } from '@chakra-ui/react'
 import { Link as ReactLink } from 'react-router-dom'
 import { DiReact } from 'react-icons/di'
 import { useSelector } from 'react-redux'
 import { authState } from 'features/auth/authSlice'
 import { projectManager } from 'shared/constants'
 import { useEffect } from 'react'
+import NoteIcon from './NoteIcon'
 
 const Note = ({ data }) => {
   const url = process.env.REACT_APP_BACKEND_URL
@@ -47,13 +48,11 @@ const Note = ({ data }) => {
       <Flex>
         <Flex gap="0.4rem" w="100%">
           <Flex mr="auto" alignItems="center">
-            {data?.attributes?.files?.data?.map((file, i) => {
-              return <Image key={i} src={url + file?.attributes?.url} width="50px" height="50px" />
-              // return <Flex key={i}>{file?.attributes?.url}</Flex>
-            })}
+            <NoteIcon files={data?.attributes?.files?.data} />
           </Flex>
           <Flex ml="auto" alignItems="center">
             <Avatar
+              size="sm"
               name={noteAuthor?.attributes.username}
               src={`${url}${noteAuthor?.attributes?.userPhoto?.data?.attributes?.url}`}
             />
