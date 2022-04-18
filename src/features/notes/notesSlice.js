@@ -5,7 +5,7 @@ import { getProjectAPI } from './api/getProjectAPI'
 import { postCategoryAPI } from './api/postCategoryAPI'
 
 const initialState = {
-  status: 'idle',
+  status: 'iddle',
   notes: [],
   filtered: [],
   categories: [],
@@ -64,6 +64,9 @@ export const notesSlice = createSlice({
     },
     [getCatgoriesAsync.fulfilled]: (state, action) => {
       state.categories = action.payload
+    },
+    [getNotesAsync.pending]: (state) => {
+      state.status = 'pending'
     },
     [getNotesAsync.fulfilled]: (state, action) => {
       state.status = 'idle'
