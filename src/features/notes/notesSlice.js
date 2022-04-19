@@ -3,6 +3,7 @@ import { getCategoriesAPI } from './api/getCategoriesAPI'
 import { getNotesAPI } from './api/getNotesAPI'
 import { getProjectAPI } from './api/getProjectAPI'
 import { postCategoryAPI } from './api/postCategoryAPI'
+import { getNoteAPI } from './api/getNoteAPI'
 
 const initialState = {
   status: 'iddle',
@@ -10,6 +11,7 @@ const initialState = {
   filtered: [],
   categories: [],
   selectedProject: null,
+  selectedNote: null,
   filterBy: {},
   sortBy: {}
 }
@@ -37,6 +39,11 @@ export const postCategoryAsync = createAsyncThunk('./api/postCategoryAPI.js', as
   return response.data.data
 })
 
+export const getNoteAsync = createAsyncThunk('notes/getNote', async (noteId) => {
+  const response = await getNoteAPI(noteId)
+  return response
+})
+
 export const notesSlice = createSlice({
   name: 'notes',
   initialState,
@@ -56,6 +63,9 @@ export const notesSlice = createSlice({
     },
     resetNotes: (state) => {
       state.notes = []
+    },
+    clearSelectedNote: (state) => {
+      state.selectedNote = null
     }
   },
   extraReducers: {
@@ -71,13 +81,18 @@ export const notesSlice = createSlice({
     [getNotesAsync.fulfilled]: (state, action) => {
       state.status = 'idle'
       state.notes = action.payload
+    },
+    [getNoteAsync.fulfilled]: (state, action) => {
+      state.selectedNote = action.payload
     }
   }
 })
 
-export const { editProject, setFilterBy, setSortBy, resetNotes } = notesSlice.actions
+export const { editProject, setFilterBy, setSortBy, resetNotes, clearSelectedNote } =
+  notesSlice.actions
 
 export const notesState = (state) => state.notes
 export const notes = (state) => state.notes.notes
+export const selectedNote = (state) => state.notes.selectedNote
 
 export default notesSlice.reducer

@@ -20,6 +20,7 @@ import { admin, authenticated, employee, projectManager } from 'shared/constants
 import { Project } from 'features/Project/components/Project'
 import { EditUser } from 'features/edit-user/components/EditUser'
 import { Unauthorized } from 'components/Unauthorized'
+import UpdateNote from 'features/notes/components/UpdateNote'
 
 function App() {
   const dispatch = useDispatch()
@@ -69,6 +70,7 @@ function App() {
           <Route element={<ProtectedRoutes authRoles={[projectManager]} />}>
             <Route path="/project/:id/edit" element={<EditProject />} />
             <Route path="/project/:id/add-note" element={<CreateNote />} />
+            <Route path="/project/:id/notes/:noteId/edit" element={<UpdateNote />} />
           </Route>
 
           <Route element={<ProtectedRoutes authRoles={[admin]} />}>
