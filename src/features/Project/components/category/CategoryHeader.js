@@ -61,6 +61,7 @@ export function CategoryHeader({ category, valueChangeHandler }) {
           size="sm"
           bgColor="#ffff"
           width="100%"
+          height="48px"
           name="name"
           onChange={debouncedChangeHandler}
         />
@@ -71,6 +72,7 @@ export function CategoryHeader({ category, valueChangeHandler }) {
         autoComplete="current-role"
         defaultValue={''}
         width={{ base: '100%', md: '245px' }}
+        height="48px"
         onChange={selectSort}>
         <option value="createdAt:desc">{'Most recent'}</option>
         <option value="createdAt:asc">{'Least recent'}</option>

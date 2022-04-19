@@ -7,7 +7,7 @@ export function Info({ title, text, image }) {
         objectFit="contain"
         alt="employee"
         src={image}
-        boxSize={{ base: '60px', lg: '75px' }}
+        boxSize={{ base: '100px', lg: '75px' }}
         fallbackSrc="https://via.placeholder.com/150"
         borderRadius="50%"
       />

@@ -18,11 +18,11 @@ const Note = ({ data }) => {
       padding="1.8rem 1rem"
       bgColor="white"
       borderRadius="0.4rem"
-      minW="300px"
+      // minW="300px"
       maxW="420px"
       flexDirection="column"
       gap="0.7rem"
-      width={{ base: '100%', md: 'fit-content' }}
+      width={{ base: '100%', md: '45%', lg: '300px' }}
       position="relative">
       {currentUser.role === projectManager && (
         <Link
