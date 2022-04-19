@@ -116,14 +116,15 @@ export function Project() {
             margin={{ base: '0', md: '2rem auto' }}
             maxW="1280px"
             minH={{ base: '141px' }}
-            position="relative">
+            position="relative"
+            pt={{ base: '80px', md: '0' }}>
             <Link
               as={ReactLink}
               size="sm"
               to="add-note"
               position="absolute"
               right={{ base: '5%', md: '38px' }}
-              top="calc(48px + 33px)"
+              top={{ base: '20px', md: 'calc(48px + 26px)' }}
               _hover={{ textDecoration: 'none' }}
               ml={{ base: 'none', md: 'auto' }}
               width={{ base: '90%', md: '142px' }}
