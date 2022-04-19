@@ -17,12 +17,16 @@ const getDynamicIcon = (type, size) => {
 }
 
 const NoteIcon = ({ files }) => {
-  const type = files && files[0]?.attributes?.mime?.split('/')[0]
-  const size = '1.8rem'
+  if (files) {
+    const type = files && files[0]?.attributes?.mime?.split('/')[0]
+    const size = '1.8rem'
 
-  const icon = getDynamicIcon(type, size)
+    const icon = getDynamicIcon(type, size)
 
-  return <Suspense fallback="">{icon}</Suspense>
+    return <Suspense fallback="">{icon}</Suspense>
+  } else {
+    return ''
+  }
 }
 
 export default NoteIcon
