@@ -14,7 +14,7 @@ import {
   Link,
   Center
 } from '@chakra-ui/react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useNavigate, NavLink } from 'react-router-dom'
 
@@ -72,10 +72,6 @@ export function CreateNote() {
     dispatch(getProjectAsync(params.id))
   }, [])
 
-  // input overlay click
-  const hiddenFileInput = useRef(null)
-  console.log(hiddenFileInput)
-
   const setIsOpenFunction = () => {
     setIsOpen(true)
   }
@@ -88,8 +84,8 @@ export function CreateNote() {
     setNewCategory(e.target.value)
   }
 
-  const postNewCategory = () => {
-    let response = dispatch(
+  const postNewCategory = async () => {
+    let response = await dispatch(
       postCategoryAsync({
         data: {
           name: newCategory
@@ -97,9 +93,9 @@ export function CreateNote() {
       })
     )
     if (response && !response.error) {
-      setIsOpen(false)
-      dispatch(getCatgoriesAsync())
-      setValue('category', newCategory)
+      let newOptionRes = await dispatch(getCatgoriesAsync())
+      newOptionRes && !newOptionRes.erros && setValue('category', newCategory)
+      newOptionRes && !newOptionRes.erros && setIsOpen(false)
     }
   }
 
@@ -156,18 +152,29 @@ export function CreateNote() {
         text={selectedProject?.attributes?.description}
         image={rocket}></PageDescription>
       <Box margin={{ base: '0', md: '2rem auto' }} maxW="1280px">
-        <Flex bgColor="#EAEAEA" color="#8E8E8E" alignItems="center" minH="75px">
-          <Link as={NavLink} to={`/project/${params.id}`}>
-            <Button bgColor="#EAEAEA" color="black">
+        <Flex bgColor="#EAEAEA" color="#8E8E8E" alignItems="center" minH="75px" flexWrap="wrap">
+          <Link
+            as={NavLink}
+            to={`/project/${params.id}`}
+            width={{ base: '100%', md: 'auto' }}
+            padding={{ base: '5px', md: 'none' }}>
+            <Button bgColor="#EAEAEA" color="black" fontWeight="600">
               {'< Go back'}
             </Button>
           </Link>
-          <Heading as="h4" fontSize={['sm', '24px']} fontWeight="600" color="black">
+          <Heading
+            as="h4"
+            fontSize={{ base: '20px', lg: '24px' }}
+            color="black"
+            width={{ base: '100%', md: 'auto' }}
+            padding={{ base: '15px', md: 'none' }}
+            textAlign="center">
             Create a new Note
           </Heading>
         </Flex>
         <Flex
-          pl={{ base: '0', md: '45px' }}
+          padding={{ base: '20px', md: 'none' }}
+          pl={{ base: '20px', md: '45px' }}
           flexWrap={'wrap'}
           margin={{ base: '0', md: '49px 0' }}
           justifyContent={{ base: 'center', md: 'unset' }}>
@@ -180,7 +187,7 @@ export function CreateNote() {
             w={{ base: '100%', md: 'auto' }}>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              w={{ base: '100vw', md: '624px' }}
+              w={{ base: '100vw', lg: '624px' }}
               d="flex"
               flex-wrap="wrap"
               margin={'auto'}>
@@ -258,7 +265,15 @@ export function CreateNote() {
                 </FormControl>
 
                 <FormControl position={'relative'} isInvalid={errors.files}>
-                  <Button bgColor="#EAEAEA" cursor="pointer" width="180px" padding="0">
+                  <Box
+                    bgColor="#EAEAEA"
+                    _active={{ bg: 'gray' }}
+                    _hover={{ bg: 'lightblue' }}
+                    transition="0.3s"
+                    cursor="pointer"
+                    width="180px"
+                    padding="0"
+                    borderRadius="10px">
                     <FormLabel
                       htmlFor="files"
                       width="100%"
@@ -270,7 +285,7 @@ export function CreateNote() {
                       padding="0.7rem">
                       Upload files
                     </FormLabel>
-                  </Button>
+                  </Box>
 
                   <Input
                     id="files"
@@ -278,7 +293,7 @@ export function CreateNote() {
                     type="file"
                     {...register('files')}
                     accept={
-                      'image/*,video/*,audio/*,.pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                      'image/*,video/*,audio/*,.pdf,.txt,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
                     }
                     opacity="0"
                     zIndex="-5"
@@ -302,7 +317,7 @@ export function CreateNote() {
                 d="block"
                 mt="6"
                 ml="auto"
-                mr={{ base: 'auto', md: '-191px' }}
+                mr={{ base: 'auto', lg: '-191px' }}
                 mb={{ base: '50px', md: '0' }}>
                 SAVE NOTE
               </Button>
