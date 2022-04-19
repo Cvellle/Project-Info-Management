@@ -18,11 +18,19 @@ import { useSelector, useDispatch } from 'react-redux'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { logout } from '../features/auth/authSlice'
+import { resetNotes } from 'features/notes/notesSlice'
+import { resetProjects } from 'features/dashboard/dashboardSlice'
 
 const Header = () => {
   const { auth } = useSelector((state) => state)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  const logoutFunction = () => {
+    dispatch(logout())
+    dispatch(resetProjects())
+    dispatch(resetNotes())
+  }
 
   return (
     <Box backgroundColor="#F0F0F0" padding={{ base: '1rem 0', md: '1.3rem 0' }}>
@@ -64,10 +72,7 @@ const Header = () => {
                   style={({ isActive }) => (isActive ? { fontWeight: 'bold' } : undefined)}>
                   {`> Account`}
                 </Link>
-                <Link
-                  as={NavLink}
-                  to="/login"
-                  onClick={() => dispatch(logout())}>{`> Logout`}</Link>
+                <Link as={NavLink} to="/login" onClick={() => logoutFunction()}>{`> Logout`}</Link>
               </Flex>
               <Menu>
                 <MenuButton

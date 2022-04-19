@@ -2,13 +2,16 @@ import { Avatar, Flex, Heading, Text, Link, Button } from '@chakra-ui/react'
 import { Link as ReactLink } from 'react-router-dom'
 import { DiReact } from 'react-icons/di'
 import { useSelector } from 'react-redux'
+
 import { authState } from 'features/auth/authSlice'
 import { projectManager } from 'shared/constants'
+import NoteIcon from './NoteIcon'
 
 const Note = ({ data }) => {
   const url = process.env.REACT_APP_BACKEND_URL
 
   const { currentUser } = useSelector(authState)
+  let noteAuthor = data.attributes.author.data
 
   return (
     <Flex
@@ -39,14 +42,20 @@ const Note = ({ data }) => {
       </Heading>
       <Text color="#717171">{data.attributes.description}</Text>
       <Flex>
-        <Flex alignItems="center" gap="0.4rem">
-          <Avatar
-            name={data.attributes.author.data.attributes.username}
-            src={`${url}${data.attributes.author.data.attributes?.userPhoto?.url}`}
-          />
-          <Heading as="h4" fontSize={['md', 'lg']}>
-            {data.attributes.author.data.attributes.username}
-          </Heading>
+        <Flex gap="0.4rem" w="100%">
+          <Flex mr="auto" alignItems="center">
+            <NoteIcon files={data?.attributes?.files?.data} />
+          </Flex>
+          <Flex ml="auto" alignItems="center">
+            <Avatar
+              size="sm"
+              name={noteAuthor?.attributes.username}
+              src={`${url}${noteAuthor?.attributes?.userPhoto?.data?.attributes?.url}`}
+            />
+            <Heading as="h4" ml="10px" fontSize="14px">
+              {noteAuthor?.attributes?.username}
+            </Heading>
+          </Flex>
         </Flex>
       </Flex>
     </Flex>

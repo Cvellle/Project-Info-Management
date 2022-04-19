@@ -10,25 +10,30 @@ import {
   Input,
   Select,
   Box,
-  VStack
+  VStack,
+  Link,
+  Center
 } from '@chakra-ui/react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, NavLink } from 'react-router-dom'
 
 import { PageDescription } from 'components/PageDescription'
 import rocket from '../../../assets/rocket.png'
 import { MdOpenInNew } from 'react-icons/md'
 import { useForm } from 'react-hook-form'
-import { getProjectAsync, notesState } from '../notesSlice'
+import { getCatgoriesAsync, getProjectAsync, notesState, postCategoryAsync } from '../notesSlice'
 import { createNoteAPI } from '../api/createNoteAPI'
 import { uploadFilesAPI } from '../api/uploadFilesAPI'
+import { ModalComponent } from 'components/UI/ModalComponent'
 
 export function CreateNote() {
   // react-hooks-form
   const {
     handleSubmit,
     register,
+    setValue,
+    watch,
     formState: { errors, isSubmitting }
   } = useForm()
   // additional hooks
@@ -39,16 +44,60 @@ export function CreateNote() {
   const notesSelector = useSelector(notesState)
   // states from store
   const { selectedProject, categories } = notesSelector
+  // local states
+  const [isOpen, setIsOpen] = useState(false)
+  const [registrationError, setRegistrationError] = useState(false)
+  const [newCategory, setNewCategory] = useState()
+
+  let files = watch('files')
+
+  const previewFiles = () => {
+    const filesArr = Object.values(files)
+    return filesArr.map((file) => (
+      <Text
+        key={file.name}
+        gap="0.5rem"
+        alignItems="center"
+        bgColor="#ede7fd"
+        width="fit-content"
+        padding="0.1rem 0.5rem"
+        marginBottom="0.5rem"
+        borderRadius="0.2rem">
+        {file.name}
+      </Text>
+    ))
+  }
 
   useEffect(() => {
     dispatch(getProjectAsync(params.id))
   }, [])
 
-  // input overlay click
-  const hiddenFileInput = useRef(null)
-  console.log(hiddenFileInput)
+  const setIsOpenFunction = () => {
+    setIsOpen(true)
+  }
 
-  const [registrationError, setRegistrationError] = useState(false)
+  const onClose = () => {
+    setIsOpen(false)
+  }
+
+  const setNewCategoryFunction = (e) => {
+    setNewCategory(e.target.value)
+  }
+
+  const postNewCategory = async () => {
+    let response = await dispatch(
+      postCategoryAsync({
+        data: {
+          name: newCategory
+        }
+      })
+    )
+    if (response && !response.error) {
+      let newOptionRes = await dispatch(getCatgoriesAsync())
+      newOptionRes && !newOptionRes.erros && setValue('category', newCategory)
+      newOptionRes && !newOptionRes.erros && setIsOpen(false)
+    }
+  }
 
   const onSubmit = async (data) => {
     // create body object
@@ -61,13 +110,19 @@ export function CreateNote() {
     }
 
     // check if file input is not empty, and spread body object
+    let files = []
     if (data.files.length) {
-      const filesId = await uploadFilesAPI(data.files[0])
-      filesId &&
-        (dataBody = {
-          ...dataBody,
-          files: { id: filesId }
-        })
+      for (const file in data.files) {
+        if (typeof data.files[file] === 'object') {
+          const fileId = await uploadFilesAPI(data.files[file])
+          if (fileId) {
+            files.push(fileId)
+          }
+        }
+      }
+      if (files.length > 0) {
+        dataBody = { ...dataBody, files }
+      }
     }
 
     // if success, navigate to the project page
@@ -97,16 +152,29 @@ export function CreateNote() {
         text={selectedProject?.attributes?.description}
         image={rocket}></PageDescription>
       <Box margin={{ base: '0', md: '2rem auto' }} maxW="1280px">
-        <Flex bgColor="#EAEAEA" color="#8E8E8E" alignItems="center" minH="75px">
-          <Button bgColor="#EAEAEA" color="black">
-            {'< Go back'}
-          </Button>
-          <Heading as="h4" fontSize={['sm', '24px']} fontWeight="600" color="black">
+        <Flex bgColor="#EAEAEA" color="#8E8E8E" alignItems="center" minH="75px" flexWrap="wrap">
+          <Link
+            as={NavLink}
+            to={`/project/${params.id}`}
+            width={{ base: '100%', md: 'auto' }}
+            padding={{ base: '5px', md: 'none' }}>
+            <Button bgColor="#EAEAEA" color="black" fontWeight="600">
+              {'< Go back'}
+            </Button>
+          </Link>
+          <Heading
+            as="h4"
+            fontSize={{ base: '20px', lg: '24px' }}
+            color="black"
+            width={{ base: '100%', md: 'auto' }}
+            padding={{ base: '15px', md: 'none' }}
+            textAlign="center">
             Create a new Note
           </Heading>
         </Flex>
         <Flex
-          pl={{ base: '0', md: '45px' }}
+          padding={{ base: '20px', md: 'none' }}
+          pl={{ base: '20px', md: '45px' }}
           flexWrap={'wrap'}
           margin={{ base: '0', md: '49px 0' }}
           justifyContent={{ base: 'center', md: 'unset' }}>
@@ -119,7 +187,7 @@ export function CreateNote() {
             w={{ base: '100%', md: 'auto' }}>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              w={{ base: '100vw', md: '624px' }}
+              w={{ base: '100vw', lg: '624px' }}
               d="flex"
               flex-wrap="wrap"
               margin={'auto'}>
@@ -166,6 +234,7 @@ export function CreateNote() {
                   </FormLabel>
                   <Select
                     {...register('category')}
+                    name="category"
                     autoComplete="current-category"
                     isInvalid={errors.category}
                     defaultValue={''}>
@@ -179,44 +248,61 @@ export function CreateNote() {
                       )
                     })}
                   </Select>
+                  <Center
+                    cursor="pointer"
+                    onClick={setIsOpenFunction}
+                    background="teal"
+                    borderRadius="50%"
+                    d="inline-flex"
+                    height="35px"
+                    width="35px"
+                    mt="20px">
+                    <Box>+</Box>
+                  </Center>
+                  <Center d="inline-flex" opacity="0.8" ml="10px">
+                    Add new category
+                  </Center>
                 </FormControl>
 
-                <FormControl
-                  position={'relative'}
-                  h="50px"
-                  w="100%"
-                  d="block"
-                  isInvalid={errors.files}
-                  mr="auto">
-                  <Box w="180px" cursor="pointer">
-                    <Input
-                      type="file"
-                      {...register('files')}
-                      accept={
-                        'image/*,.pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-                      }
-                      // ref={hiddenFileInput}
-                      // placeholder="Choose Files"
-                      // t="0"
-                      // l="0"
-                      // position={'absolute'}
-                      // zIndex="2"
-                      // opacity="0"
-                      // cursor="pointer"
-                      // w="0px"
-                      // h="0%"
-                    />
-                    {/* <Button
-                      onClick={handleClick}
-                      position={'absolute'}
-                      w="180px"
-                      h="100%"
-                      bgColor="#EAEAEA"
-                      t="0"
-                      l="0">
+                <FormControl position={'relative'} isInvalid={errors.files}>
+                  <Box
+                    bgColor="#EAEAEA"
+                    _active={{ bg: 'gray' }}
+                    _hover={{ bg: 'lightblue' }}
+                    transition="0.3s"
+                    cursor="pointer"
+                    width="180px"
+                    padding="0"
+                    borderRadius="10px">
+                    <FormLabel
+                      htmlFor="files"
+                      width="100%"
+                      height="100%"
+                      textAlign="center"
+                      cursor="pointer"
+                      fontWeight="bold"
+                      margin="0"
+                      padding="0.7rem">
                       Upload files
-                    </Button> */}
+                    </FormLabel>
                   </Box>
+
+                  <Input
+                    id="files"
+                    multiple
+                    type="file"
+                    {...register('files')}
+                    accept={
+                      'image/*,video/*,audio/*,.pdf,.txt,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                    }
+                    opacity="0"
+                    zIndex="-5"
+                  />
+                  {files?.length > 0 && (
+                    <Flex flexWrap="wrap" gap="1rem" maxWidth="70%">
+                      {previewFiles()}
+                    </Flex>
+                  )}
                   <FormErrorMessage>{errors.files && errors.files.message}</FormErrorMessage>
                 </FormControl>
 
@@ -231,13 +317,30 @@ export function CreateNote() {
                 d="block"
                 mt="6"
                 ml="auto"
-                mr={{ base: '0', md: '-191px' }}>
+                mr={{ base: 'auto', lg: '-191px' }}
+                mb={{ base: '50px', md: '0' }}>
                 SAVE NOTE
               </Button>
             </form>
           </Flex>
         </Flex>
       </Box>
+      <ModalComponent
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Add Category"
+        confirmText="Submit"
+        action={postNewCategory}>
+        <Box position="absolute">
+          <Input
+            placeholder="Add new category"
+            size="sm"
+            bgColor="#ffff"
+            name="addCategory"
+            onChange={(e) => setNewCategoryFunction(e)}
+          />
+        </Box>
+      </ModalComponent>
     </>
   )
 }

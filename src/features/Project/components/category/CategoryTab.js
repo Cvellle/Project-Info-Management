@@ -20,13 +20,17 @@ const CategoryTab = ({ category }) => {
   const [filtered, setFiltered] = useState()
 
   useEffect(() => {
-    a()
-    dispatch(getProjectAsync(id))
+    getNotes()
   }, [])
 
-  let a = async () => {
-    let b = await dispatch(getNotesAsync({ id: project.id, name, sort: 'createdAt:asc', category }))
-    setNotesLocal(b.payload)
+  let getNotes = async () => {
+    let projectRes = await dispatch(getProjectAsync(id))
+    if (projectRes) {
+      let notesResult = await dispatch(
+        getNotesAsync({ id: project?.id, name: null, sort: 'createdAt:desc', category: category })
+      )
+      notesResult && !notesResult.error && setNotesLocal(notesResult.payload)
+    }
   }
 
   let toMap = filtered ? filtered : notesLocal
