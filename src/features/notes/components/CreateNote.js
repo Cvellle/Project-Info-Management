@@ -26,6 +26,7 @@ import { getCatgoriesAsync, getProjectAsync, notesState, postCategoryAsync } fro
 import { createNoteAPI } from '../api/createNoteAPI'
 import { uploadFilesAPI } from '../api/uploadFilesAPI'
 import { ModalComponent } from 'components/UI/ModalComponent'
+import FormTextarea from 'components/UI/FormTextarea'
 
 export function CreateNote() {
   // react-hooks-form
@@ -105,7 +106,7 @@ export function CreateNote() {
       ...data,
       files: null,
       category: categories.data.find((el) => el?.attributes?.name == data.category).id,
-      project: selectedProject?.id,
+      project: params.id,
       author: selectedProject?.attributes?.project_manager?.data?.id
     }
 
@@ -199,7 +200,7 @@ export function CreateNote() {
                   <Input
                     w={{ base: 'auto', md: '624px' }}
                     id="title"
-                    placeholder="Hello"
+                    placeholder="Add title"
                     autoComplete="title"
                     {...register('title', {
                       required: 'This is required'
@@ -210,19 +211,15 @@ export function CreateNote() {
                   <FormErrorMessage>{errors.title && errors.title.message}</FormErrorMessage>
                 </FormControl>
                 <FormControl isInvalid={errors.description} isRequired>
-                  <FormLabel htmlFor="description" padding="0" margin="0">
-                    Note description
-                  </FormLabel>
-                  <Input
+                  <FormTextarea
+                    label="Note Description"
+                    name="description"
+                    register={register}
+                    // defaultValue={defValues?.description}
                     w={{ base: 'auto', md: '624px' }}
                     id="description"
-                    placeholder="Hello"
-                    autoComplete="description"
-                    {...register('description', {
-                      required: 'This is required'
-                      // minLength: { value: 4, message: 'Minimum length should be 4' }
-                    })}
-                    defaultValue={''}
+                    placeholder="Add description"
+                    // minLength: { value: 4, message: 'Minimum length should be 4' }
                   />
                   <FormErrorMessage>
                     {errors.description && errors.description.message}
