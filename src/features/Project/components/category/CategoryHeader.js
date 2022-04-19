@@ -6,13 +6,14 @@ import debounce from 'lodash.debounce'
 
 import { getNotesAsync } from 'features/notes/notesSlice'
 import { selectedProject } from 'features/Project/projectSlice'
+import { useDidUpdate } from 'hooks/useDidUpdate'
 
 export function CategoryHeader({ category, valueChangeHandler }) {
   // hooks
   const dispatch = useDispatch()
   // local states
   const [name, setName] = useState('')
-  const [sort, setSort] = useState()
+  const [sort, setSort] = useState('createdAt:desc')
   // selectors
   const project = useSelector(selectedProject)
   // handlers
@@ -22,12 +23,12 @@ export function CategoryHeader({ category, valueChangeHandler }) {
   const selectSort = (event) => setSort(event.target.value)
 
   // functions
-  const filterResults = async (sortProp = null) => {
+  const filterResults = async () => {
     let notesResponse = await dispatch(
-      getNotesAsync({ id: project?.id, name, sort: sortProp !== null ? sortProp : sort, category })
+      getNotesAsync({ id: project?.id, name, sort: sort, category: category })
     )
     // two way binding - send results to upper component - CategoryTab
-    valueChangeHandler(notesResponse.payload)
+    notesResponse && !notesResponse.error && valueChangeHandler(notesResponse.payload)
   }
 
   const debouncedChangeHandler = useMemo(() => {
@@ -36,16 +37,10 @@ export function CategoryHeader({ category, valueChangeHandler }) {
 
   // effects
   useEffect(() => {
-    filterResults('createdAt:desc')
+    filterResults
   }, [])
 
-  useEffect(() => {
-    filterResults()
-  }, [name])
-
-  useEffect(() => {
-    sort && filterResults()
-  }, [sort])
+  useDidUpdate(filterResults, [name, sort])
 
   return (
     <Flex
