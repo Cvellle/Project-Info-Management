@@ -2,9 +2,9 @@ import { Avatar, Flex, Heading, Text, Link, Button } from '@chakra-ui/react'
 import { Link as ReactLink } from 'react-router-dom'
 import { DiReact } from 'react-icons/di'
 import { useSelector } from 'react-redux'
+
 import { authState } from 'features/auth/authSlice'
 import { projectManager } from 'shared/constants'
-import { useEffect } from 'react'
 import NoteIcon from './NoteIcon'
 
 const Note = ({ data }) => {
@@ -12,10 +12,6 @@ const Note = ({ data }) => {
 
   const { currentUser } = useSelector(authState)
   let noteAuthor = data.attributes.author.data
-
-  useEffect(() => {
-    console.log(data.attributes.files)
-  }, [data])
 
   return (
     <Flex

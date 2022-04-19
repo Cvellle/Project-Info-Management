@@ -1,45 +1,51 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Input, Flex, InputGroup, InputLeftElement, Select } from '@chakra-ui/react'
 import { DiReact } from 'react-icons/di'
-// import { Link as ReactLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import debounce from 'lodash.debounce'
+
 import { getNotesAsync } from 'features/notes/notesSlice'
 import { selectedProject } from 'features/Project/projectSlice'
-// import { authState } from 'features/auth/authSlice'
-// import { projectManager } from 'shared/constants'
 
 export function CategoryHeader({ category, valueChangeHandler }) {
-  //hooks
+  // hooks
   const dispatch = useDispatch()
   // local states
   const [name, setName] = useState('')
-  const [sort, setSort] = useState('createdAt:desc')
+  const [sort, setSort] = useState()
   // selectors
   const project = useSelector(selectedProject)
-  // const authSelector = useSelector(authState)
-  // redux states
-  // const { currentUser } = authSelector
   // handlers
-  const handleChange = (event) => setName(event.target.value)
+  const handleChange = (event) => {
+    setName(event.target.value)
+  }
   const selectSort = (event) => setSort(event.target.value)
 
-  const filterResults = async () => {
+  // functions
+  const filterResults = async (sortProp = null) => {
     let notesResponse = await dispatch(
-      getNotesAsync({ id: project?.id, name, sort: sort, category })
+      getNotesAsync({ id: project?.id, name, sort: sortProp !== null ? sortProp : sort, category })
     )
     // two way binding - send results to upper component - CategoryTab
     valueChangeHandler(notesResponse.payload)
   }
 
-  useEffect(() => {
-    const timeoutID = setTimeout(() => {
-      filterResults()
-    }, 500)
+  const debouncedChangeHandler = useMemo(() => {
+    return debounce(handleChange, 300)
+  }, [])
 
-    return () => {
-      clearTimeout(timeoutID)
-    }
-  }, [name, project, sort])
+  // effects
+  useEffect(() => {
+    filterResults('createdAt:desc')
+  }, [])
+
+  useEffect(() => {
+    filterResults()
+  }, [name])
+
+  useEffect(() => {
+    sort && filterResults()
+  }, [sort])
 
   return (
     <Flex
@@ -57,8 +63,7 @@ export function CategoryHeader({ category, valueChangeHandler }) {
           bgColor="#ffff"
           width="100%"
           name="name"
-          value={name}
-          onChange={handleChange}
+          onChange={debouncedChangeHandler}
         />
       </InputGroup>
 

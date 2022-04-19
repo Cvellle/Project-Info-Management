@@ -14,22 +14,23 @@ const CategoryTab = ({ category }) => {
   // const categoryNotes = useSelector(notes)
   const project = useSelector(selectedProject)
 
-  const { status, notes } = useSelector(notesState)
+  const { status } = useSelector(notesState)
 
   const [notesLocal, setNotesLocal] = useState()
   const [filtered, setFiltered] = useState()
 
   useEffect(() => {
-    console.log(notes)
-    dispatch(getProjectAsync(id))
     getNotes()
   }, [])
 
   let getNotes = async () => {
-    let notesResult = await dispatch(
-      getNotesAsync({ id: project?.id, name: null, sort: 'createdAt:desc', category: category })
-    )
-    notesResult && !notesResult.error && setNotesLocal(notesResult.payload)
+    let projectRes = await dispatch(getProjectAsync(id))
+    if (projectRes) {
+      let notesResult = await dispatch(
+        getNotesAsync({ id: project?.id, name: null, sort: 'createdAt:desc', category: category })
+      )
+      notesResult && !notesResult.error && setNotesLocal(notesResult.payload)
+    }
   }
 
   let toMap = filtered ? filtered : notesLocal
@@ -37,7 +38,7 @@ const CategoryTab = ({ category }) => {
   return (
     <>
       <CategoryHeader id={id} category={category} valueChangeHandler={setFiltered} />
-      {status === 'pending' && !notesLocal ? (
+      {status === 'pending' ? (
         <Center padding="1rem">
           <Spinner size="xl" />
         </Center>
