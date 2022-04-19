@@ -28,7 +28,7 @@ export function CategoryHeader({ category, valueChangeHandler }) {
       getNotesAsync({ id: project?.id, name, sort: sort, category: category })
     )
     // two way binding - send results to upper component - CategoryTab
-    notesResponse && !notesResponse.error && valueChangeHandler(notesResponse.payload)
+    notesResponse && valueChangeHandler(notesResponse.payload)
   }
 
   const debouncedChangeHandler = useMemo(() => {
@@ -37,10 +37,14 @@ export function CategoryHeader({ category, valueChangeHandler }) {
 
   // effects
   useEffect(() => {
-    filterResults
+    filterResults()
   }, [])
 
-  useDidUpdate(filterResults, [name, sort])
+  useDidUpdate(filterResults, [name])
+
+  useEffect(() => {
+    filterResults()
+  }, [sort])
 
   return (
     <Flex

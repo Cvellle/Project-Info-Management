@@ -2,7 +2,7 @@ import { CategoryHeader } from './CategoryHeader'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { notesState, getNotesAsync } from 'features/notes/notesSlice'
-import { Spinner, Center } from '@chakra-ui/react'
+import { Center } from '@chakra-ui/react'
 
 import CategoryNotes from './CategoryNotes'
 import { useEffect, useState } from 'react'
@@ -25,7 +25,7 @@ const CategoryTab = ({ category }) => {
 
   let getNotes = async () => {
     let projectRes = await dispatch(getProjectAsync(id))
-    if (projectRes) {
+    if (projectRes && !projectRes.error) {
       let notesResult = await dispatch(
         getNotesAsync({ id: project?.id, name: null, sort: 'createdAt:desc', category: category })
       )
@@ -39,8 +39,8 @@ const CategoryTab = ({ category }) => {
     <>
       <CategoryHeader id={id} category={category} valueChangeHandler={setFiltered} />
       {status === 'pending' ? (
-        <Center padding="1rem">
-          <Spinner size="xl" />
+        <Center h="50vh" opacity="0.5">
+          {'Loading...'}
         </Center>
       ) : (
         notesLocal && <CategoryNotes notes={toMap?.data} />

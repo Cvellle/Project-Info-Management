@@ -17,7 +17,7 @@ const getDynamicIcon = (type, size) => {
 }
 
 const NoteIcon = ({ files }) => {
-  const type = files[0]?.attributes?.mime.split('/')[0]
+  const type = files && files[0]?.attributes?.mime?.split('/')[0]
   const size = '1.8rem'
 
   const icon = getDynamicIcon(type, size)
