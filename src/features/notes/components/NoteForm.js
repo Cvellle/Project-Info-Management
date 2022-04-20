@@ -67,13 +67,13 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
     )
     if (response && !response.error) {
       let newOptionRes = await dispatch(getCatgoriesAsync())
-      newOptionRes && !newOptionRes.erros && setValue('category', newCategory)
-      newOptionRes && !newOptionRes.erros && setIsOpen(false)
+      newOptionRes && !newOptionRes.error && setValue('category', newCategory)
+      newOptionRes && !newOptionRes.error && setIsOpen(false)
     }
   }
 
   const onSubmit = async (data) => {
-    const res = method({
+    const res = await method({
       noteId: params.noteId,
       data,
       action,
@@ -82,8 +82,8 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
       projectId: params.id
     })
 
-    if (res) {
-      navigate(`/project/${params.id}`, { replace: true })
+    if (res && !res.error) {
+      navigate('/project/' + params.id, { replace: true })
     } else {
       setRegistrationError(res.error.message)
     }
@@ -183,7 +183,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
               {uploadedFiles}
 
               <FormControl position={'relative'} isInvalid={errors.files}>
-                <Button bgColor="#EAEAEA" cursor="pointer" width="180px" padding="0">
+                <Box bgColor="#EAEAEA" cursor="pointer" width="180px" padding="0">
                   <FormLabel
                     htmlFor="files"
                     width="100%"
@@ -195,7 +195,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                     padding="0.7rem">
                     {buttonText}
                   </FormLabel>
-                </Button>
+                </Box>
 
                 <Input
                   id="files"

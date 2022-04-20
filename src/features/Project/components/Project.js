@@ -11,15 +11,16 @@ import {
   Center,
   Spinner
 } from '@chakra-ui/react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as ReactLink, useParams } from 'react-router-dom'
-import { selectedProject } from '../projectSlice'
+import { emptyProject, selectedProject } from '../projectSlice'
 import CategoryTab from './category/CategoryTab'
-import { getCatgoriesAsync, notesState } from 'features/notes/notesSlice'
+import { getCatgoriesAsync, notesState, resetNotes } from 'features/notes/notesSlice'
 import { getProjectAsync } from 'features/Project/projectSlice'
 import { authState } from 'features/auth/authSlice'
 import { projectManager } from 'shared/constants'
+import { useWillUnmount } from 'hooks/useWillUnmount'
 
 export function Project() {
   // hooks
@@ -32,11 +33,25 @@ export function Project() {
   // states
   const { categories } = notesSelector
   const { currentUser } = authSelector
+  const [tabCounter, setTabCounter] = useState(categories.data[0].id)
 
   useEffect(() => {
     dispatch(getProjectAsync(params.id))
     dispatch(getCatgoriesAsync())
   }, [])
+
+  const resetFunction = () => {
+    dispatch(resetNotes())
+    dispatch(emptyProject())
+  }
+
+  useWillUnmount(resetFunction)
+
+  const setTabCounterFunction = (counter) => {
+    setTabCounter(counter)
+  }
+
+  let currentTab = categories?.data?.filter((el) => el.id === tabCounter)
 
   return (
     <>
@@ -82,7 +97,8 @@ export function Project() {
                   minWidth={{ base: '100%', md: 'auto' }}
                   key={category.id}
                   _selected={{ bgColor: '#DDDDDD', color: 'black' }}
-                  padding={{ base: '1rem 0.8rem', md: '1rem 1.5rem' }}>
+                  padding={{ base: '1rem 0.8rem', md: '1rem 1.5rem' }}
+                  onClick={() => setTabCounterFunction(category.id)}>
                   <Heading as="h4" fontSize={['sm', 'lg', 'xl']}>
                     {category.attributes.name}
                   </Heading>
@@ -90,11 +106,13 @@ export function Project() {
               ))}
             </TabList>
             <TabPanels>
-              {categories?.data?.map((category) => (
-                <TabPanel key={category.id} bgColor="#F8F8F8">
-                  <CategoryTab category={category.id} />
-                </TabPanel>
-              ))}
+              {categories?.data?.map((category) => {
+                return (
+                  <TabPanel key={category.id} bgColor="#F8F8F8">
+                    {category.id === currentTab[0].id && <CategoryTab category={category.id} />}
+                  </TabPanel>
+                )
+              })}
             </TabPanels>
           </Tabs>
         </Box>

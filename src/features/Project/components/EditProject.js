@@ -1,23 +1,29 @@
 import { PageDescription } from 'components/PageDescription'
 import rocket from '../../../assets/rocket.png'
 import ProjectForm from './ProjectForm'
-import { Box } from '@chakra-ui/react'
-import { useSelector } from 'react-redux'
+import { Box, Spinner, Center } from '@chakra-ui/react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { selectedProject } from '../projectSlice'
+import { getProjectAsync, projectState } from '../projectSlice'
 import { useParams } from 'react-router-dom'
 
 const EditProject = () => {
-  const project = useSelector(selectedProject)
+  const dispatch = useDispatch()
+  const projectSelector = useSelector(projectState)
+  const { selectedProject, loading } = projectSelector
   const { id } = useParams()
   const [defaultValues, setDefaultValues] = useState({})
 
   useEffect(() => {
-    if (project) {
+    dispatch(getProjectAsync(id))
+  }, [])
+
+  useEffect(() => {
+    if (selectedProject) {
       const defValues = {
-        name: project.attributes.name,
-        description: project.attributes.description,
-        currentEmployees: project.attributes.employees.data.map((employee) => {
+        name: selectedProject?.attributes.name,
+        description: selectedProject?.attributes.description,
+        currentEmployees: selectedProject?.attributes.employees.data.map((employee) => {
           return {
             id: employee.id,
             username: employee.attributes.username,
@@ -27,19 +33,27 @@ const EditProject = () => {
       }
       setDefaultValues(defValues)
     }
-  }, [])
+  }, [selectedProject])
 
   return (
     <>
-      <PageDescription title="Edit Project" text="Update project info" image={rocket} />
-      <Box
-        bgColor="#F8F8F8"
-        maxW="1280px"
-        m={{ base: 'auto', md: '2rem auto' }}
-        padding={{ base: '2rem 0.6rem', md: '3rem' }}
-        borderRadius="0.4rem">
-        <ProjectForm defValues={defaultValues} status="update" id={id} />
-      </Box>
+      {loading ? (
+        <Box>
+          <PageDescription title="Edit Project" text="Update project info" image={rocket} />
+          <Box
+            bgColor="#F8F8F8"
+            maxW="1280px"
+            m={{ base: 'auto', md: '2rem auto' }}
+            padding={{ base: '2rem 0.6rem', md: '3rem' }}
+            borderRadius="0.4rem">
+            <ProjectForm defValues={defaultValues} status="update" id={id} />
+          </Box>
+        </Box>
+      ) : (
+        <Center h="70vh">
+          <Spinner />
+        </Center>
+      )}
     </>
   )
 }

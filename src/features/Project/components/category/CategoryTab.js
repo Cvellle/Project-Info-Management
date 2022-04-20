@@ -1,49 +1,66 @@
 import { CategoryHeader } from './CategoryHeader'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { notesState, getNotesAsync } from 'features/notes/notesSlice'
-import { Center } from '@chakra-ui/react'
-
-import CategoryNotes from './CategoryNotes'
+import { Center, Box } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
+
+import { notesState, getNotesAsync } from 'features/notes/notesSlice'
+import CategoryNotes from './CategoryNotes'
 import { getProjectAsync, selectedProject } from 'features/Project/projectSlice'
+import { useDidUpdate } from 'hooks/useDidUpdate'
 
 const CategoryTab = ({ category }) => {
   const { id } = useParams()
   const dispatch = useDispatch()
-  // const categoryNotes = useSelector(notes)
+  // selectors
   const project = useSelector(selectedProject)
-
+  // states
   const { status } = useSelector(notesState)
-
   const [notesLocal, setNotesLocal] = useState()
   const [filtered, setFiltered] = useState()
 
   useEffect(() => {
-    getNotes()
+    getProject()
   }, [])
 
-  let getNotes = async () => {
+  // function called from a CategoryHeader component
+  const setFilteredFunction = (headerSearchRes) => {
+    setFiltered(headerSearchRes)
+  }
+
+  // initial get notes
+  let getProject = async () => {
     let projectRes = await dispatch(getProjectAsync(id))
     if (projectRes && !projectRes.error) {
       let notesResult = await dispatch(
-        getNotesAsync({ id: project?.id, name: null, sort: 'createdAt:desc', category: category })
+        getNotesAsync({ id: project?.id, name: '', sort: 'createdAt:desc', category: category })
       )
       notesResult && !notesResult.error && setNotesLocal(notesResult.payload)
     }
   }
 
+  // called on a search in the header
+  let setFilteredNotes = () => {
+    setNotesLocal(filtered)
+  }
+
+  useDidUpdate(setFilteredNotes, [filtered])
+
   let toMap = filtered ? filtered : notesLocal
 
   return (
     <>
-      <CategoryHeader id={id} category={category} valueChangeHandler={setFiltered} />
-      {status === 'pending' ? (
-        <Center h="50vh" opacity="0.5">
-          {'Loading...'}
-        </Center>
-      ) : (
-        notesLocal && <CategoryNotes notes={toMap?.data} />
+      {notesLocal && (
+        <Box>
+          <CategoryHeader id={id} category={category} valueChangeHandler={setFilteredFunction} />
+          {status === 'pending' ? (
+            <Center h="50vh" opacity="0.5">
+              {'Loading...'}
+            </Center>
+          ) : (
+            notesLocal && <CategoryNotes notes={toMap?.data} />
+          )}
+        </Box>
       )}
     </>
   )

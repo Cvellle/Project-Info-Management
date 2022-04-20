@@ -21,8 +21,12 @@ export const projectSlice = createSlice({
     }
   },
   extraReducers: {
+    [getProjectAsync.pending]: (state) => {
+      state.laodig = true
+    },
     [getProjectAsync.fulfilled]: (state, action) => {
       state.selectedProject = action.payload
+      state.laodig = false
     }
   }
 })
