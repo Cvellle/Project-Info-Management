@@ -16,12 +16,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link as ReactLink, useParams } from 'react-router-dom'
 import { selectedProject } from '../projectSlice'
 import CategoryTab from './category/CategoryTab'
-import { getCatgoriesAsync, notesState, resetNotes } from 'features/notes/notesSlice'
-import { getProjectAsync, emptyProject } from 'features/Project/projectSlice'
+import { getCatgoriesAsync, notesState } from 'features/notes/notesSlice'
+import { getProjectAsync } from 'features/Project/projectSlice'
 import { authState } from 'features/auth/authSlice'
 import { projectManager } from 'shared/constants'
-import { useWillUnmount } from 'hooks/useWillUnmount'
-import ProjectDescription from './ProjectDescription'
 
 export function Project() {
   // hooks
@@ -40,18 +38,10 @@ export function Project() {
     dispatch(getCatgoriesAsync())
   }, [])
 
-  const resetFunction = () => {
-    dispatch(resetNotes())
-    dispatch(emptyProject())
-  }
-
-  useWillUnmount(resetFunction)
-
   return (
     <>
       {project ? (
         <Box>
-          <ProjectDescription project={project} />
           <Tabs
             margin={{ base: '0', md: '2rem auto' }}
             maxW="1280px"

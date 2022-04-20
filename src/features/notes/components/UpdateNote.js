@@ -6,7 +6,6 @@ import { useEffect } from 'react'
 import { clearSelectedNote } from '../notesSlice'
 import { Box, CloseButton, Flex, Text, useToast } from '@chakra-ui/react'
 import { deleteNoteFile } from '../api/deleteNoteFile'
-import ProjectDescription from 'features/Project/components/ProjectDescription'
 import NoteBox from './NoteBox'
 
 const UpdateNote = () => {
@@ -76,7 +75,6 @@ const UpdateNote = () => {
 
   return (
     <>
-      <ProjectDescription />
       {note && (
         <NoteBox title="Edit Note">
           <NoteForm

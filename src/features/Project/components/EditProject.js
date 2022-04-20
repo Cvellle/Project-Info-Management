@@ -2,21 +2,15 @@ import { PageDescription } from 'components/PageDescription'
 import rocket from '../../../assets/rocket.png'
 import ProjectForm from './ProjectForm'
 import { Box } from '@chakra-ui/react'
-import { useDispatch, useSelector } from 'react-redux'
-import { getProjectAsync } from '../projectSlice'
+import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { selectedProject } from '../projectSlice'
 import { useParams } from 'react-router-dom'
 
 const EditProject = () => {
-  const dispatch = useDispatch()
   const project = useSelector(selectedProject)
   const { id } = useParams()
   const [defaultValues, setDefaultValues] = useState({})
-
-  useEffect(() => {
-    dispatch(getProjectAsync(id))
-  }, [])
 
   useEffect(() => {
     if (project) {
@@ -33,7 +27,7 @@ const EditProject = () => {
       }
       setDefaultValues(defValues)
     }
-  }, [project])
+  }, [])
 
   return (
     <>

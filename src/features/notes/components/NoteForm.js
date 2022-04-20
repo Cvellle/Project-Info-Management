@@ -83,7 +83,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
     })
 
     if (res) {
-      navigate('/project/' + params.id, { replace: true })
+      navigate(`/project/${params.id}`, { replace: true })
     } else {
       setRegistrationError(res.error.message)
     }

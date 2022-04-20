@@ -11,7 +11,6 @@ export const getNotesAPI = async (id, name, sort, category) => {
     ])
 
     const response = await API.get(`notes`, { params })
-    console.log(response.data)
     return response.data
   } catch (ex) {
     throw Error(ex?.response?.data?.error?.message ?? 'Unknown error')
