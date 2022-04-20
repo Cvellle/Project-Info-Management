@@ -19,6 +19,7 @@ import { PageDescription } from 'components/PageDescription'
 import rocket from 'assets/rocket.png'
 import FileInput from 'components/UI/FileInput'
 import { uploadProfileImageAPI } from '../api/uploadProfileImageAPI'
+// import PreviewFiles from 'features/notes/components/PreviewFiles'
 
 export function Account() {
   const {
@@ -30,7 +31,7 @@ export function Account() {
 
   const authSelector = useSelector(authState)
   const { currentUser } = authSelector
-
+  // const [file, setFile] = useState()
   const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
@@ -75,7 +76,16 @@ export function Account() {
               <FormLabel htmlFor="logo" padding="0" margin="0">
                 Logo
               </FormLabel>
-              <FileInput accept="image/*" name="logo" register={register} requiredProp={false} />
+              <FileInput
+                accept="image/*"
+                name="logo"
+                register={register}
+                requiredProp={false}
+                labelText="Upload Logo"
+                id="account-logo"
+                widthProp="180px"
+                borderRadius="15px"
+              />
               <FormErrorMessage>{errors.logo && errors.logo.message}</FormErrorMessage>
             </FormControl>
 
@@ -115,7 +125,13 @@ export function Account() {
 
             {registrationError && <Box color="red.500">{registrationError}</Box>}
           </VStack>
-          <Button colorScheme="teal" isLoading={isSubmitting} type="submit" width="100%" mt="6">
+          <Button
+            colorScheme="teal"
+            isLoading={isSubmitting}
+            type="submit"
+            width="100%"
+            mt="6"
+            mb="100px">
             Update User
           </Button>
         </form>

@@ -37,14 +37,10 @@ export function CategoryHeader({ category, valueChangeHandler }) {
 
   // effects
   useEffect(() => {
-    filterResults()
+    // filterResults()
   }, [])
 
-  useDidUpdate(filterResults, [name])
-
-  useEffect(() => {
-    filterResults()
-  }, [sort])
+  useDidUpdate(filterResults, [name, sort])
 
   return (
     <Flex
@@ -73,7 +69,8 @@ export function CategoryHeader({ category, valueChangeHandler }) {
         defaultValue={''}
         width={{ base: '100%', md: '245px' }}
         height="48px"
-        onChange={selectSort}>
+        onChange={selectSort}
+        cursor="pointer">
         <option value="createdAt:desc">{'Most recent'}</option>
         <option value="createdAt:asc">{'Least recent'}</option>
       </Select>
