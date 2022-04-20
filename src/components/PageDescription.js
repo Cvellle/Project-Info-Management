@@ -11,7 +11,11 @@ export const PageDescription = ({ image, title, text, children }) => {
 
   let sectionBgColor = currentUser.role === projectManager ? '#E7FDFD' : '#F5FDE7'
   if (location.pathname.split('/').includes('project')) {
-    sectionBgColor = '#EDE7FD'
+    if (currentUser.role === projectManager) {
+      sectionBgColor = '#EDE7FD'
+    } else {
+      sectionBgColor = '#E7FDFD'
+    }
   }
 
   return (

@@ -80,7 +80,7 @@ const ProjectForm = ({ defValues, status, id }) => {
   const onSubmit = async (data) => {
     try {
       let res = await method({ status, employees, currentUser, data, id })
-      res && !res.error && navigate('/')
+      res && !res.error && navigate(`/project/${id}`)
     } catch (ex) {
       throw Error(ex?.response?.data?.error?.message ?? 'Unknown error')
     }

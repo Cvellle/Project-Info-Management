@@ -2,7 +2,6 @@ import { Avatar, Flex, Heading, Text, Link, Button } from '@chakra-ui/react'
 import { Link as ReactLink } from 'react-router-dom'
 import { DiReact } from 'react-icons/di'
 import { useSelector } from 'react-redux'
-
 import { authState } from 'features/auth/authSlice'
 import { projectManager } from 'shared/constants'
 import NoteIcon from './NoteIcon'
@@ -27,7 +26,7 @@ const Note = ({ data }) => {
       {currentUser.role === projectManager && (
         <Link
           as={ReactLink}
-          to={`notes/${data.id}/edit`}
+          to={`notes/${data.id}/edit-note`}
           _hover={{ textDecoration: 'none' }}
           position="absolute"
           top="2"
