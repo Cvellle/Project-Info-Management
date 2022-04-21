@@ -28,7 +28,7 @@ export function CategoryHeader({ category, valueChangeHandler }) {
       getNotesAsync({ id: project?.id, name, sort: sort, category: category })
     )
     // two way binding - send results to upper component - CategoryTab
-    notesResponse && !notesResponse.error && valueChangeHandler(notesResponse.payload)
+    notesResponse && valueChangeHandler(notesResponse.payload)
   }
 
   const debouncedChangeHandler = useMemo(() => {
@@ -37,7 +37,7 @@ export function CategoryHeader({ category, valueChangeHandler }) {
 
   // effects
   useEffect(() => {
-    filterResults
+    // filterResults()
   }, [])
 
   useDidUpdate(filterResults, [name, sort])
@@ -57,6 +57,7 @@ export function CategoryHeader({ category, valueChangeHandler }) {
           size="sm"
           bgColor="#ffff"
           width="100%"
+          height="48px"
           name="name"
           onChange={debouncedChangeHandler}
         />
@@ -67,7 +68,9 @@ export function CategoryHeader({ category, valueChangeHandler }) {
         autoComplete="current-role"
         defaultValue={''}
         width={{ base: '100%', md: '245px' }}
-        onChange={selectSort}>
+        height="48px"
+        onChange={selectSort}
+        cursor="pointer">
         <option value="createdAt:desc">{'Most recent'}</option>
         <option value="createdAt:asc">{'Least recent'}</option>
       </Select>

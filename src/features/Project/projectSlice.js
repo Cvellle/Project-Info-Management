@@ -3,7 +3,7 @@ import { getProject } from './api/pojectAPI'
 
 const initialState = {
   selectedProject: null,
-  loading: true
+  loading: false
 }
 
 export const getProjectAsync = createAsyncThunk('projects/getProject', async (id) => {
@@ -21,8 +21,12 @@ export const projectSlice = createSlice({
     }
   },
   extraReducers: {
+    [getProjectAsync.pending]: (state) => {
+      state.laodig = true
+    },
     [getProjectAsync.fulfilled]: (state, action) => {
       state.selectedProject = action.payload
+      state.laodig = false
     }
   }
 })

@@ -3,15 +3,19 @@ import { getCategoriesAPI } from './api/getCategoriesAPI'
 import { getNotesAPI } from './api/getNotesAPI'
 import { getProjectAPI } from './api/getProjectAPI'
 import { postCategoryAPI } from './api/postCategoryAPI'
+import { getNoteAPI } from './api/getNoteAPI'
 
 const initialState = {
   status: 'iddle',
+  oneNoteStatus: 'pending',
   notes: [],
   filtered: [],
   categories: [],
   selectedProject: null,
+  selectedNote: null,
   filterBy: {},
-  sortBy: {}
+  sortBy: {},
+  noteFormDisabled: false
 }
 
 export const getCatgoriesAsync = createAsyncThunk('./api/getCategoriesAPI.js', async () => {
@@ -37,6 +41,11 @@ export const postCategoryAsync = createAsyncThunk('./api/postCategoryAPI.js', as
   return response.data.data
 })
 
+export const getNoteAsync = createAsyncThunk('notes/getNote', async (noteId) => {
+  const response = await getNoteAPI(noteId)
+  return response
+})
+
 export const notesSlice = createSlice({
   name: 'notes',
   initialState,
@@ -56,6 +65,12 @@ export const notesSlice = createSlice({
     },
     resetNotes: (state) => {
       state.notes = []
+    },
+    clearSelectedNote: (state) => {
+      state.selectedNote = null
+    },
+    setnoteFormDisabled: (state, action) => {
+      state.noteFormDisabled = action.payload
     }
   },
   extraReducers: {
@@ -71,13 +86,28 @@ export const notesSlice = createSlice({
     [getNotesAsync.fulfilled]: (state, action) => {
       state.status = 'idle'
       state.notes = action.payload
+    },
+    [getNoteAsync.pending]: (state) => {
+      state.oneNoteStatus = 'pending'
+    },
+    [getNoteAsync.fulfilled]: (state, action) => {
+      state.oneNoteStatus = 'idle'
+      state.selectedNote = action.payload
     }
   }
 })
 
-export const { editProject, setFilterBy, setSortBy, resetNotes } = notesSlice.actions
+export const {
+  editProject,
+  setFilterBy,
+  setSortBy,
+  resetNotes,
+  clearSelectedNote,
+  setnoteFormDisabled
+} = notesSlice.actions
 
 export const notesState = (state) => state.notes
 export const notes = (state) => state.notes.notes
+export const selectedNote = (state) => state.notes.selectedNote
 
 export default notesSlice.reducer

@@ -80,7 +80,7 @@ const ProjectForm = ({ defValues, status, id }) => {
   const onSubmit = async (data) => {
     try {
       let res = await method({ status, employees, currentUser, data, id })
-      res && !res.error && navigate('/')
+      res && !res.error && navigate(id ? `/project/${id}` : `/`)
     } catch (ex) {
       throw Error(ex?.response?.data?.error?.message ?? 'Unknown error')
     }
@@ -89,11 +89,15 @@ const ProjectForm = ({ defValues, status, id }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <VStack alignItems="flex-start" gap={{ base: '1rem', md: '4rem' }}>
-        <Flex gap={{ base: '1rem', md: '5rem' }} flexDirection={{ base: 'column', md: 'row' }}>
+        <Flex
+          gap={{ base: '1rem', md: '5rem' }}
+          flexDirection={{ base: 'column', md: 'row' }}
+          width={{ base: '98%', md: 'unset' }}
+          m={{ base: 'auto', md: 'unset' }}>
           <Heading as="h3" fontSize={['lg', 'xl']}>
             Project Info
           </Heading>
-          <Flex flexDirection="column" gap="2rem">
+          <Flex flexDirection="column" gap="2rem" position="relative">
             <Flex alignItems="flex-end" gap="1rem" flexDirection={{ base: 'column', md: 'row' }}>
               <FormControl isInvalid={errors.name} isRequired>
                 <FormInput
@@ -106,7 +110,24 @@ const ProjectForm = ({ defValues, status, id }) => {
                 />
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
               </FormControl>
-              <FileInput accept="image/*" name="logo" register={register} requiredProp={false} />
+              <Flex
+                style={{ transform: `translate(${0}px, ${42}px)` }}
+                borderRadius="15px"
+                mr={{ base: 'auto', md: 'unset' }}>
+                <FileInput
+                  accept="image/*"
+                  name="logo"
+                  register={register}
+                  requiredProp={false}
+                  labelText="Choose Project Logo"
+                  id="project-logo"
+                  fontSize="16px"
+                  widthProp="200px"
+                  position="absolute"
+                  right="0"
+                  height="48px"
+                />
+              </Flex>
             </Flex>
             <FormControl isInvalid={errors.description} isRequired>
               <FormTextarea
@@ -171,7 +192,13 @@ const ProjectForm = ({ defValues, status, id }) => {
           </Flex>
         </Flex>
 
-        <Button colorScheme="teal" isLoading={isSubmitting} type="submit" alignSelf="flex-end">
+        <Button
+          colorScheme="teal"
+          isLoading={isSubmitting}
+          type="submit"
+          alignSelf="flex-end"
+          width={{ base: '100%', md: 'unset' }}
+          mb="100px">
           Submit
         </Button>
       </VStack>
