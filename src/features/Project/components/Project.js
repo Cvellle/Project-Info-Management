@@ -33,7 +33,9 @@ export function Project() {
   // states
   const { categories } = notesSelector
   const { currentUser } = authSelector
-  const [tabCounter, setTabCounter] = useState(categories.data[0].id)
+  const [tabCounter, setTabCounter] = useState(
+    categories?.data && categories?.data[0] ? categories?.data[0].id : 0
+  )
 
   useEffect(() => {
     dispatch(getProjectAsync(params.id))

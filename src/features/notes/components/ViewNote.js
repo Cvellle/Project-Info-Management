@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 import { clearSelectedNote } from '../notesSlice'
 import NoteBox from './NoteBox'
 
-const UpdateNote = () => {
+const ViewNote = () => {
   const { noteId } = useParams()
   const dispatch = useDispatch()
   const note = useSelector(selectedNote)
@@ -26,7 +26,7 @@ const UpdateNote = () => {
       {note && (
         <NoteBox title={!noteFormDisabled ? 'Edit Note' : 'View Note'}>
           <NoteForm
-            disabledProp={false}
+            disabledProp={true}
             title={'Update Note'}
             defaultValues={note?.attributes}
             buttonText="Upload new files"
@@ -38,4 +38,4 @@ const UpdateNote = () => {
   )
 }
 
-export default UpdateNote
+export default ViewNote

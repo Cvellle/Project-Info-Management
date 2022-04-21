@@ -37,7 +37,7 @@ const EditProject = () => {
 
   return (
     <>
-      {loading ? (
+      {!loading ? (
         <Box>
           <PageDescription title="Edit Project" text="Update project info" image={rocket} />
           <Box

@@ -12,6 +12,7 @@ import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { resetNotes } from 'features/notes/notesSlice'
 import { emptyProject } from '../projectSlice'
+import ViewNote from 'features/notes/components/ViewNote'
 
 const ProjectRoutes = () => {
   const { pathname } = useLocation()
@@ -32,9 +33,10 @@ const ProjectRoutes = () => {
       <Routes>
         <Route path=":id" element={<Project />} />
         <Route element={<ProtectedRoutes authRoles={[projectManager]} />}>
+          <Route path=":id/note/:noteId" element={<ViewNote />} />
           <Route path=":id/edit" element={<EditProject />} />
           <Route path=":id/add-note" element={<CreateNote />} />
-          <Route path=":id/notes/:noteId/edit-note" element={<UpdateNote />} />
+          <Route path=":id/notes/:noteId/edit-note" element={<UpdateNote isDisabled={false} />} />
         </Route>
       </Routes>
     </>

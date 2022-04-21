@@ -7,13 +7,15 @@ import { getNoteAPI } from './api/getNoteAPI'
 
 const initialState = {
   status: 'iddle',
+  oneNoteStatus: 'pending',
   notes: [],
   filtered: [],
   categories: [],
   selectedProject: null,
   selectedNote: null,
   filterBy: {},
-  sortBy: {}
+  sortBy: {},
+  noteFormDisabled: false
 }
 
 export const getCatgoriesAsync = createAsyncThunk('./api/getCategoriesAPI.js', async () => {
@@ -66,6 +68,9 @@ export const notesSlice = createSlice({
     },
     clearSelectedNote: (state) => {
       state.selectedNote = null
+    },
+    setnoteFormDisabled: (state, action) => {
+      state.noteFormDisabled = action.payload
     }
   },
   extraReducers: {
@@ -82,14 +87,24 @@ export const notesSlice = createSlice({
       state.status = 'idle'
       state.notes = action.payload
     },
+    [getNoteAsync.pending]: (state) => {
+      state.oneNoteStatus = 'pending'
+    },
     [getNoteAsync.fulfilled]: (state, action) => {
+      state.oneNoteStatus = 'idle'
       state.selectedNote = action.payload
     }
   }
 })
 
-export const { editProject, setFilterBy, setSortBy, resetNotes, clearSelectedNote } =
-  notesSlice.actions
+export const {
+  editProject,
+  setFilterBy,
+  setSortBy,
+  resetNotes,
+  clearSelectedNote,
+  setnoteFormDisabled
+} = notesSlice.actions
 
 export const notesState = (state) => state.notes
 export const notes = (state) => state.notes.notes
