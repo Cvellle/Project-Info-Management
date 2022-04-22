@@ -93,6 +93,7 @@ export const notesSlice = createSlice({
     [getNoteAsync.fulfilled]: (state, action) => {
       state.oneNoteStatus = 'idle'
       state.selectedNote = action.payload
+      console.log(state.selectedNote)
     }
   }
 })

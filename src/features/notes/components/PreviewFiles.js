@@ -13,7 +13,7 @@ const PreviewFiles = ({ files }) => {
       padding="0.1rem 0.5rem"
       marginBottom="0.5rem"
       borderRadius="0.2rem">
-      {file.name.split('\\').at(-1)}
+      {file.name}
     </Text>
   ))
 }

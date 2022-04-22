@@ -43,7 +43,7 @@ const Note = ({ data }) => {
       {currentUser.role === projectManager && (
         <Link
           as={ReactLink}
-          to={`notes/${data.id}/edit-note`}
+          to={`note/${data.id}/edit-note`}
           _hover={{ textDecoration: 'none' }}
           position="absolute"
           top="2"

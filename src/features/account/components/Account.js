@@ -19,7 +19,6 @@ import { PageDescription } from 'components/PageDescription'
 import rocket from 'assets/rocket.png'
 import FileInput from 'components/UI/FileInput'
 import { uploadProfileImageAPI } from '../api/uploadProfileImageAPI'
-// import PreviewFiles from 'features/notes/components/PreviewFiles'
 
 export function Account() {
   const {

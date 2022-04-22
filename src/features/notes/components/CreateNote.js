@@ -5,7 +5,12 @@ export function CreateNote() {
   return (
     <>
       <NoteBox title="Create a new Note">
-        <NoteForm title="Create new note" buttonText="Upload files" action="create" />
+        <NoteForm
+          title="Create new note"
+          buttonText="Upload files"
+          action="create"
+          // disabledProp={false}
+        />
       </NoteBox>
     </>
   )
