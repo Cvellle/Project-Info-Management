@@ -16,7 +16,13 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { getCatgoriesAsync, getProjectAsync, notesState, postCategoryAsync } from '../notesSlice'
+import {
+  emptyProject,
+  getCatgoriesAsync,
+  getProjectAsync,
+  notesState,
+  postCategoryAsync
+} from '../notesSlice'
 import { ModalComponent } from 'components/UI/ModalComponent'
 import { method } from '../method'
 import PreviewFiles from './PreviewFiles'
@@ -42,7 +48,13 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
   let files = watch('files')
 
   useEffect(() => {
+    // dispatch(getNoteAsync(params.id))
     dispatch(getProjectAsync(params.id))
+
+    return () => {
+      // dispatch(clearSelectedNote())
+      dispatch(emptyProject())
+    }
   }, [])
 
   const setIsOpenFunction = () => {
@@ -151,12 +163,13 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                 </FormLabel>
                 <Select
                   {...register('category')}
+                  id="category"
                   name="category"
                   autoComplete="current-category"
                   isInvalid={errors.category}
                   defaultValue={defaultValues?.category?.data?.id || 1}>
                   {categories?.data?.map((note) => {
-                    let noteAttr = note.attributes
+                    let noteAttr = note?.attributes
                     return (
                       <option key={note.id} value={note.id}>
                         {noteAttr.name}
@@ -179,8 +192,6 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                   Add new category
                 </Center>
               </FormControl>
-
-              {uploadedFiles}
 
               <FormControl position={'relative'} isInvalid={errors.files}>
                 <Box bgColor="#EAEAEA" cursor="pointer" width="180px" padding="0">
@@ -215,6 +226,8 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                 )}
                 <FormErrorMessage>{errors.files && errors.files.message}</FormErrorMessage>
               </FormControl>
+
+              {uploadedFiles}
 
               {registrationError && <Box color="red.500">{registrationError}</Box>}
             </VStack>

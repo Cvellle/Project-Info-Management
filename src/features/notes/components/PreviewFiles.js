@@ -1,7 +1,6 @@
 import { Text } from '@chakra-ui/react'
 
 const PreviewFiles = ({ files }) => {
-  console.log(files)
   const filesArr = Object.values(files)
   return filesArr.map((file) => (
     <Text

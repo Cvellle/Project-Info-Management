@@ -6,7 +6,7 @@ import { postCategoryAPI } from './api/postCategoryAPI'
 import { getNoteAPI } from './api/getNoteAPI'
 
 const initialState = {
-  status: 'iddle',
+  status: 'pending',
   oneNoteStatus: 'pending',
   notes: [],
   filtered: [],
@@ -71,6 +71,10 @@ export const notesSlice = createSlice({
     },
     setnoteFormDisabled: (state, action) => {
       state.noteFormDisabled = action.payload
+    },
+    emptyProject: (state) => {
+      state.selectedProject = null
+      return state
     }
   },
   extraReducers: {
@@ -93,7 +97,6 @@ export const notesSlice = createSlice({
     [getNoteAsync.fulfilled]: (state, action) => {
       state.oneNoteStatus = 'idle'
       state.selectedNote = action.payload
-      console.log(state.selectedNote)
     }
   }
 })
@@ -104,7 +107,8 @@ export const {
   setSortBy,
   resetNotes,
   clearSelectedNote,
-  setnoteFormDisabled
+  setnoteFormDisabled,
+  emptyProject
 } = notesSlice.actions
 
 export const notesState = (state) => state.notes
