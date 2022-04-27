@@ -1,8 +1,8 @@
-import { Grid } from '@chakra-ui/layout'
+import { Grid, Center, Spinner } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { dashboardState, fetchItems } from '../dashboardSlice'
+import { dashboardState, fetchItems, resetProjects } from '../dashboardSlice'
 import { ProjectItem } from './ProjectItem'
 import { authState } from 'features/auth/authSlice'
 import { useDidUpdate } from 'hooks/useDidUpdate'
@@ -18,13 +18,19 @@ export function Projects() {
 
   useEffect(() => {
     dispatch(fetchItems({ role: currentUser.role, id: currentUser.id }))
+
+    return () => {
+      dispatch(resetProjects())
+    }
   }, [])
 
   const filterFunction = () => {
     let finalFilter = projects?.filter((project) => {
       if (
         dashboardSelector.filterBy?.name &&
-        !project.attributes.name.includes(dashboardSelector.filterBy?.name)
+        !project.attributes.name
+          .toLowerCase()
+          .includes(dashboardSelector.filterBy?.name.toLowerCase())
       ) {
         return false
       }
@@ -38,16 +44,24 @@ export function Projects() {
   let mapArray = searchedProjects ? searchedProjects : projects
 
   return (
-    <Grid
-      padding="2.5rem 1rem"
-      gridTemplateColumns={{ base: '1fr', md: 'repeat(2,1fr)' }}
-      maxW="1280px"
-      m="auto"
-      rowGap="0.9rem"
-      columnGap="1.5rem">
-      {mapArray?.map((project, i) => {
-        return <ProjectItem key={i} item={project} />
-      })}
-    </Grid>
+    <>
+      {mapArray ? (
+        <Grid
+          padding="2.5rem 1rem"
+          gridTemplateColumns={{ base: '1fr', md: 'repeat(2,1fr)' }}
+          maxW="1280px"
+          m="auto"
+          rowGap="0.9rem"
+          columnGap="1.5rem">
+          {mapArray?.map((project, i) => {
+            return <ProjectItem key={i} item={project} />
+          })}
+        </Grid>
+      ) : (
+        <Center h="70vh">
+          <Spinner size="xl" />
+        </Center>
+      )}
+    </>
   )
 }

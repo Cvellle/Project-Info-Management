@@ -1,15 +1,13 @@
 import { Box, Flex, Link, Button, Heading } from '@chakra-ui/react'
 import { Link as ReactLink } from 'react-router-dom'
-import { useParams } from 'react-router-dom'
 
 const NoteBox = ({ title, children }) => {
-  const { id } = useParams()
   return (
     <Box margin={{ base: '0', md: '2rem auto' }} maxW="1280px">
       <Flex bgColor="#EAEAEA" color="#8E8E8E" alignItems="center" minH="75px" flexWrap="wrap">
         <Link
           as={ReactLink}
-          to={`/project/${id}`}
+          to={-1}
           width={{ base: '100%', md: 'auto' }}
           padding={{ base: '5px', md: 'none' }}>
           <Button bgColor="#EAEAEA" color="black" fontWeight="600">

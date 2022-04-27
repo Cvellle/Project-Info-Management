@@ -16,7 +16,13 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { getCatgoriesAsync, getProjectAsync, notesState, postCategoryAsync } from '../notesSlice'
+import {
+  emptyProject,
+  getCatgoriesAsync,
+  getProjectAsync,
+  notesState,
+  postCategoryAsync
+} from '../notesSlice'
 import { ModalComponent } from 'components/UI/ModalComponent'
 import { method } from '../method'
 import PreviewFiles from './PreviewFiles'
@@ -43,6 +49,10 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
 
   useEffect(() => {
     dispatch(getProjectAsync(params.id))
+
+    return () => {
+      dispatch(emptyProject())
+    }
   }, [])
 
   const setIsOpenFunction = () => {
@@ -67,7 +77,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
     )
     if (response && !response.error) {
       let newOptionRes = await dispatch(getCatgoriesAsync())
-      newOptionRes && !newOptionRes.error && setValue('category', newCategory)
+      newOptionRes && !newOptionRes.error && setValue('category', response.payload.id)
       newOptionRes && !newOptionRes.error && setIsOpen(false)
     }
   }
@@ -151,18 +161,20 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                 </FormLabel>
                 <Select
                   {...register('category')}
+                  id="category"
                   name="category"
                   autoComplete="current-category"
                   isInvalid={errors.category}
-                  defaultValue={defaultValues?.category?.data?.id || 1}>
+                  defaultValue={defaultValues !== null ? defaultValues?.category?.data?.id : ' '}>
                   {categories?.data?.map((note) => {
-                    let noteAttr = note.attributes
+                    let noteAttr = note?.attributes
                     return (
                       <option key={note.id} value={note.id}>
                         {noteAttr.name}
                       </option>
                     )
                   })}
+                  {defaultValues === null && <option value={' '} hidden></option>}
                 </Select>
                 <Center
                   cursor="pointer"
@@ -180,10 +192,8 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                 </Center>
               </FormControl>
 
-              {uploadedFiles}
-
               <FormControl position={'relative'} isInvalid={errors.files}>
-                <Box bgColor="#EAEAEA" cursor="pointer" width="180px" padding="0">
+                <Box bgColor="#EAEAEA" cursor="pointer" width="180px" padding="0" mt="30px">
                   <FormLabel
                     htmlFor="files"
                     width="100%"
@@ -215,6 +225,8 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                 )}
                 <FormErrorMessage>{errors.files && errors.files.message}</FormErrorMessage>
               </FormControl>
+
+              {uploadedFiles}
 
               {registrationError && <Box color="red.500">{registrationError}</Box>}
             </VStack>

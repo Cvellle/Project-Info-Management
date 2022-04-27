@@ -106,7 +106,7 @@ export function EditUserForm() {
                 {roles &&
                   roles.map((role) => (
                     <option key={role.id} value={role.name}>
-                      {role.name}
+                      {role.name.replace('_', ' ')}
                     </option>
                   ))}
               </Select>

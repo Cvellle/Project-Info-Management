@@ -22,23 +22,39 @@ export const updateMeAsync = createAsyncThunk(
 )
 
 export const accountSlice = createSlice({
-  name: 'users',
+  name: 'account',
   initialState,
+  reducers: {
+    emptySelectedUser: (state) => {
+      state.selectedUser = {
+        ...state.selectedUser,
+        id: '',
+        username: '',
+        email: '',
+        role: '',
+        blocked: '',
+        confirmed: '',
+        userPhoto: ''
+      }
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(getMeAsync.fulfilled, (state, action) => {
       state.selectedUser = {
-        ...state.selectedUser,
+        ...state.currentUser,
         id: action.payload.id,
         username: action.payload.username,
         email: action.payload.email,
-        role: action.payload.role?.name,
         blocked: action.payload.blocked,
-        confirmed: action.payload.confirmed
+        confirmed: action.payload.confirmed,
+        role: action.payload.role?.name,
+        userPhoto: action.payload.userPhoto
       }
     })
   }
 })
 
-export const selectUsers = (state) => state.users
+export const accountState = (state) => state.account
+export const { emptySelectedUser } = accountSlice.actions
 
 export default accountSlice.reducer

@@ -3,7 +3,7 @@ import { getProject } from './api/pojectAPI'
 
 const initialState = {
   selectedProject: null,
-  loading: true
+  loading: false
 }
 
 export const getProjectAsync = createAsyncThunk('projects/getProject', async (id) => {

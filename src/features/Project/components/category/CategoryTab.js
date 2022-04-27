@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Center, Box } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 
-import { notesState, getNotesAsync } from 'features/notes/notesSlice'
+import { notesState, getNotesAsync, emptyProject } from 'features/notes/notesSlice'
 import CategoryNotes from './CategoryNotes'
 import { getProjectAsync, selectedProject } from 'features/Project/projectSlice'
 import { useDidUpdate } from 'hooks/useDidUpdate'
@@ -21,6 +21,10 @@ const CategoryTab = ({ category }) => {
 
   useEffect(() => {
     getProject()
+
+    return () => {
+      dispatch(emptyProject())
+    }
   }, [])
 
   // function called from a CategoryHeader component
@@ -53,7 +57,7 @@ const CategoryTab = ({ category }) => {
       {notesLocal && (
         <Box>
           <CategoryHeader id={id} category={category} valueChangeHandler={setFilteredFunction} />
-          {status === 'pending' ? (
+          {status === 'pending' && project ? (
             <Center h="50vh" opacity="0.5">
               {'Loading...'}
             </Center>

@@ -20,7 +20,7 @@ import { getCatgoriesAsync, notesState, resetNotes } from 'features/notes/notesS
 import { getProjectAsync } from 'features/Project/projectSlice'
 import { authState } from 'features/auth/authSlice'
 import { projectManager } from 'shared/constants'
-import { useWillUnmount } from 'hooks/useWillUnmount'
+// import { useWillUnmount } from 'hooks/useWillUnmount'
 
 export function Project() {
   // hooks
@@ -33,11 +33,17 @@ export function Project() {
   // states
   const { categories } = notesSelector
   const { currentUser } = authSelector
-  const [tabCounter, setTabCounter] = useState(categories.data[0].id)
+  const [tabCounter, setTabCounter] = useState(
+    categories?.data && categories?.data[0] ? categories?.data[0].id : 0
+  )
 
   useEffect(() => {
     dispatch(getProjectAsync(params.id))
     dispatch(getCatgoriesAsync())
+
+    return () => {
+      resetFunction()
+    }
   }, [])
 
   const resetFunction = () => {
@@ -45,7 +51,7 @@ export function Project() {
     dispatch(emptyProject())
   }
 
-  useWillUnmount(resetFunction)
+  // useWillUnmount(resetFunction)
 
   const setTabCounterFunction = (counter) => {
     setTabCounter(counter)
@@ -55,7 +61,7 @@ export function Project() {
 
   return (
     <>
-      {project ? (
+      {project !== null ? (
         <Box>
           <Tabs
             margin={{ base: '0', md: '2rem auto' }}
@@ -108,8 +114,8 @@ export function Project() {
             <TabPanels>
               {categories?.data?.map((category) => {
                 return (
-                  <TabPanel key={category.id} bgColor="#F8F8F8">
-                    {category.id === currentTab[0].id && <CategoryTab category={category.id} />}
+                  <TabPanel key={category?.id} bgColor="#F8F8F8">
+                    {category?.id === currentTab[0].id && <CategoryTab category={category?.id} />}
                   </TabPanel>
                 )
               })}

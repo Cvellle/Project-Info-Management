@@ -57,11 +57,9 @@ function App() {
             <Route path="/account" element={<Account />} />
           </Route>
 
-          <Route element={<ProtectedRoutes authRoles={[admin, employee, projectManager]} />}>
+          <Route element={<ProtectedRoutes authRoles={[employee, projectManager]} />}>
             <Route path="/create-project" element={<CreateProject />} />
-            <Route path="/project/*" element={<ProjectRoutes />}>
-              {/* <Route path="add-note" element={<CreateNote />} /> */}
-            </Route>
+            <Route path="/project/*" element={<ProjectRoutes />} />
           </Route>
 
           <Route element={<ProtectedRoutes authRoles={[admin]} />}>

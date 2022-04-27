@@ -1,21 +1,27 @@
 import { useParams } from 'react-router-dom'
-import NoteForm from './NoteForm'
+import { Flex, Box, Center, Image, CloseButton, useToast } from '@chakra-ui/react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getNoteAsync, selectedNote } from '../notesSlice'
 import { useEffect } from 'react'
+
+import NoteForm from './NoteForm'
+import { getCatgoriesAsync, getNoteAsync, notesState } from '../notesSlice'
 import { clearSelectedNote } from '../notesSlice'
-import { Box, CloseButton, Flex, Text, useToast } from '@chakra-ui/react'
-import { deleteNoteFile } from '../api/deleteNoteFile'
 import NoteBox from './NoteBox'
+import { url } from 'shared/constants'
+import NoteIcon from './NoteIcon'
+import { deleteNoteFile } from '../api/deleteNoteFile'
 
 const UpdateNote = () => {
   const { noteId } = useParams()
   const dispatch = useDispatch()
-  const note = useSelector(selectedNote)
   const toast = useToast()
+
+  const notesSelector = useSelector(notesState)
+  const { noteFormDisabled, selectedNote } = notesSelector
 
   useEffect(() => {
     dispatch(getNoteAsync(noteId))
+    dispatch(getCatgoriesAsync())
 
     return () => {
       dispatch(clearSelectedNote())
@@ -44,45 +50,45 @@ const UpdateNote = () => {
     }
   }
 
-  const uploadedFiles = (
-    <>
-      {note?.attributes?.files?.data ? (
-        <Box>
-          <Text>Files</Text>
-          <Flex gap="1rem" flexWrap="wrap">
-            {note?.attributes?.files?.data.map((file) => (
-              <Flex
-                key={file.id}
-                gap="0.6rem"
-                alignItems="center"
-                justifyContent="space-between"
-                bgColor="#ede7fd"
-                width="fit-content"
-                padding="0.1rem 0.5rem"
-                marginBottom="0.5rem"
-                borderRadius="0.2rem">
-                <Text>{file.attributes.name}</Text>
-                <CloseButton onClick={removeFile.bind(this, file.id)} />
-              </Flex>
-            ))}
-          </Flex>
-        </Box>
-      ) : (
-        ''
-      )}
-    </>
-  )
-
   return (
     <>
-      {note && (
-        <NoteBox title="Edit Note">
+      {selectedNote && (
+        <NoteBox title={!noteFormDisabled ? 'Edit Note' : 'View Note'}>
           <NoteForm
+            disabledProp={false}
             title={'Update Note'}
-            defaultValues={note?.attributes}
-            uploadedFiles={uploadedFiles}
+            defaultValues={selectedNote?.attributes}
             buttonText="Upload new files"
             action="update"
+            uploadedFiles={
+              <>
+                {selectedNote?.attributes?.files?.data && (
+                  <Flex flexWrap="wrap" gap="1rem" maxWidth="70%">
+                    {selectedNote?.attributes?.files?.data?.map((file) =>
+                      file.attributes.mime?.split('/')[0] === 'image' ? (
+                        <Box key={file.id} mr="30px" mb="30px">
+                          <CloseButton onClick={removeFile.bind(this, file.id)} />
+                          <Center h="150px" width="150px" border="1px solid lightgray" p="30px">
+                            <Image src={url + file.attributes.url} height="auto" width="100%" />
+                          </Center>
+                          <Box mb="20px"> {file.attributes.name}</Box>
+                        </Box>
+                      ) : (
+                        <Box key={file.id} mr="30px" mb="30px">
+                          <CloseButton onClick={removeFile.bind(this, file.id)} />
+                          <Center h="150px" width="150px" border="1px solid lightgray" p="30px">
+                            <Flex>
+                              <NoteIcon files="[file]" height="auto" width="100%" />
+                            </Flex>
+                          </Center>
+                          <Box mb="20px"> {file.attributes.name}</Box>
+                        </Box>
+                      )
+                    )}
+                  </Flex>
+                )}
+              </>
+            }
           />
         </NoteBox>
       )}
