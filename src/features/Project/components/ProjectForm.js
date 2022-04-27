@@ -22,6 +22,7 @@ import { getUsersAsync } from 'features/edit-user/usersSlice'
 import { authState } from 'features/auth/authSlice'
 import { method } from './method'
 import { url } from 'shared/constants'
+import useFormEmployees from 'hooks/useFormEmployees'
 
 const ProjectForm = ({ defValues, status, id }) => {
   const {
@@ -32,11 +33,24 @@ const ProjectForm = ({ defValues, status, id }) => {
   } = useForm()
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [employees, setEmployees] = useState([])
-  const [isFiltering, setIsFiltering] = useState()
-  const [filteredEmployees, setFilteredEmployees] = useState([])
+  const [modalEmployees, setModalEmployees] = useState()
+  const [modalEmployeesFilter, setModalEmployeesFilter] = useState(false)
+  const users = useSelector(selectEmployees)
+
+  const {
+    employees,
+    setEmployees,
+    addEmployee,
+    removeEmployee,
+    filterEmployees,
+    filteredEmployees,
+    checkIfIsAlreadyAdded,
+    isFiltering
+  } = useFormEmployees()
+
   const navigate = useNavigate()
   const { currentUser } = useSelector(authState)
+
   useEffect(() => {
     if (defValues?.currentEmployees) {
       setEmployees(defValues.currentEmployees)
@@ -50,30 +64,24 @@ const ProjectForm = ({ defValues, status, id }) => {
     dispatch(getUsersAsync())
   }, [])
 
-  const checkIfIsAlreadyAdded = (id) => {
-    return employees.find((employee) => employee.id === id)
-  }
-
-  const users = useSelector(selectEmployees).filter((user) => !checkIfIsAlreadyAdded(user.id))
-
-  const addEmployee = (employee) => {
-    const employeesNew = [...employees, employee]
-    setEmployees(employeesNew)
-  }
-
-  const removeEmployee = (id) => {
-    const employeesNew = employees.filter((emp) => emp.id !== id)
-    setEmployees(employeesNew)
-  }
-
-  const filterEmployees = (e) => {
-    if (e.target.value.length > 0) {
-      setIsFiltering(true)
-    } else if (isFiltering === true && e.target.value.length <= 0) {
-      setIsFiltering(false)
+  useEffect(() => {
+    if (!modalEmployeesFilter) {
+      const availableEmployees = users.filter((user) => !checkIfIsAlreadyAdded(user.id))
+      setModalEmployees(availableEmployees)
     }
-    const filteredEmployeesNew = employees.filter((emp) => emp.username.includes(e.target.value))
-    setFilteredEmployees(filteredEmployeesNew)
+  }, [users, modalEmployeesFilter, employees])
+
+  const filterModalEmployees = (e) => {
+    const employeesFiltered = modalEmployees.filter((employee) =>
+      employee.username.includes(e.target.value)
+    )
+
+    setModalEmployees(employeesFiltered)
+    if (e.target.value.length > 0) {
+      setModalEmployeesFilter(true)
+    } else if (modalEmployeesFilter === true && e.target.value.length <= 0) {
+      setModalEmployeesFilter(false)
+    }
   }
 
   const onSubmit = async (data) => {
@@ -173,20 +181,28 @@ const ProjectForm = ({ defValues, status, id }) => {
               title="Add Employee"
               confirmText="Save"
               action={onClose}>
-              <Flex flexDirection="column" gap="2rem">
-                {users.map((user) => (
-                  <ProjectEmployee
-                    employee={user}
-                    id={user.id}
-                    name={user.username}
-                    key={user.id}
-                    src={`${url}${user.userPhoto?.url}`}
-                    addEmployee={addEmployee}
-                    removeEmployee={removeEmployee}
-                    isAddDisabled={false}
-                  />
-                ))}
-              </Flex>
+              <VStack gap="1rem" alignItems="stretch">
+                <Input
+                  bgColor="white"
+                  placeholder="Find available employees"
+                  onChange={filterModalEmployees}
+                />
+                <Flex flexDirection="column" gap="2rem">
+                  {modalEmployees &&
+                    modalEmployees.map((user) => (
+                      <ProjectEmployee
+                        employee={user}
+                        id={user.id}
+                        name={user.username}
+                        key={user.id}
+                        src={`${url}${user.userPhoto?.url}`}
+                        addEmployee={addEmployee}
+                        removeEmployee={removeEmployee}
+                        isAddDisabled={false}
+                      />
+                    ))}
+                </Flex>
+              </VStack>
             </ModalComponent>
           </Flex>
         </Flex>
