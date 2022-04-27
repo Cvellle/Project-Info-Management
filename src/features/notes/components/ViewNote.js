@@ -14,9 +14,9 @@ import NoteBox from './NoteBox'
 import NoteIcon from './NoteIcon'
 import { FiDownload } from 'react-icons/fi'
 import { downloadFileAPI } from '../api/downloadFileAPI'
+import { url } from 'shared/constants'
 
 const ViewNote = () => {
-  const url = process.env.REACT_APP_BACKEND_URL
   // hooks
   const dispatch = useDispatch()
   const params = useParams()
@@ -36,8 +36,6 @@ const ViewNote = () => {
   const downloadFile = (passedProps) => {
     downloadFileAPI(passedProps)
   }
-
-  console.log(selectedNote)
 
   return (
     <>

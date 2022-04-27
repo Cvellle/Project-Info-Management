@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom'
-import { Flex, Box, Center, Image, CloseButton, useToast } from '@chakra-ui/react'
+import { Flex, Box, Center, Image, CloseButton, useToast, Spinner } from '@chakra-ui/react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import NoteForm from './NoteForm'
 import { getCatgoriesAsync, getNoteAsync, notesState } from '../notesSlice'
@@ -12,18 +12,22 @@ import NoteIcon from './NoteIcon'
 import { deleteNoteFile } from '../api/deleteNoteFile'
 
 const UpdateNote = () => {
+  // hooks
   const { noteId } = useParams()
   const dispatch = useDispatch()
   const toast = useToast()
-
+  // selectors and states
   const notesSelector = useSelector(notesState)
   const { noteFormDisabled, selectedNote } = notesSelector
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
+    setLoaded(true)
     dispatch(getNoteAsync(noteId))
     dispatch(getCatgoriesAsync())
 
     return () => {
+      setLoaded(false)
       dispatch(clearSelectedNote())
     }
   }, [])
@@ -52,7 +56,7 @@ const UpdateNote = () => {
 
   return (
     <>
-      {selectedNote && (
+      {selectedNote && loaded ? (
         <NoteBox title={!noteFormDisabled ? 'Edit Note' : 'View Note'}>
           <NoteForm
             disabledProp={false}
@@ -91,6 +95,10 @@ const UpdateNote = () => {
             }
           />
         </NoteBox>
+      ) : (
+        <Center h="70vh">
+          <Spinner />
+        </Center>
       )}
     </>
   )
