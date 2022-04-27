@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Input, Flex, InputGroup, InputLeftElement, Select } from '@chakra-ui/react'
 import { DiReact } from 'react-icons/di'
 import { useDispatch, useSelector } from 'react-redux'
@@ -35,11 +35,6 @@ export function CategoryHeader({ category, valueChangeHandler }) {
     return debounce(handleChange, 300)
   }, [])
 
-  // effects
-  useEffect(() => {
-    // filterResults()
-  }, [])
-
   useDidUpdate(filterResults, [name, sort])
 
   return (
@@ -62,7 +57,6 @@ export function CategoryHeader({ category, valueChangeHandler }) {
           onChange={debouncedChangeHandler}
         />
       </InputGroup>
-
       <Select
         name="sort"
         autoComplete="current-role"
