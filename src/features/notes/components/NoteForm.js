@@ -166,11 +166,11 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                   autoComplete="current-category"
                   isInvalid={errors.category}
                   defaultValue={defaultValues !== null ? defaultValues?.category?.data?.id : ' '}>
-                  {categories?.data?.map((note) => {
-                    let noteAttr = note?.attributes
+                  {categories?.data?.map((category) => {
+                    let categoryAttr = category?.attributes
                     return (
-                      <option key={note.id} value={note.id}>
-                        {noteAttr.name}
+                      <option key={category.id} value={category.id}>
+                        {categoryAttr.name}
                       </option>
                     )
                   })}

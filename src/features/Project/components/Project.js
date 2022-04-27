@@ -14,13 +14,14 @@ import {
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as ReactLink, useParams } from 'react-router-dom'
+
 import { emptyProject, selectedProject } from '../projectSlice'
 import CategoryTab from './category/CategoryTab'
 import { getCatgoriesAsync, notesState, resetNotes } from 'features/notes/notesSlice'
 import { getProjectAsync } from 'features/Project/projectSlice'
 import { authState } from 'features/auth/authSlice'
 import { projectManager } from 'shared/constants'
-// import { useWillUnmount } from 'hooks/useWillUnmount'
+import { useDidUpdate } from 'hooks/useDidUpdate'
 
 export function Project() {
   // hooks
@@ -33,18 +34,20 @@ export function Project() {
   // states
   const { categories } = notesSelector
   const { currentUser } = authSelector
-  const [tabCounter, setTabCounter] = useState(
-    categories?.data && categories?.data[0] ? categories?.data[0].id : 0
-  )
-  const [currentTab, setCurrentTab] = useState()
+  const [tabCounter, setTabCounter] = useState(null)
+  const [currentTab, setCurrentTab] = useState(null)
 
   const getProject = async () => {
     let categoriesRes = await dispatch(getCatgoriesAsync())
-    categoriesRes &&
-      !categoriesRes.error &&
-      setCurrentTab(categories?.data?.filter((el) => el.id === tabCounter))
-    categoriesRes && !categoriesRes.error && dispatch(getProjectAsync(params.id))
+    if (categoriesRes && !categoriesRes.error) {
+      setTabCounter(categories?.data[0].id)
+      categoriesRes && !categoriesRes.error && dispatch(getProjectAsync(params.id))
+    }
   }
+
+  useDidUpdate(() => {
+    setCurrentTab(categories?.data?.filter((el) => el.id === tabCounter))
+  }, [tabCounter])
 
   useEffect(() => {
     getProject()
@@ -62,8 +65,6 @@ export function Project() {
   const setTabCounterFunction = (counter) => {
     setTabCounter(counter)
   }
-
-  // let currentTab = categories?.data?.filter((el) => el.id === tabCounter)
 
   return (
     <>
@@ -98,37 +99,41 @@ export function Project() {
                 </Button>
               )}
             </Link>
-            <TabList
-              bgColor="#EAEAEA"
-              color="#8E8E8E"
-              d="flex"
-              flexWrap="wrap"
-              minH={{ base: '48px' }}>
-              {categories?.data?.map((category) => (
-                <Tab
-                  minWidth={{ base: '100%', md: 'auto' }}
-                  key={category.id}
-                  _selected={{ bgColor: '#DDDDDD', color: 'black' }}
-                  padding={{ base: '1rem 0.8rem', md: '1rem 1.5rem' }}
-                  onClick={() => setTabCounterFunction(category?.id)}>
-                  <Heading as="h4" fontSize={['sm', 'lg', 'xl']}>
-                    {category?.attributes.name}
-                  </Heading>
-                </Tab>
-              ))}
-            </TabList>
-            <TabPanels>
-              {currentTab &&
-                categories?.data?.map((category) => {
-                  return (
-                    <TabPanel key={category?.id} bgColor="#F8F8F8">
-                      {currentTab && category?.id === currentTab[0].id && (
-                        <CategoryTab category={category?.id} />
-                      )}
-                    </TabPanel>
-                  )
-                })}
-            </TabPanels>
+            {currentTab !== null && (
+              <>
+                <TabList
+                  bgColor="#EAEAEA"
+                  color="#8E8E8E"
+                  d="flex"
+                  flexWrap="wrap"
+                  minH={{ base: '48px' }}>
+                  {categories?.data?.map((category) => (
+                    <Tab
+                      minWidth={{ base: '100%', md: 'auto' }}
+                      key={category.id}
+                      _selected={{ bgColor: '#DDDDDD', color: 'black' }}
+                      padding={{ base: '1rem 0.8rem', md: '1rem 1.5rem' }}
+                      onClick={() => setTabCounterFunction(category?.id)}>
+                      <Heading as="h4" fontSize={['sm', 'lg', 'xl']}>
+                        {category?.attributes.name}
+                      </Heading>
+                    </Tab>
+                  ))}
+                </TabList>
+                <TabPanels>
+                  {currentTab &&
+                    categories?.data?.map((category) => {
+                      return (
+                        <TabPanel key={category?.id} bgColor="#F8F8F8">
+                          {category?.id === currentTab[0].id && (
+                            <CategoryTab category={category?.id} />
+                          )}
+                        </TabPanel>
+                      )
+                    })}
+                </TabPanels>
+              </>
+            )}
           </Tabs>
         </Box>
       ) : (
