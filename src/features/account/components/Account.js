@@ -41,17 +41,12 @@ export function Account() {
     formState: { errors, isSubmitting }
   } = useForm()
   const dispatch = useDispatch()
-
-  // const authSelector = useSelector(authState)
-  // const { selectedUser } = authSelector
-  // const [file, setFile] = useState()
   const [registrationError, setRegistrationError] = useState(false)
 
   const onSubmit = async (data) => {
     let dataBody = {
       data: { ...data }
     }
-
     // check if file input is not empty, and spread body object
     if (data.logo.length) {
       const logoId = await uploadProfileImageAPI(data.logo[0])
@@ -73,7 +68,7 @@ export function Account() {
 
   return (
     <>
-      {selectedUser?.userPhoto ? (
+      {selectedUser?.userPhoto ?? selectedUser?.role !== '' ? (
         <Box>
           <PageDescription title="Account" text="Edit your own profile" image={rocket} />
           <Container paddingTop="3rem">

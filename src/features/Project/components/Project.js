@@ -61,7 +61,7 @@ export function Project() {
 
   return (
     <>
-      {project !== null && categories?.data[0].id ? (
+      {project !== null ? (
         <Box>
           <Tabs
             margin={{ base: '0', md: '2rem auto' }}

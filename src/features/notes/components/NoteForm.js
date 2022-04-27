@@ -48,11 +48,9 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
   let files = watch('files')
 
   useEffect(() => {
-    // dispatch(getNoteAsync(params.id))
     dispatch(getProjectAsync(params.id))
 
     return () => {
-      // dispatch(clearSelectedNote())
       dispatch(emptyProject())
     }
   }, [])
@@ -79,7 +77,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
     )
     if (response && !response.error) {
       let newOptionRes = await dispatch(getCatgoriesAsync())
-      newOptionRes && !newOptionRes.error && setValue('category', newCategory)
+      newOptionRes && !newOptionRes.error && setValue('category', response.payload.id)
       newOptionRes && !newOptionRes.error && setIsOpen(false)
     }
   }
@@ -167,7 +165,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                   name="category"
                   autoComplete="current-category"
                   isInvalid={errors.category}
-                  defaultValue={defaultValues?.category?.data?.id || 1}>
+                  defaultValue={defaultValues !== null ? defaultValues?.category?.data?.id : ' '}>
                   {categories?.data?.map((note) => {
                     let noteAttr = note?.attributes
                     return (
@@ -176,6 +174,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                       </option>
                     )
                   })}
+                  {defaultValues === null && <option value={' '} hidden></option>}
                 </Select>
                 <Center
                   cursor="pointer"
@@ -194,7 +193,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
               </FormControl>
 
               <FormControl position={'relative'} isInvalid={errors.files}>
-                <Box bgColor="#EAEAEA" cursor="pointer" width="180px" padding="0">
+                <Box bgColor="#EAEAEA" cursor="pointer" width="180px" padding="0" mt="30px">
                   <FormLabel
                     htmlFor="files"
                     width="100%"

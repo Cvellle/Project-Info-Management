@@ -1,11 +1,12 @@
 import { Grid, Box } from '@chakra-ui/react'
-import { Info } from './Info'
-import { useSelector } from 'react-redux'
-import { authState } from 'features/auth/authSlice'
-import { projectManager } from 'shared/constants'
 import { useLocation } from 'react-router-dom'
 
-export const PageDescription = ({ image, title, text, children }) => {
+import { useSelector } from 'react-redux'
+import { authState } from 'features/auth/authSlice'
+import { Info } from './Info'
+import { projectManager } from 'shared/constants'
+
+export const PageDescription = ({ image, title, text, children, linkPath }) => {
   const { currentUser } = useSelector(authState)
   const location = useLocation()
 
@@ -26,7 +27,7 @@ export const PageDescription = ({ image, title, text, children }) => {
         maxW="1280px"
         p="2rem 1rem"
         gap="2rem">
-        <Info image={image} title={title} text={text} />
+        <Info image={image} title={title} text={text} linkPath={linkPath} />
         {children}
       </Grid>
     </Box>
