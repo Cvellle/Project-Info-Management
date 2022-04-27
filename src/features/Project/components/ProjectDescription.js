@@ -17,7 +17,6 @@ const ProjectDescription = () => {
     <>
       {!!project && (
         <PageDescription
-          linkPath={`/project/${project?.id}`}
           title={
             <Flex gap="1rem">
               {project?.attributes?.name}

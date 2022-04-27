@@ -1,19 +1,16 @@
-import { Text, Center, Heading, Image, Flex, Link } from '@chakra-ui/react'
-import { Link as ReactLink } from 'react-router-dom'
+import { Text, Center, Heading, Image, Flex } from '@chakra-ui/react'
 
-export function Info({ title, text, image, linkPath }) {
+export function Info({ title, text, image }) {
   return (
     <Flex alignItems="center" gap="1rem" flexDirection={{ base: 'column', md: 'row' }}>
-      <Link as={ReactLink} to={linkPath}>
-        <Image
-          objectFit="contain"
-          alt="employee"
-          src={image}
-          boxSize={{ base: '100px', lg: '75px' }}
-          fallbackSrc="https://via.placeholder.com/150"
-          borderRadius="50%"
-        />
-      </Link>
+      <Image
+        objectFit="contain"
+        alt="employee"
+        src={image}
+        boxSize={{ base: '100px', lg: '75px' }}
+        fallbackSrc="https://via.placeholder.com/150"
+        borderRadius="50%"
+      />
       <Center>
         <Flex gap="0.4rem" flexDirection="column">
           <Heading as="h2" fontSize="xl" textAlign={{ base: 'center', md: 'start' }}>
