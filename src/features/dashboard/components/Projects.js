@@ -15,14 +15,21 @@ export function Projects() {
   const { currentUser } = authSelector
   // local states
   const [searchedProjects, setSearchedProjects] = useState()
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    dispatch(fetchItems({ role: currentUser.role, id: currentUser.id }))
+    fetchItemsFunction()
 
     return () => {
       dispatch(resetProjects())
+      setLoaded(false)
     }
   }, [])
+
+  const fetchItemsFunction = async () => {
+    let a = await dispatch(fetchItems({ role: currentUser.role, id: currentUser.id }))
+    a && setLoaded(true)
+  }
 
   const filterFunction = () => {
     let finalFilter = projects?.filter((project) => {
@@ -45,7 +52,7 @@ export function Projects() {
 
   return (
     <>
-      {mapArray ? (
+      {mapArray && loaded ? (
         <Grid
           padding="2.5rem 1rem"
           gridTemplateColumns={{ base: '1fr', md: 'repeat(2,1fr)' }}

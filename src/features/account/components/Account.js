@@ -22,6 +22,7 @@ import { PageDescription } from 'components/PageDescription'
 import rocket from 'assets/rocket.png'
 import FileInput from 'components/UI/FileInput'
 import { uploadProfileImageAPI } from '../api/uploadProfileImageAPI'
+import { url } from 'shared/constants'
 
 export function Account() {
   const accountSelector = useSelector(accountState)
@@ -63,8 +64,6 @@ export function Account() {
       setRegistrationError(res.error.message)
     }
   }
-
-  const url = process.env.REACT_APP_BACKEND_URL
 
   return (
     <>

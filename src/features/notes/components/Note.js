@@ -3,11 +3,10 @@ import { Link as ReactLink, useNavigate } from 'react-router-dom'
 import { DiReact } from 'react-icons/di'
 import { useSelector } from 'react-redux'
 import { authState } from 'features/auth/authSlice'
-import { projectManager } from 'shared/constants'
+import { projectManager, url } from 'shared/constants'
 import NoteIcon from './NoteIcon'
 
 const Note = ({ data }) => {
-  const url = process.env.REACT_APP_BACKEND_URL
   // const params = useParams()
   const navigate = useNavigate()
 

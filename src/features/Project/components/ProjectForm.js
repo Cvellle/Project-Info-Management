@@ -21,10 +21,9 @@ import { useNavigate } from 'react-router-dom'
 import { getUsersAsync } from 'features/edit-user/usersSlice'
 import { authState } from 'features/auth/authSlice'
 import { method } from './method'
+import { url } from 'shared/constants'
 
 const ProjectForm = ({ defValues, status, id }) => {
-  const url = process.env.REACT_APP_BACKEND_URL
-
   const {
     handleSubmit,
     register,
