@@ -10,8 +10,7 @@ import ProjectDescription from './ProjectDescription'
 import { useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { resetNotes } from 'features/notes/notesSlice'
-import { emptyProject } from '../projectSlice'
+import { resetNotes, emptyProject } from 'features/notes/notesSlice'
 import ViewNote from 'features/notes/components/ViewNote'
 
 const ProjectRoutes = () => {

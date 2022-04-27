@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Center, Box } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 
-import { notesState, getNotesAsync, emptyProject } from 'features/notes/notesSlice'
+import { notesState, getNotesAsync, resetNotes } from 'features/notes/notesSlice'
 import CategoryNotes from './CategoryNotes'
-import { getProjectAsync, selectedProject } from 'features/Project/projectSlice'
+import { getProjectAsync, selectedProject, emptyProject } from 'features/Project/projectSlice'
 import { useDidUpdate } from 'hooks/useDidUpdate'
 
 const CategoryTab = ({ category }) => {
@@ -24,6 +24,7 @@ const CategoryTab = ({ category }) => {
 
     return () => {
       dispatch(emptyProject())
+      dispatch(resetNotes())
     }
   }, [])
 
