@@ -99,7 +99,7 @@ export function Project() {
                 </Button>
               )}
             </Link>
-            {currentTab !== null && (
+            {currentTab !== null && currentTab && currentTab[0] && currentTab[0].id && (
               <>
                 <TabList
                   bgColor="#EAEAEA"
