@@ -94,7 +94,7 @@ export const Login = () => {
 
           {loginError && <Box color="red.500">{loginError}</Box>}
         </VStack>
-        <Button colorScheme="teal" isLoading={isSubmitting} type="submit" width="100%" mt="6">
+        <Button colorScheme="purple" isLoading={isSubmitting} type="submit" width="100%" mt="6">
           Submit
         </Button>
       </form>

@@ -217,7 +217,7 @@ const ProjectForm = ({ defValues, status, id }) => {
         </Flex>
 
         <Button
-          colorScheme="teal"
+          colorScheme="purple"
           isLoading={isSubmitting}
           type="submit"
           alignSelf="flex-end"

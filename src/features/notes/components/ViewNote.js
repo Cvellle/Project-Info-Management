@@ -143,7 +143,7 @@ const ViewNote = () => {
             </Flex>
             {currentUser?.role === projectManager && (
               <Link as={ReactLink} to={`edit-note`} d="block" m="auto">
-                <Button colorScheme="teal" d="block" m="auto">
+                <Button colorScheme="purple" d="block" m="auto">
                   EDIT NOTE
                 </Button>
               </Link>

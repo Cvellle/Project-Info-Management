@@ -135,7 +135,7 @@ export function Account() {
                 {registrationError && <Box color="red.500">{registrationError}</Box>}
               </VStack>
               <Button
-                colorScheme="teal"
+                colorScheme="purple"
                 isLoading={isSubmitting}
                 type="submit"
                 width="100%"

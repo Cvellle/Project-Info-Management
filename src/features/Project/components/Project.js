@@ -89,7 +89,7 @@ export function Project() {
               height={{ base: '40px', md: '48px' }}>
               {currentUser?.role === projectManager && (
                 <Button
-                  colorScheme="teal"
+                  colorScheme="purple"
                   size="sm"
                   width={{ base: '100%' }}
                   height={{ base: '100%' }}

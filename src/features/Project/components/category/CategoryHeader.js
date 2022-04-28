@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { Input, Flex, InputGroup, InputLeftElement, Select } from '@chakra-ui/react'
-import { DiReact } from 'react-icons/di'
+import { BiSearchAlt } from 'react-icons/bi'
 import { useDispatch, useSelector } from 'react-redux'
 import debounce from 'lodash.debounce'
 
@@ -45,7 +45,7 @@ export function CategoryHeader({ category, valueChangeHandler }) {
       flexWrap="wrap">
       <InputGroup justifySelf="flex-end" width={{ base: '100%', md: '245px' }}>
         <InputLeftElement pointerEvents="none" height="100%">
-          <DiReact color="var(--chakra-colors-cyan-400)" />
+          <BiSearchAlt color="var(--chakra-colors-cyan-400)" />
         </InputLeftElement>
         <Input
           placeholder="Search projects"

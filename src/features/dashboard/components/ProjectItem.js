@@ -25,7 +25,10 @@ export function ProjectItem(props) {
       padding={{ base: '0.5rem', md: '1.5rem' }}
       width="100%"
       alignItems="center"
-      justifyContent="space-between">
+      justifyContent="space-between"
+      boxShadow="5px 5px 8px 0 gray"
+      _hover={{ boxShadow: '8px 8px 8px 0px #afabab' }}
+      transition="0.3s">
       <Flex alignItems="center" gap="0.8rem">
         <Image
           objectFit="contain"

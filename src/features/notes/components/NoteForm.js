@@ -179,7 +179,10 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                 <Center
                   cursor="pointer"
                   onClick={setIsOpenFunction}
-                  background="teal"
+                  background="#805ad5"
+                  _hover={{ background: '#805ad5a8' }}
+                  color="white"
+                  transition="0.3s"
                   borderRadius="50%"
                   d="inline-flex"
                   height="35px"
@@ -231,7 +234,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
               {registrationError && <Box color="red.500">{registrationError}</Box>}
             </VStack>
             <Button
-              colorScheme="teal"
+              colorScheme="purple"
               isLoading={isSubmitting}
               type="submit"
               width="149px"

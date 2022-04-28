@@ -104,7 +104,7 @@ export function Register() {
 
           {registrationError && <Box color="red.500">{registrationError}</Box>}
         </VStack>
-        <Button colorScheme="teal" isLoading={isSubmitting} type="submit" width="100%" mt="6">
+        <Button colorScheme="purple" isLoading={isSubmitting} type="submit" width="100%" mt="6">
           Submit
         </Button>
       </form>
