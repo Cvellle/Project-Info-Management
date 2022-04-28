@@ -40,7 +40,7 @@ export function Project() {
   const getProject = async () => {
     let categoriesRes = await dispatch(getCatgoriesAsync())
     if (categoriesRes && !categoriesRes.error) {
-      categoriesRes.payload.data.length && setTabCounter(categories?.data[0].id)
+      categoriesRes.payload.data.length && setTabCounter(categoriesRes.payload.data[0].id)
       dispatch(getProjectAsync(params.id))
     }
   }
