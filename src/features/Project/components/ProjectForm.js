@@ -34,20 +34,14 @@ const ProjectForm = ({ defValues, status, id }) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [modalEmployees, setModalEmployees] = useState()
-  const [employeesToFilter, setEmployeesToFilter] = useState()
-  const [modalEmployeesFilter, setModalEmployeesFilter] = useState(false)
   const users = useSelector(selectEmployees)
+  const [searchValueModal, setSearchValueModal] = useState('')
+  const [searchValue, setSearchValue] = useState('')
+  const [filteredEmployees, setFilteredEmployees] = useState()
+  const [modalFilteredEmployees, setModalFilteredEmployees] = useState()
 
-  const {
-    employees,
-    setEmployees,
-    addEmployee,
-    removeEmployee,
-    filterEmployees,
-    filteredEmployees,
-    checkIfIsAlreadyAdded,
-    isFiltering
-  } = useFormEmployees()
+  const { employees, setEmployees, addEmployee, removeEmployee, checkIfIsAlreadyAdded } =
+    useFormEmployees()
 
   const navigate = useNavigate()
   const { currentUser } = useSelector(authState)
@@ -66,28 +60,33 @@ const ProjectForm = ({ defValues, status, id }) => {
   }, [])
 
   useEffect(() => {
-    if (!modalEmployeesFilter) {
-      const availableEmployees = users.filter((user) => !checkIfIsAlreadyAdded(user.id))
-      setModalEmployees(availableEmployees)
-      setEmployeesToFilter(availableEmployees)
-    }
-  }, [users, modalEmployeesFilter, employees])
+    const id = setTimeout(() => {
+      const fEmpl = employees.filter((employee) => employee.username.includes(searchValue))
+      setFilteredEmployees(fEmpl)
+    }, 300)
 
-  const filterModalEmployees = (e) => {
-    const employeesFiltered = employeesToFilter.filter((employee) => {
-      if (!employee.username.includes(e.target.value)) {
-        return false
-      }
-      return true
-    })
-
-    setModalEmployees(employeesFiltered)
-    if (e.target.value.length > 0) {
-      setModalEmployeesFilter(true)
-    } else if (modalEmployeesFilter === true && e.target.value.length <= 0) {
-      setModalEmployeesFilter(false)
+    return () => {
+      clearTimeout(id)
     }
-  }
+  }, [searchValue, employees])
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      const fEmpl = modalEmployees?.filter((employee) =>
+        employee.username.includes(searchValueModal)
+      )
+      setModalFilteredEmployees(fEmpl)
+    }, 300)
+
+    return () => {
+      clearTimeout(id)
+    }
+  }, [searchValueModal, modalEmployees])
+
+  useEffect(() => {
+    const availableEmployees = users.filter((user) => !checkIfIsAlreadyAdded(user.id))
+    setModalEmployees(availableEmployees)
+  }, [users, employees])
 
   const onSubmit = async (data) => {
     try {
@@ -161,13 +160,18 @@ const ProjectForm = ({ defValues, status, id }) => {
           </Heading>
           <Flex gap="1rem" flexDirection="column">
             <Flex gap="1rem">
-              <Input bgColor="white" placeholder="Find employee" onChange={filterEmployees} />
+              <Input
+                bgColor="white"
+                placeholder="Find employee"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
               <Button type="button" variant="outline" onClick={onOpen}>
                 ADD
               </Button>
             </Flex>
 
-            {(isFiltering ? filteredEmployees : employees).map((employee) => {
+            {(filteredEmployees ? filteredEmployees : employees)?.map((employee) => {
               return (
                 <ProjectEmployee
                   employee={employee}
@@ -190,22 +194,22 @@ const ProjectForm = ({ defValues, status, id }) => {
                 <Input
                   bgColor="white"
                   placeholder="Find available employees"
-                  onChange={filterModalEmployees}
+                  value={searchValueModal}
+                  onChange={(e) => setSearchValueModal(e.target.value)}
                 />
                 <Flex flexDirection="column" gap="2rem">
-                  {modalEmployees &&
-                    modalEmployees.map((user) => (
-                      <ProjectEmployee
-                        employee={user}
-                        id={user.id}
-                        name={user.username}
-                        key={user.id}
-                        src={`${url}${user.userPhoto?.url}`}
-                        addEmployee={addEmployee}
-                        removeEmployee={removeEmployee}
-                        isAddDisabled={false}
-                      />
-                    ))}
+                  {modalFilteredEmployees?.map((user) => (
+                    <ProjectEmployee
+                      employee={user}
+                      id={user.id}
+                      name={user.username}
+                      key={user.id}
+                      src={`${url}${user.userPhoto?.url}`}
+                      addEmployee={addEmployee}
+                      removeEmployee={removeEmployee}
+                      isAddDisabled={false}
+                    />
+                  ))}
                 </Flex>
               </VStack>
             </ModalComponent>
