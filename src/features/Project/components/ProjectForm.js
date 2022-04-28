@@ -55,7 +55,6 @@ const ProjectForm = ({ defValues, status, id }) => {
   useEffect(() => {
     if (defValues?.currentEmployees) {
       setEmployees(defValues.currentEmployees)
-      console.log(defValues.currentEmployees)
     }
     reset({ name: defValues?.name, description: defValues?.description })
   }, [defValues])
@@ -75,9 +74,6 @@ const ProjectForm = ({ defValues, status, id }) => {
   }, [users, modalEmployeesFilter, employees])
 
   const filterModalEmployees = (e) => {
-    console.log(modalEmployees)
-    let a = modalEmployees
-    console.log(a)
     const employeesFiltered = employeesToFilter.filter((employee) => {
       if (!employee.username.includes(e.target.value)) {
         return false
