@@ -34,6 +34,7 @@ const ProjectForm = ({ defValues, status, id }) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [modalEmployees, setModalEmployees] = useState()
+  const [employeesToFilter, setEmployeesToFilter] = useState()
   const [modalEmployeesFilter, setModalEmployeesFilter] = useState(false)
   const users = useSelector(selectEmployees)
 
@@ -54,6 +55,7 @@ const ProjectForm = ({ defValues, status, id }) => {
   useEffect(() => {
     if (defValues?.currentEmployees) {
       setEmployees(defValues.currentEmployees)
+      console.log(defValues.currentEmployees)
     }
     reset({ name: defValues?.name, description: defValues?.description })
   }, [defValues])
@@ -68,13 +70,20 @@ const ProjectForm = ({ defValues, status, id }) => {
     if (!modalEmployeesFilter) {
       const availableEmployees = users.filter((user) => !checkIfIsAlreadyAdded(user.id))
       setModalEmployees(availableEmployees)
+      setEmployeesToFilter(availableEmployees)
     }
   }, [users, modalEmployeesFilter, employees])
 
   const filterModalEmployees = (e) => {
-    const employeesFiltered = modalEmployees.filter((employee) =>
-      employee.username.includes(e.target.value)
-    )
+    console.log(modalEmployees)
+    let a = modalEmployees
+    console.log(a)
+    const employeesFiltered = employeesToFilter.filter((employee) => {
+      if (!employee.username.includes(e.target.value)) {
+        return false
+      }
+      return true
+    })
 
     setModalEmployees(employeesFiltered)
     if (e.target.value.length > 0) {

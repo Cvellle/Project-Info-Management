@@ -14,7 +14,8 @@ import NoteBox from './NoteBox'
 import NoteIcon from './NoteIcon'
 import { FiDownload } from 'react-icons/fi'
 import { downloadFileAPI } from '../api/downloadFileAPI'
-import { url } from 'shared/constants'
+import { projectManager, url } from 'shared/constants'
+import { authState } from 'features/auth/authSlice'
 
 const ViewNote = () => {
   // hooks
@@ -22,6 +23,9 @@ const ViewNote = () => {
   const params = useParams()
   // selectors
   const { selectedNote } = useSelector(notesState)
+  const authSelector = useSelector(authState)
+  // states
+  const { currentUser } = authSelector
 
   useEffect(() => {
     dispatch(getProjectAsync(params.id))
@@ -137,11 +141,13 @@ const ViewNote = () => {
                 )
               )}
             </Flex>
-            <Link as={ReactLink} to={`edit-note`} d="block" m="auto">
-              <Button colorScheme="teal" d="block" m="auto">
-                EDIT NOTE
-              </Button>
-            </Link>
+            {currentUser?.role === projectManager && (
+              <Link as={ReactLink} to={`edit-note`} d="block" m="auto">
+                <Button colorScheme="teal" d="block" m="auto">
+                  EDIT NOTE
+                </Button>
+              </Link>
+            )}
           </NoteBox>
         </Box>
       ) : (
