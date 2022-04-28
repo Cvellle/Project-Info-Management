@@ -19,7 +19,7 @@ export function Search() {
     <Flex justifyContent={{ base: 'center', md: 'flex-end' }} alignItems="center" gap="1rem">
       <InputGroup justifySelf="flex-end" width={{ base: '80%', md: '60%', lg: '50%' }}>
         <InputLeftElement pointerEvents="none" height="100%">
-          <BiSearchAlt color="var(--chakra-colors-cyan-400)" />
+          <BiSearchAlt color="#805ad5" />
         </InputLeftElement>
         <Input
           placeholder="Search projects"

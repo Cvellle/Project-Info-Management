@@ -45,7 +45,7 @@ export function CategoryHeader({ category, valueChangeHandler }) {
       flexWrap="wrap">
       <InputGroup justifySelf="flex-end" width={{ base: '100%', md: '245px' }}>
         <InputLeftElement pointerEvents="none" height="100%">
-          <BiSearchAlt color="var(--chakra-colors-cyan-400)" />
+          <BiSearchAlt color="#805ad5" />
         </InputLeftElement>
         <Input
           placeholder="Search projects"

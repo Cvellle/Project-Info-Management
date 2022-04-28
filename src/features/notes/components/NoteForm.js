@@ -103,15 +103,15 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
     <>
       <Flex
         padding={{ base: '20px', md: 'none' }}
-        pl={{ base: '20px', md: '45px' }}
+        pl={{ base: '20px', md: '0', lg: '45px' }}
         flexWrap={'wrap'}
         margin={{ base: '0', md: '49px 0' }}
-        justifyContent={{ base: 'center', md: 'unset' }}>
-        <Heading as="h5" fontSize={['sm', 'lg', 'xl']}>
+        justifyContent={{ base: 'center', lg: 'unset' }}>
+        <Heading as="h5" fontSize={['sm', 'lg', 'xl']} w={{ base: '100%', lg: 'unset' }}>
           Note info
         </Heading>
         <Flex
-          pl={{ base: '0', md: '84px' }}
+          pl={{ base: '0', lg: '84px' }}
           justifyContent={{ base: 'center', md: 'auto' }}
           w={{ base: '100%', md: 'auto' }}>
           <form
@@ -120,13 +120,13 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
             d="flex"
             flex-wrap="wrap"
             margin={'auto'}>
-            <VStack spacing="3.5" alignItems="flex-start">
+            <VStack spacing="3.5" alignItems="flex-start" mt={{ base: '30px', lg: '0' }}>
               <FormControl isInvalid={errors.username} isRequired>
                 <FormLabel htmlFor="title" padding="0" margin="0">
                   Note title
                 </FormLabel>
                 <Input
-                  w={{ base: 'auto', md: '624px' }}
+                  w={{ base: '100%', md: '624px' }}
                   id="title"
                   placeholder="Hello"
                   autoComplete="title"
@@ -142,7 +142,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                   Note description
                 </FormLabel>
                 <Textarea
-                  w={{ base: 'auto', md: '624px' }}
+                  w={{ base: '100%', md: '624px' }}
                   id="description"
                   placeholder="Hello"
                   autoComplete="description"
@@ -242,7 +242,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
               d="block"
               mt="6"
               ml="auto"
-              mr={{ base: 'auto', md: '-191px' }}
+              mr={{ base: 'auto', md: 'auto', lg: '-191px' }}
               mb={{ base: '50px', md: '0' }}>
               SAVE NOTE
             </Button>
@@ -256,10 +256,11 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
         title="Add Category"
         confirmText="Submit"
         action={postNewCategory}>
-        <Box position="absolute">
+        <Box my="0px">
           <Input
             placeholder="Add new category"
             size="sm"
+            w="100%"
             bgColor="#ffff"
             name="addCategory"
             onChange={(e) => setNewCategoryFunction(e)}
