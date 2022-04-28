@@ -32,7 +32,7 @@ const Note = ({ data }) => {
       width={{ base: '100%', md: '45%', lg: '300px' }}
       position="relative"
       boxShadow="5px 5px 8px 0 gray"
-      _hover={{ boxShadow: '8px 8px 8px 0px #afabab' }}
+      _hover={{ boxShadow: '5px 5px 8px 0 #afabab' }}
       transition="0.3s"
       p="6"
       rounded="md">

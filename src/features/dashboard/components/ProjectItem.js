@@ -27,7 +27,7 @@ export function ProjectItem(props) {
       alignItems="center"
       justifyContent="space-between"
       boxShadow="5px 5px 8px 0 gray"
-      _hover={{ boxShadow: '8px 8px 8px 0px #afabab' }}
+      _hover={{ boxShadow: '5px 5px 8px 0 #afabab' }}
       transition="0.3s">
       <Flex alignItems="center" gap="0.8rem">
         <Image
