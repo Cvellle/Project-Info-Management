@@ -1,9 +1,9 @@
-import { Flex, Link, Text, IconButton, Heading, AvatarGroup, Avatar, Box } from '@chakra-ui/react'
+import { Flex, Link, Text, IconButton, Heading, AvatarGroup, Box } from '@chakra-ui/react'
 import { projectManager, url } from 'shared/constants'
 import { Link as ReactLink } from 'react-router-dom'
 import { MdOpenInNew } from 'react-icons/md'
 import { useSelector } from 'react-redux'
-
+import Avatar from 'components/UI/Avatar'
 import { authState } from 'features/auth/authSlice'
 import { selectedProject } from '../projectSlice'
 import { PageDescription } from 'components/PageDescription'
@@ -46,6 +46,7 @@ const ProjectDescription = () => {
                 </Heading>
                 <Avatar
                   size="sm"
+                  name={project?.attributes?.project_manager?.data?.attributes?.username}
                   src={`${url && url}${
                     project?.attributes?.project_manager?.data?.attributes?.userPhoto?.data
                       ?.attributes?.url
