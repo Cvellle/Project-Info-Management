@@ -16,14 +16,6 @@ export const dashboardSlice = createSlice({
   name: 'dashboard',
   initialState,
   reducers: {
-    editProject: (state, action) => {
-      let currentId = action.payload.id
-      state.projects = [
-        ...state.projects.slice(0, currentId - 1),
-        action.payload,
-        ...state.projects.slice(currentId)
-      ]
-    },
     addProject: (state, action) => {
       state.projects = [...state.projects, action.payload]
     },
@@ -46,7 +38,7 @@ export const dashboardSlice = createSlice({
   }
 })
 
-export const { editProject, setFilterBy, addProject, resetProjects } = dashboardSlice.actions
+export const { setFilterBy, addProject, resetProjects } = dashboardSlice.actions
 
 export const selectProjects = (state) => state.dashboard.projects
 export const dashboardState = (state) => state.dashboard

@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Input, Flex, InputGroup, InputLeftElement, Select } from '@chakra-ui/react'
-import { DiReact } from 'react-icons/di'
+import { BiSearchAlt } from 'react-icons/bi'
 import { useDispatch, useSelector } from 'react-redux'
 import debounce from 'lodash.debounce'
 
@@ -35,11 +35,6 @@ export function CategoryHeader({ category, valueChangeHandler }) {
     return debounce(handleChange, 300)
   }, [])
 
-  // effects
-  useEffect(() => {
-    // filterResults()
-  }, [])
-
   useDidUpdate(filterResults, [name, sort])
 
   return (
@@ -50,7 +45,7 @@ export function CategoryHeader({ category, valueChangeHandler }) {
       flexWrap="wrap">
       <InputGroup justifySelf="flex-end" width={{ base: '100%', md: '245px' }}>
         <InputLeftElement pointerEvents="none" height="100%">
-          <DiReact color="var(--chakra-colors-cyan-400)" />
+          <BiSearchAlt color="#805ad5" />
         </InputLeftElement>
         <Input
           placeholder="Search projects"
@@ -62,7 +57,6 @@ export function CategoryHeader({ category, valueChangeHandler }) {
           onChange={debouncedChangeHandler}
         />
       </InputGroup>
-
       <Select
         name="sort"
         autoComplete="current-role"

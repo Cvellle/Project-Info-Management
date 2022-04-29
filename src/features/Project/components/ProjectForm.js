@@ -21,10 +21,10 @@ import { useNavigate } from 'react-router-dom'
 import { getUsersAsync } from 'features/edit-user/usersSlice'
 import { authState } from 'features/auth/authSlice'
 import { method } from './method'
+import { url } from 'shared/constants'
+import useFormEmployees from 'hooks/useFormEmployees'
 
 const ProjectForm = ({ defValues, status, id }) => {
-  const url = process.env.REACT_APP_BACKEND_URL
-
   const {
     handleSubmit,
     register,
@@ -33,11 +33,19 @@ const ProjectForm = ({ defValues, status, id }) => {
   } = useForm()
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [employees, setEmployees] = useState([])
-  const [isFiltering, setIsFiltering] = useState()
-  const [filteredEmployees, setFilteredEmployees] = useState([])
+  const [modalEmployees, setModalEmployees] = useState()
+  const users = useSelector(selectEmployees)
+  const [searchValueModal, setSearchValueModal] = useState('')
+  const [searchValue, setSearchValue] = useState('')
+  const [filteredEmployees, setFilteredEmployees] = useState()
+  const [modalFilteredEmployees, setModalFilteredEmployees] = useState()
+
+  const { employees, setEmployees, addEmployee, removeEmployee, checkIfIsAlreadyAdded } =
+    useFormEmployees()
+
   const navigate = useNavigate()
   const { currentUser } = useSelector(authState)
+
   useEffect(() => {
     if (defValues?.currentEmployees) {
       setEmployees(defValues.currentEmployees)
@@ -51,36 +59,39 @@ const ProjectForm = ({ defValues, status, id }) => {
     dispatch(getUsersAsync())
   }, [])
 
-  const checkIfIsAlreadyAdded = (id) => {
-    return employees.find((employee) => employee.id === id)
-  }
+  useEffect(() => {
+    const id = setTimeout(() => {
+      const fEmpl = employees.filter((employee) => employee.username.includes(searchValue))
+      setFilteredEmployees(fEmpl)
+    }, 300)
 
-  const users = useSelector(selectEmployees).filter((user) => !checkIfIsAlreadyAdded(user.id))
-
-  const addEmployee = (employee) => {
-    const employeesNew = [...employees, employee]
-    setEmployees(employeesNew)
-  }
-
-  const removeEmployee = (id) => {
-    const employeesNew = employees.filter((emp) => emp.id !== id)
-    setEmployees(employeesNew)
-  }
-
-  const filterEmployees = (e) => {
-    if (e.target.value.length > 0) {
-      setIsFiltering(true)
-    } else if (isFiltering === true && e.target.value.length <= 0) {
-      setIsFiltering(false)
+    return () => {
+      clearTimeout(id)
     }
-    const filteredEmployeesNew = employees.filter((emp) => emp.username.includes(e.target.value))
-    setFilteredEmployees(filteredEmployeesNew)
-  }
+  }, [searchValue, employees])
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      const fEmpl = modalEmployees?.filter((employee) =>
+        employee.username.includes(searchValueModal)
+      )
+      setModalFilteredEmployees(fEmpl)
+    }, 300)
+
+    return () => {
+      clearTimeout(id)
+    }
+  }, [searchValueModal, modalEmployees])
+
+  useEffect(() => {
+    const availableEmployees = users.filter((user) => !checkIfIsAlreadyAdded(user.id))
+    setModalEmployees(availableEmployees)
+  }, [users, employees])
 
   const onSubmit = async (data) => {
     try {
       let res = await method({ status, employees, currentUser, data, id })
-      res && !res.error && navigate(id ? `/project/${id}` : `/`)
+      res && !res.error && navigate(-1)
     } catch (ex) {
       throw Error(ex?.response?.data?.error?.message ?? 'Unknown error')
     }
@@ -149,13 +160,18 @@ const ProjectForm = ({ defValues, status, id }) => {
           </Heading>
           <Flex gap="1rem" flexDirection="column">
             <Flex gap="1rem">
-              <Input bgColor="white" placeholder="Find employee" onChange={filterEmployees} />
+              <Input
+                bgColor="white"
+                placeholder="Find employee"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
               <Button type="button" variant="outline" onClick={onOpen}>
                 ADD
               </Button>
             </Flex>
 
-            {(isFiltering ? filteredEmployees : employees).map((employee) => {
+            {(filteredEmployees ? filteredEmployees : employees)?.map((employee) => {
               return (
                 <ProjectEmployee
                   employee={employee}
@@ -174,26 +190,34 @@ const ProjectForm = ({ defValues, status, id }) => {
               title="Add Employee"
               confirmText="Save"
               action={onClose}>
-              <Flex flexDirection="column" gap="2rem">
-                {users.map((user) => (
-                  <ProjectEmployee
-                    employee={user}
-                    id={user.id}
-                    name={user.username}
-                    key={user.id}
-                    src={`${url}${user.userPhoto?.url}`}
-                    addEmployee={addEmployee}
-                    removeEmployee={removeEmployee}
-                    isAddDisabled={false}
-                  />
-                ))}
-              </Flex>
+              <VStack gap="1rem" alignItems="stretch">
+                <Input
+                  bgColor="white"
+                  placeholder="Find available employees"
+                  value={searchValueModal}
+                  onChange={(e) => setSearchValueModal(e.target.value)}
+                />
+                <Flex flexDirection="column" gap="2rem">
+                  {modalFilteredEmployees?.map((user) => (
+                    <ProjectEmployee
+                      employee={user}
+                      id={user.id}
+                      name={user.username}
+                      key={user.id}
+                      src={`${url}${user.userPhoto?.url}`}
+                      addEmployee={addEmployee}
+                      removeEmployee={removeEmployee}
+                      isAddDisabled={false}
+                    />
+                  ))}
+                </Flex>
+              </VStack>
             </ModalComponent>
           </Flex>
         </Flex>
 
         <Button
-          colorScheme="teal"
+          colorScheme="purple"
           isLoading={isSubmitting}
           type="submit"
           alignSelf="flex-end"

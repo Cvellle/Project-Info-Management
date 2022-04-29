@@ -16,7 +16,13 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { getCatgoriesAsync, getProjectAsync, notesState, postCategoryAsync } from '../notesSlice'
+import {
+  emptyProject,
+  getCatgoriesAsync,
+  getProjectAsync,
+  notesState,
+  postCategoryAsync
+} from '../notesSlice'
 import { ModalComponent } from 'components/UI/ModalComponent'
 import { method } from '../method'
 import PreviewFiles from './PreviewFiles'
@@ -43,6 +49,10 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
 
   useEffect(() => {
     dispatch(getProjectAsync(params.id))
+
+    return () => {
+      dispatch(emptyProject())
+    }
   }, [])
 
   const setIsOpenFunction = () => {
@@ -67,7 +77,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
     )
     if (response && !response.error) {
       let newOptionRes = await dispatch(getCatgoriesAsync())
-      newOptionRes && !newOptionRes.error && setValue('category', newCategory)
+      newOptionRes && !newOptionRes.error && setValue('category', response.payload.id)
       newOptionRes && !newOptionRes.error && setIsOpen(false)
     }
   }
@@ -93,15 +103,15 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
     <>
       <Flex
         padding={{ base: '20px', md: 'none' }}
-        pl={{ base: '20px', md: '45px' }}
+        pl={{ base: '20px', md: '0', lg: '45px' }}
         flexWrap={'wrap'}
         margin={{ base: '0', md: '49px 0' }}
-        justifyContent={{ base: 'center', md: 'unset' }}>
-        <Heading as="h5" fontSize={['sm', 'lg', 'xl']}>
+        justifyContent={{ base: 'center', lg: 'unset' }}>
+        <Heading as="h5" fontSize={['sm', 'lg', 'xl']} w={{ base: '100%', lg: 'unset' }}>
           Note info
         </Heading>
         <Flex
-          pl={{ base: '0', md: '84px' }}
+          pl={{ base: '0', lg: '84px' }}
           justifyContent={{ base: 'center', md: 'auto' }}
           w={{ base: '100%', md: 'auto' }}>
           <form
@@ -110,13 +120,13 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
             d="flex"
             flex-wrap="wrap"
             margin={'auto'}>
-            <VStack spacing="3.5" alignItems="flex-start">
+            <VStack spacing="3.5" alignItems="flex-start" mt={{ base: '30px', lg: '0' }}>
               <FormControl isInvalid={errors.username} isRequired>
                 <FormLabel htmlFor="title" padding="0" margin="0">
                   Note title
                 </FormLabel>
                 <Input
-                  w={{ base: 'auto', md: '624px' }}
+                  w={{ base: '100%', md: '624px' }}
                   id="title"
                   placeholder="Hello"
                   autoComplete="title"
@@ -132,7 +142,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                   Note description
                 </FormLabel>
                 <Textarea
-                  w={{ base: 'auto', md: '624px' }}
+                  w={{ base: '100%', md: '624px' }}
                   id="description"
                   placeholder="Hello"
                   autoComplete="description"
@@ -151,23 +161,28 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                 </FormLabel>
                 <Select
                   {...register('category')}
+                  id="category"
                   name="category"
                   autoComplete="current-category"
                   isInvalid={errors.category}
-                  defaultValue={defaultValues?.category?.data?.id || 1}>
-                  {categories?.data?.map((note) => {
-                    let noteAttr = note.attributes
+                  defaultValue={defaultValues !== null ? defaultValues?.category?.data?.id : ' '}>
+                  {categories?.data?.map((category) => {
+                    let categoryAttr = category?.attributes
                     return (
-                      <option key={note.id} value={note.id}>
-                        {noteAttr.name}
+                      <option key={category.id} value={category.id}>
+                        {categoryAttr.name}
                       </option>
                     )
                   })}
+                  {defaultValues === null && <option value={' '} hidden></option>}
                 </Select>
                 <Center
                   cursor="pointer"
                   onClick={setIsOpenFunction}
-                  background="teal"
+                  background="#805ad5"
+                  _hover={{ background: '#805ad5a8' }}
+                  color="white"
+                  transition="0.3s"
                   borderRadius="50%"
                   d="inline-flex"
                   height="35px"
@@ -180,10 +195,8 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                 </Center>
               </FormControl>
 
-              {uploadedFiles}
-
               <FormControl position={'relative'} isInvalid={errors.files}>
-                <Box bgColor="#EAEAEA" cursor="pointer" width="180px" padding="0">
+                <Box bgColor="#EAEAEA" cursor="pointer" width="180px" padding="0" mt="30px">
                   <FormLabel
                     htmlFor="files"
                     width="100%"
@@ -216,10 +229,12 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
                 <FormErrorMessage>{errors.files && errors.files.message}</FormErrorMessage>
               </FormControl>
 
+              {uploadedFiles}
+
               {registrationError && <Box color="red.500">{registrationError}</Box>}
             </VStack>
             <Button
-              colorScheme="teal"
+              colorScheme="purple"
               isLoading={isSubmitting}
               type="submit"
               width="149px"
@@ -227,7 +242,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
               d="block"
               mt="6"
               ml="auto"
-              mr={{ base: 'auto', md: '-191px' }}
+              mr={{ base: 'auto', md: 'auto', lg: '-191px' }}
               mb={{ base: '50px', md: '0' }}>
               SAVE NOTE
             </Button>
@@ -241,10 +256,11 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
         title="Add Category"
         confirmText="Submit"
         action={postNewCategory}>
-        <Box position="absolute">
+        <Box my="0px">
           <Input
             placeholder="Add new category"
             size="sm"
+            w="100%"
             bgColor="#ffff"
             name="addCategory"
             onChange={(e) => setNewCategoryFunction(e)}

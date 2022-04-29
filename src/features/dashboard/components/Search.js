@@ -1,5 +1,5 @@
 import { Input, Flex, InputGroup, InputLeftElement, Link, Button } from '@chakra-ui/react'
-import { DiReact } from 'react-icons/di'
+import { BiSearchAlt } from 'react-icons/bi'
 import { useDispatch, useSelector } from 'react-redux'
 import { authState } from 'features/auth/authSlice'
 import { Link as ReactLink } from 'react-router-dom'
@@ -19,7 +19,7 @@ export function Search() {
     <Flex justifyContent={{ base: 'center', md: 'flex-end' }} alignItems="center" gap="1rem">
       <InputGroup justifySelf="flex-end" width={{ base: '80%', md: '60%', lg: '50%' }}>
         <InputLeftElement pointerEvents="none" height="100%">
-          <DiReact color="var(--chakra-colors-cyan-400)" />
+          <BiSearchAlt color="#805ad5" />
         </InputLeftElement>
         <Input
           placeholder="Search projects"
@@ -33,7 +33,7 @@ export function Search() {
 
       {currentUser.role === projectManager && (
         <Link as={ReactLink} size="sm" to="/create-project" _hover={{ textDecoration: 'none' }}>
-          <Button colorScheme="teal" fontWeight="medium" size="sm">
+          <Button colorScheme="purple" fontWeight="medium" size="sm">
             New Project
           </Button>
         </Link>

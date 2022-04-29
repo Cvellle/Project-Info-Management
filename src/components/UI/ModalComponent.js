@@ -22,7 +22,7 @@ export const ModalComponent = ({ title, confirmText, children, isOpen, onClose, 
           <Button variant="outline" mr={3} onClick={onClose}>
             Close
           </Button>
-          <Button colorScheme="teal" onClick={() => action()}>
+          <Button colorScheme="purple" onClick={() => action()}>
             {confirmText}
           </Button>
         </ModalFooter>
