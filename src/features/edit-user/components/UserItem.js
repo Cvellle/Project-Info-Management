@@ -1,8 +1,8 @@
 import { Flex, Heading, Text, Image, Center, Box } from '@chakra-ui/react'
-// import { apiURL } from 'services/axios'
-import newTab from 'assets/new-tab.png'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+
+import newTab from 'assets/new-tab.png'
 
 export function UserItem(props) {
   const navigate = useNavigate()
