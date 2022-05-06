@@ -57,11 +57,23 @@ const ViewNote = () => {
   }, [])
 
   useEffect(() => {
-    setFilesArray(selectedNote?.attributes?.files?.data)
+    setFilesArray(
+      selectedNote?.attributes?.files?.data.map((el) => {
+        return {
+          file: el,
+          active: false
+        }
+      })
+    )
   }, [selectedNote])
 
   // useEffect(() => {
-  // }, [direction])
+  //   let activatedItem = {
+  //     file: filesArray[counter],
+  //     active: true
+  //   }
+  //   setFilesArray(...filesArray.slice(0, counter - 1), activatedItem, ...filesArray.slice(counter))
+  // }, [counter])
 
   const downloadFile = (passedProps) => {
     downloadFileAPI(passedProps)
@@ -89,6 +101,11 @@ const ViewNote = () => {
     // }
     // }
 
+    // let activatedItem = {
+    //   file: filesArray[counter].file,
+    //   active: false
+    // }
+    // setFilesArray(...filesArray.slice(0, counter - 1), activatedItem, ...filesArray.slice(counter))
     setCounter(counter - 1)
     counter === 0 && setCounter(filesArray.length - 1)
   }
@@ -210,7 +227,7 @@ const ViewNote = () => {
             flexWrap="wrap"
             justifyContent="center"
             width="100%"
-            h="100vh"
+            h={{ base: '100%', lg: '100vh' }}
             background="#010614b3"
             position="fixed"
             top="0"
@@ -224,27 +241,37 @@ const ViewNote = () => {
               cursor="pointer"
             />
             <Flex width="100%" justifyContent="center">
-              <Center width="800px" height="600px">
+              <Center width={{ base: '80vw', lg: '800px' }} height={{ base: '80vw', lg: '600px' }}>
                 {filesArray?.length &&
-                  (filesArray[counter].attributes?.mime?.split('/')[0] === 'image' ? (
+                  (filesArray[counter].file?.attributes?.mime?.split('/')[0] === 'image' ? (
                     <Image
-                      src={url + filesArray[counter].attributes.url}
+                      src={url + filesArray[counter].file?.attributes.url}
                       height="auto"
                       width="100%"
                     />
                   ) : (
-                    <DisplayText url={url + filesArray[counter].attributes.url} />
+                    <DisplayText url={url + filesArray[counter].file?.attributes.url} />
                   ))}
               </Center>
             </Flex>
             <Flex width="100%" justifyContent="center" alignItems="center">
               <MdOutlineArrowBackIos cursor="pointer" onClick={(e) => moveLeft(e)} />
               {filesArray?.map((file, i) => (
-                <Box key={file.id} index={i} mr="10px" ml="10px" onClick={() => openGallery(i)}>
-                  <Box h="150px" width="150px">
-                    <Center h="150px" width="150px" border="1px solid lightgray" p="30px">
-                      {file.attributes.mime?.split('/')[0] === 'image' ? (
-                        <Image src={url + file.attributes.url} height="auto" width="100%" />
+                <Box
+                  key={file.file.id}
+                  index={i}
+                  mr="10px"
+                  ml="10px"
+                  onClick={() => openGallery(i)}
+                  border={'1px solid teal'}>
+                  <Box h={{ base: '40vw', lg: '150px' }} width={{ base: '40vw', lg: '150px' }}>
+                    <Center
+                      h={{ base: '40vw', lg: '150px' }}
+                      width={{ base: '40vw', lg: '150px' }}
+                      border={file.active && '1px solid lightgray'}
+                      p="30px">
+                      {file.file.attributes.mime?.split('/')[0] === 'image' ? (
+                        <Image src={url + file.file.attributes.url} height="auto" width="100%" />
                       ) : (
                         <Flex>
                           <NoteIcon files="[file]" height="auto" width="100" />
