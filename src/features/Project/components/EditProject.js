@@ -1,11 +1,11 @@
 import { PageDescription } from 'components/PageDescription'
-import rocket from '../../../assets/rocket.png'
 import ProjectForm from './ProjectForm'
 import { Box, Spinner, Center } from '@chakra-ui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { getProjectAsync, projectState } from '../projectSlice'
 import { useParams } from 'react-router-dom'
+import { url } from 'shared/constants'
 
 const EditProject = () => {
   const dispatch = useDispatch()
@@ -39,7 +39,11 @@ const EditProject = () => {
     <>
       {!loading ? (
         <Box>
-          <PageDescription title="Edit Project" text="Update project info" image={rocket} />
+          <PageDescription
+            title="Edit Project"
+            text="Update project info"
+            image={`${url}${selectedProject?.attributes?.logo?.data?.attributes?.url}`}
+          />
           <Box
             bgColor="#F8F8F8"
             maxW="1280px"
