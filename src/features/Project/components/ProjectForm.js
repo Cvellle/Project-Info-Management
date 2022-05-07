@@ -3,26 +3,28 @@ import {
   Flex,
   Heading,
   VStack,
-  useDisclosure,
   Input,
   FormControl,
-  FormErrorMessage
+  FormErrorMessage,
+  Text,
+  InputLeftElement,
+  InputGroup
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import FormInput from 'components/UI/FormInput'
 import FileInput from 'components/UI/FileInput'
 import FormTextarea from 'components/UI/FormTextarea'
-import { ModalComponent } from 'components/UI/ModalComponent'
 import ProjectEmployee from './ProjectEmployee'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectEmployees } from 'features/edit-user/usersSlice'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getUsersAsync } from 'features/edit-user/usersSlice'
 import { authState } from 'features/auth/authSlice'
 import { method } from './method'
 import { url } from 'shared/constants'
 import useFormEmployees from 'hooks/useFormEmployees'
+import { BiSearchAlt } from 'react-icons/bi'
 
 const ProjectForm = ({ defValues, status, id }) => {
   const {
@@ -32,13 +34,12 @@ const ProjectForm = ({ defValues, status, id }) => {
     formState: { errors, isSubmitting }
   } = useForm()
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [modalEmployees, setModalEmployees] = useState()
+  const [availableEmployees, setAvailableEmployees] = useState()
   const users = useSelector(selectEmployees)
-  const [searchValueModal, setSearchValueModal] = useState('')
+  const [searchValueAvailable, setSearchValueAvailable] = useState('')
   const [searchValue, setSearchValue] = useState('')
   const [filteredEmployees, setFilteredEmployees] = useState()
-  const [modalFilteredEmployees, setModalFilteredEmployees] = useState()
+  const [availableFilteredEmployees, setAvailableFilteredEmployees] = useState()
 
   const { employees, setEmployees, addEmployee, removeEmployee, checkIfIsAlreadyAdded } =
     useFormEmployees()
@@ -72,20 +73,20 @@ const ProjectForm = ({ defValues, status, id }) => {
 
   useEffect(() => {
     const id = setTimeout(() => {
-      const fEmpl = modalEmployees?.filter((employee) =>
-        employee.username.includes(searchValueModal)
+      const fEmpl = availableEmployees?.filter((employee) =>
+        employee.username.includes(searchValueAvailable)
       )
-      setModalFilteredEmployees(fEmpl)
+      setAvailableFilteredEmployees(fEmpl)
     }, 300)
 
     return () => {
       clearTimeout(id)
     }
-  }, [searchValueModal, modalEmployees])
+  }, [searchValueAvailable, availableEmployees])
 
   useEffect(() => {
     const availableEmployees = users.filter((user) => !checkIfIsAlreadyAdded(user.id))
-    setModalEmployees(availableEmployees)
+    setAvailableEmployees(availableEmployees)
   }, [users, employees])
 
   const onSubmit = async (data) => {
@@ -154,51 +155,72 @@ const ProjectForm = ({ defValues, status, id }) => {
             </FormControl>
           </Flex>
         </Flex>
-        <Flex gap={{ base: '1rem', md: '5rem' }} flexDirection={{ base: 'column', md: 'row' }}>
+        <Flex
+          gap={{ base: '1rem', md: '5rem' }}
+          flexDirection={{ base: 'column', md: 'row' }}
+          width="100%">
           <Heading as="h3" fontSize={['lg', 'xl']} paddingRight={{ md: '1rem' }}>
             Members
           </Heading>
-          <Flex gap="1rem" flexDirection="column">
-            <Flex gap="1rem">
-              <Input
-                bgColor="white"
-                placeholder="Find employee"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-              <Button type="button" variant="outline" onClick={onOpen}>
-                ADD
-              </Button>
-            </Flex>
-
-            {(filteredEmployees ? filteredEmployees : employees)?.map((employee) => {
-              return (
-                <ProjectEmployee
-                  employee={employee}
-                  id={employee.id}
-                  name={employee.username}
-                  key={employee.id}
-                  src={`${url}${employee.userPhoto?.url}`}
-                  removeEmployee={removeEmployee}
-                  isAddDisabled={true}
-                />
-              )
-            })}
-            <ModalComponent
-              isOpen={isOpen}
-              onClose={onClose}
-              title="Add Employee"
-              confirmText="Save"
-              action={onClose}>
-              <VStack gap="1rem" alignItems="stretch">
+          <Flex columnGap="2.5rem" rowGap="1.8rem" flexDirection={{ base: 'column', md: 'row' }}>
+            <VStack alignItems="stretch">
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" height="100%">
+                  <BiSearchAlt color="#805ad5" />
+                </InputLeftElement>
                 <Input
                   bgColor="white"
-                  placeholder="Find available employees"
-                  value={searchValueModal}
-                  onChange={(e) => setSearchValueModal(e.target.value)}
+                  placeholder="Added employees"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  minW="300px"
                 />
-                <Flex flexDirection="column" gap="2rem">
-                  {modalFilteredEmployees?.map((user) => (
+              </InputGroup>
+              <Flex
+                flexDirection="column"
+                gap="1.2rem"
+                bgColor="white"
+                p="0.8rem"
+                borderRadius="0.4rem">
+                {filteredEmployees?.length ? (
+                  filteredEmployees.map((employee) => (
+                    <ProjectEmployee
+                      employee={employee}
+                      id={employee.id}
+                      name={employee.username}
+                      key={employee.id}
+                      src={`${url}${employee.userPhoto?.url}`}
+                      removeEmployee={removeEmployee}
+                      isAddDisabled={true}
+                    />
+                  ))
+                ) : (
+                  <Text margin="auto">No data</Text>
+                )}
+              </Flex>
+            </VStack>
+            <VStack alignItems="stretch">
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" height="100%">
+                  <BiSearchAlt color="#805ad5" />
+                </InputLeftElement>
+                <Input
+                  bgColor="white"
+                  placeholder="Available employees"
+                  value={searchValueAvailable}
+                  onChange={(e) => setSearchValueAvailable(e.target.value)}
+                  minW="300px"
+                />
+              </InputGroup>
+
+              <Flex
+                flexDirection="column"
+                gap="1.2rem"
+                bgColor="white"
+                p="0.8rem"
+                borderRadius="0.4rem">
+                {availableFilteredEmployees?.length ? (
+                  availableFilteredEmployees.map((user) => (
                     <ProjectEmployee
                       employee={user}
                       id={user.id}
@@ -209,10 +231,12 @@ const ProjectForm = ({ defValues, status, id }) => {
                       removeEmployee={removeEmployee}
                       isAddDisabled={false}
                     />
-                  ))}
-                </Flex>
-              </VStack>
-            </ModalComponent>
+                  ))
+                ) : (
+                  <Text margin="auto">No data</Text>
+                )}
+              </Flex>
+            </VStack>
           </Flex>
         </Flex>
 
@@ -230,4 +254,4 @@ const ProjectForm = ({ defValues, status, id }) => {
   )
 }
 
-export default ProjectForm
+export default memo(ProjectForm)
