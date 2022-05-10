@@ -37,7 +37,7 @@ export function Project() {
   // states
   const { categories } = notesSelector
   const { currentUser } = authSelector
-  const { loading } = projectSelector
+  const { loading, hasNotes } = projectSelector
   const [tabCounter, setTabCounter] = useState(null)
   const [currentTab, setCurrentTab] = useState(null)
 
@@ -150,31 +150,28 @@ export function Project() {
           <Spinner size="xl" />
         </Center>
       )}
-      {!project?.attributes?.notes?.data?.length &&
-        !categories.length &&
-        currentTab === null &&
-        loading !== null && (
-          <>
-            <Image src={noData} m="auto" w={{ base: '80%', lg: '15vw' }} mt="20vh" d="block" />
-            {!categories.length && currentUser?.role === projectManager && (
-              <Link as={ReactLink} to="add-note">
-                {' '}
-                <Button
-                  variant="submitButton"
-                  colorScheme="purple"
-                  size="sm"
-                  width={{ base: '110px' }}
-                  fontWeight={'600'}
-                  fontSize="18px"
-                  m="auto"
-                  mt="50px"
-                  d="block">
-                  Add Note
-                </Button>
-              </Link>
-            )}
-          </>
-        )}
+      {hasNotes === false && (
+        <>
+          <Image src={noData} m="auto" w={{ base: '80%', lg: '15vw' }} mt="20vh" d="block" />
+          {!categories.length && currentUser?.role === projectManager && (
+            <Link as={ReactLink} to="add-note">
+              {' '}
+              <Button
+                variant="submitButton"
+                colorScheme="purple"
+                size="sm"
+                width={{ base: '110px' }}
+                fontWeight={'600'}
+                fontSize="18px"
+                m="auto"
+                mt="50px"
+                d="block">
+                Add Note
+              </Button>
+            </Link>
+          )}
+        </>
+      )}
     </>
   )
 }

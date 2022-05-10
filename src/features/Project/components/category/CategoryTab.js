@@ -69,9 +69,6 @@ const CategoryTab = ({ category }) => {
           )}
         </Box>
       )}
-      {/* {!toMap?.length && status !== 'pending' && (
-        <Image src={noData} m="auto" w={{ base: '80%', lg: '15vw' }} mt="20vh" d="block" />
-      )} */}
     </>
   )
 }
