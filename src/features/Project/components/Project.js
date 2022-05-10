@@ -61,12 +61,10 @@ export function Project() {
     }
   }, [])
 
-  const resetFunction = async () => {
-    let res = await dispatch(resetLoading())
-    if (res && !res.error) {
-      dispatch(resetNotes())
-      dispatch(emptyProject())
-    }
+  const resetFunction = () => {
+    dispatch(resetLoading())
+    dispatch(resetNotes())
+    dispatch(emptyProject())
   }
 
   const setTabCounterFunction = (counter) => {
