@@ -62,9 +62,8 @@ export function Project() {
   }, [])
 
   const resetFunction = async () => {
-    let a = await dispatch(resetLoading())
-    if (a && !a.error) {
-      console.log(loading)
+    let res = await dispatch(resetLoading())
+    if (res && !res.error) {
       dispatch(resetNotes())
       dispatch(emptyProject())
     }

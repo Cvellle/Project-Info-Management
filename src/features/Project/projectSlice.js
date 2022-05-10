@@ -29,7 +29,7 @@ export const projectSlice = createSlice({
       state.laodig = true
     },
     [getProjectAsync.fulfilled]: (state, action) => {
-      action.payload.attributes.notes.data.length && (state.hasNotes = true)
+      action.payload?.attributes?.notes?.data?.length && (state.hasNotes = true)
       state.selectedProject = action.payload
       state.loading = false
     }

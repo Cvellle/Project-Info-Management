@@ -65,7 +65,6 @@ const ViewNote = () => {
         }
       })
     )
-    console.log(selectedNote?.attributes?.files?.data)
   }, [selectedNote])
 
   useEffect(() => {
