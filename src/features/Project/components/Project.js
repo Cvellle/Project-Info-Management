@@ -78,7 +78,7 @@ export function Project() {
     <>
       {project !== null ? (
         <Box>
-          {currentTab !== null && currentTab && currentTab[0] && currentTab[0].id && (
+          {currentTab !== null && currentTab && currentTab[0] && currentTab[0].id && hasNotes && (
             <>
               <Tabs
                 margin={{ base: '0', md: '2rem auto' }}
@@ -150,7 +150,7 @@ export function Project() {
           <Spinner size="xl" />
         </Center>
       )}
-      {hasNotes === false && (
+      {!hasNotes && (
         <>
           <Image src={noData} m="auto" w={{ base: '80%', lg: '15vw' }} mt="20vh" d="block" />
           {!categories.length && currentUser?.role === projectManager && (
