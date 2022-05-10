@@ -75,6 +75,9 @@ export const notesSlice = createSlice({
     emptyProject: (state) => {
       state.selectedProject = null
       return state
+    },
+    resetStatus: (state) => {
+      state.status = 'pending'
     }
   },
   extraReducers: {
@@ -108,7 +111,8 @@ export const {
   resetNotes,
   clearSelectedNote,
   setnoteFormDisabled,
-  emptyProject
+  emptyProject,
+  resetStatus
 } = notesSlice.actions
 
 export const notesState = (state) => state.notes

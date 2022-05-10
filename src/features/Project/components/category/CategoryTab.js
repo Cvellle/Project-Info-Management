@@ -1,13 +1,14 @@
 import { CategoryHeader } from './CategoryHeader'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Center, Box } from '@chakra-ui/react'
+import { Center, Box, Image } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 
 import { notesState, getNotesAsync, emptyProject } from 'features/notes/notesSlice'
 import CategoryNotes from './CategoryNotes'
 import { getProjectAsync, selectedProject } from 'features/Project/projectSlice'
 import { useDidUpdate } from 'hooks/useDidUpdate'
+import noData from 'assets/no-results.png'
 
 const CategoryTab = ({ category }) => {
   const { id } = useParams()
@@ -61,11 +62,16 @@ const CategoryTab = ({ category }) => {
             <Center h="50vh" opacity="0.5">
               {'Loading...'}
             </Center>
+          ) : toMap ? (
+            <CategoryNotes notes={toMap?.data} />
           ) : (
-            notesLocal && <CategoryNotes notes={toMap?.data} />
+            <Image src={noData} m="auto" w={{ base: '80%', lg: '15vw' }} mt="20vh" d="block" />
           )}
         </Box>
       )}
+      {/* {!toMap?.length && status !== 'pending' && (
+        <Image src={noData} m="auto" w={{ base: '80%', lg: '15vw' }} mt="20vh" d="block" />
+      )} */}
     </>
   )
 }

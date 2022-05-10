@@ -9,19 +9,21 @@ import {
   Button,
   Box,
   Center,
-  Spinner
+  Spinner,
+  Image
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as ReactLink, useParams } from 'react-router-dom'
 
-import { emptyProject, selectedProject } from '../projectSlice'
+import { emptyProject, projectState, resetLoading, selectedProject } from '../projectSlice'
 import CategoryTab from './category/CategoryTab'
 import { getCatgoriesAsync, notesState, resetNotes } from 'features/notes/notesSlice'
 import { getProjectAsync } from 'features/Project/projectSlice'
 import { authState } from 'features/auth/authSlice'
 import { projectManager } from 'shared/constants'
 import { useDidUpdate } from 'hooks/useDidUpdate'
+import noData from 'assets/no-results.png'
 
 export function Project() {
   // hooks
@@ -31,9 +33,11 @@ export function Project() {
   const notesSelector = useSelector(notesState)
   const project = useSelector(selectedProject)
   const authSelector = useSelector(authState)
+  const projectSelector = useSelector(projectState)
   // states
   const { categories } = notesSelector
   const { currentUser } = authSelector
+  const { loading } = projectSelector
   const [tabCounter, setTabCounter] = useState(null)
   const [currentTab, setCurrentTab] = useState(null)
 
@@ -57,9 +61,13 @@ export function Project() {
     }
   }, [])
 
-  const resetFunction = () => {
-    dispatch(resetNotes())
-    dispatch(emptyProject())
+  const resetFunction = async () => {
+    let a = await dispatch(resetLoading())
+    if (a && !a.error) {
+      console.log(loading)
+      dispatch(resetNotes())
+      dispatch(emptyProject())
+    }
   }
 
   const setTabCounterFunction = (counter) => {
@@ -70,37 +78,38 @@ export function Project() {
     <>
       {project !== null ? (
         <Box>
-          <Tabs
-            margin={{ base: '0', md: '2rem auto' }}
-            maxW="1280px"
-            minH={{ base: '141px' }}
-            position="relative"
-            pt={{ base: '80px', md: '0' }}>
-            <Link
-              as={ReactLink}
-              size="sm"
-              to="add-note"
-              position="absolute"
-              right={{ base: '5%', md: '38px' }}
-              top={{ base: '20px', md: 'calc(48px + 26px)' }}
-              _hover={{ textDecoration: 'none' }}
-              ml={{ base: 'none', md: 'auto' }}
-              width={{ base: '90%', md: '142px' }}
-              height={{ base: '40px', md: '48px' }}>
-              {currentUser?.role === projectManager && (
-                <Button
-                  colorScheme="purple"
+          {currentTab !== null && currentTab && currentTab[0] && currentTab[0].id && (
+            <>
+              <Tabs
+                margin={{ base: '0', md: '2rem auto' }}
+                maxW="1280px"
+                minH={{ base: '141px' }}
+                position="relative"
+                pt={{ base: '80px', md: '0' }}>
+                <Link
+                  as={ReactLink}
                   size="sm"
-                  width={{ base: '100%' }}
-                  height={{ base: '100%' }}
-                  fontWeight={'600'}
-                  fontSize="18px">
-                  ADD NOTE
-                </Button>
-              )}
-            </Link>
-            {currentTab !== null && currentTab && currentTab[0] && currentTab[0].id && (
-              <>
+                  to="add-note"
+                  position="absolute"
+                  right={{ base: '5%', md: '38px' }}
+                  top={{ base: '20px', md: 'calc(48px + 26px)' }}
+                  _hover={{ textDecoration: 'none' }}
+                  ml={{ base: 'none', md: 'auto' }}
+                  width={{ base: '90%', md: '142px' }}
+                  height={{ base: '40px', md: '48px' }}>
+                  {currentUser?.role === projectManager && (
+                    <Button
+                      variant="submitButton"
+                      colorScheme="purple"
+                      size="sm"
+                      width={{ base: '100%' }}
+                      height={{ base: '100%' }}
+                      fontWeight={'600'}
+                      fontSize="18px">
+                      Add Note
+                    </Button>
+                  )}
+                </Link>
                 <TabList
                   bgColor="#EAEAEA"
                   color="#8E8E8E"
@@ -132,15 +141,40 @@ export function Project() {
                       )
                     })}
                 </TabPanels>
-              </>
-            )}
-          </Tabs>
+              </Tabs>
+            </>
+          )}
         </Box>
       ) : (
         <Center h="70vh" opacity="0.5">
           <Spinner size="xl" />
         </Center>
       )}
+      {!project?.attributes?.notes?.data?.length &&
+        !categories.length &&
+        currentTab === null &&
+        loading !== null && (
+          <>
+            <Image src={noData} m="auto" w={{ base: '80%', lg: '15vw' }} mt="20vh" d="block" />
+            {!categories.length && currentUser?.role === projectManager && (
+              <Link as={ReactLink} to="add-note">
+                {' '}
+                <Button
+                  variant="submitButton"
+                  colorScheme="purple"
+                  size="sm"
+                  width={{ base: '110px' }}
+                  fontWeight={'600'}
+                  fontSize="18px"
+                  m="auto"
+                  mt="50px"
+                  d="block">
+                  Add Note
+                </Button>
+              </Link>
+            )}
+          </>
+        )}
     </>
   )
 }

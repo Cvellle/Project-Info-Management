@@ -17,6 +17,20 @@ const theme = extendTheme({
       fontSize: '16px',
       color: 'black'
     }
+  },
+  components: {
+    Button: {
+      variants: {
+        submitButton: {
+          fontSize: '18px',
+          width: '110px',
+          height: '48px',
+          borderRadius: '10px',
+          background: '#805ad5',
+          color: 'white'
+        }
+      }
+    }
   }
 })
 

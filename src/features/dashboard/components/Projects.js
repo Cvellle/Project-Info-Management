@@ -1,4 +1,4 @@
-import { Grid, Center, Spinner } from '@chakra-ui/react'
+import { Grid, Center, Spinner, Image } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -6,6 +6,7 @@ import { dashboardState, fetchItems, resetProjects } from '../dashboardSlice'
 import { ProjectItem } from './ProjectItem'
 import { authState } from 'features/auth/authSlice'
 import { useDidUpdate } from 'hooks/useDidUpdate'
+import noData from 'assets/no-results.png'
 
 export function Projects() {
   const dispatch = useDispatch()
@@ -53,17 +54,21 @@ export function Projects() {
   return (
     <>
       {mapArray && loaded ? (
-        <Grid
-          padding="2.5rem 1rem"
-          gridTemplateColumns={{ base: '1fr', md: 'repeat(2,1fr)' }}
-          maxW="1280px"
-          m="auto"
-          rowGap="0.9rem"
-          columnGap="1.5rem">
-          {mapArray?.map((project, i) => {
-            return <ProjectItem key={i} item={project} />
-          })}
-        </Grid>
+        mapArray.length ? (
+          <Grid
+            padding="2.5rem 1rem"
+            gridTemplateColumns={{ base: '1fr', md: 'repeat(2,1fr)' }}
+            maxW="1280px"
+            m="auto"
+            rowGap="0.9rem"
+            columnGap="1.5rem">
+            {mapArray?.map((project, i) => {
+              return <ProjectItem key={i} item={project} />
+            })}
+          </Grid>
+        ) : (
+          <Image src={noData} m="auto" w={{ base: '80%', lg: '15vw' }} mt="20vh" d="block" />
+        )
       ) : (
         <Center h="70vh">
           <Spinner size="xl" />

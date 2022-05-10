@@ -234,6 +234,7 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
               {registrationError && <Box color="red.500">{registrationError}</Box>}
             </VStack>
             <Button
+              variant="submitButton"
               colorScheme="purple"
               isLoading={isSubmitting}
               type="submit"
@@ -242,9 +243,9 @@ const NoteForm = ({ defaultValues, uploadedFiles, buttonText, action }) => {
               d="block"
               mt="6"
               ml="auto"
-              mr={{ base: 'auto', md: 'auto', lg: '-191px' }}
+              mr={{ base: 'auto', md: 'auto', lg: '50px' }}
               mb={{ base: '50px', md: '0' }}>
-              SAVE NOTE
+              Save Note
             </Button>
           </form>
         </Flex>

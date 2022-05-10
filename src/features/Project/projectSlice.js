@@ -3,7 +3,8 @@ import { getProject } from './api/pojectAPI'
 
 const initialState = {
   selectedProject: null,
-  loading: false
+  loading: null,
+  hasNotes: false
 }
 
 export const getProjectAsync = createAsyncThunk('projects/getProject', async (id) => {
@@ -18,6 +19,9 @@ export const projectSlice = createSlice({
     emptyProject: (state) => {
       state = initialState
       return state
+    },
+    resetLoading: (state) => {
+      state.loading = null
     }
   },
   extraReducers: {
@@ -25,13 +29,14 @@ export const projectSlice = createSlice({
       state.laodig = true
     },
     [getProjectAsync.fulfilled]: (state, action) => {
+      // action.payload.attributes.notes.data.length && (state.hasNotes = true)
       state.selectedProject = action.payload
-      state.laodig = false
+      state.loading = false
     }
   }
 })
 
-export const { emptyProject } = projectSlice.actions
+export const { emptyProject, resetLoading } = projectSlice.actions
 
 export const selectedProject = (state) => state.project.selectedProject
 export const projectState = (state) => state.project

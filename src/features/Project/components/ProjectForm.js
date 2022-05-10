@@ -170,6 +170,43 @@ const ProjectForm = ({ defValues, status, id }) => {
                 </InputLeftElement>
                 <Input
                   bgColor="white"
+                  placeholder="Available employees"
+                  value={searchValueAvailable}
+                  onChange={(e) => setSearchValueAvailable(e.target.value)}
+                  minW="300px"
+                />
+              </InputGroup>
+              <Flex
+                flexDirection="column"
+                gap="1.2rem"
+                bgColor="white"
+                p="0.8rem"
+                borderRadius="0.4rem">
+                {availableFilteredEmployees?.length ? (
+                  availableFilteredEmployees.map((user) => (
+                    <ProjectEmployee
+                      employee={user}
+                      id={user.id}
+                      name={user.username}
+                      key={user.id}
+                      src={`${url}${user.userPhoto?.url}`}
+                      addEmployee={addEmployee}
+                      removeEmployee={removeEmployee}
+                      isAddDisabled={false}
+                    />
+                  ))
+                ) : (
+                  <Text margin="auto">No data</Text>
+                )}
+              </Flex>
+            </VStack>
+            <VStack alignItems="stretch">
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" height="100%">
+                  <BiSearchAlt color="#805ad5" />
+                </InputLeftElement>
+                <Input
+                  bgColor="white"
                   placeholder="Added employees"
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
@@ -199,48 +236,11 @@ const ProjectForm = ({ defValues, status, id }) => {
                 )}
               </Flex>
             </VStack>
-            <VStack alignItems="stretch">
-              <InputGroup>
-                <InputLeftElement pointerEvents="none" height="100%">
-                  <BiSearchAlt color="#805ad5" />
-                </InputLeftElement>
-                <Input
-                  bgColor="white"
-                  placeholder="Available employees"
-                  value={searchValueAvailable}
-                  onChange={(e) => setSearchValueAvailable(e.target.value)}
-                  minW="300px"
-                />
-              </InputGroup>
-
-              <Flex
-                flexDirection="column"
-                gap="1.2rem"
-                bgColor="white"
-                p="0.8rem"
-                borderRadius="0.4rem">
-                {availableFilteredEmployees?.length ? (
-                  availableFilteredEmployees.map((user) => (
-                    <ProjectEmployee
-                      employee={user}
-                      id={user.id}
-                      name={user.username}
-                      key={user.id}
-                      src={`${url}${user.userPhoto?.url}`}
-                      addEmployee={addEmployee}
-                      removeEmployee={removeEmployee}
-                      isAddDisabled={false}
-                    />
-                  ))
-                ) : (
-                  <Text margin="auto">No data</Text>
-                )}
-              </Flex>
-            </VStack>
           </Flex>
         </Flex>
 
         <Button
+          variant="submitButton"
           colorScheme="purple"
           isLoading={isSubmitting}
           type="submit"
