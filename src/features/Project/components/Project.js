@@ -37,7 +37,7 @@ export function Project() {
   // states
   const { categories } = notesSelector
   const { currentUser } = authSelector
-  const { loading, hasNotes } = projectSelector
+  const { hasNotes } = projectSelector
   const [tabCounter, setTabCounter] = useState(null)
   const [currentTab, setCurrentTab] = useState(null)
 
