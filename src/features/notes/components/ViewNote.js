@@ -232,7 +232,7 @@ const ViewNote = () => {
                     flexDirection="column">
                     <Box m="auto">No Preview Avalailable</Box>
                     <Box m="auto">
-                      <Center m="auto" textlign="center">
+                      <Center mx="auto" textlign="center">
                         Click on view button
                       </Center>
                       <a
