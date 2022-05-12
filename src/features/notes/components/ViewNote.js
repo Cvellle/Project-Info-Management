@@ -59,6 +59,7 @@ const ViewNote = () => {
   useEffect(() => {
     setFilesArray(
       selectedNote?.attributes?.files?.data?.map((el) => {
+        console.log(el)
         return {
           file: el,
           active: false
@@ -150,19 +151,17 @@ const ViewNote = () => {
                     </Center>
                   </Box>
                   <Box mb="20px"> {file.attributes.name}</Box>
-                  <Flex
-                    w="100%"
-                    justifyContent="space-between"
-                    cursor="pointer"
-                    m="auto"
-                    onClick={() =>
-                      downloadFile({
-                        path: url + file.attributes.url,
-                        name: file.attributes.name,
-                        extension: file.attributes.ext
-                      })
-                    }>
-                    <FiDownload mr="auto" />
+                  <Flex w="100%" justifyContent="space-between" cursor="pointer" m="auto">
+                    <FiDownload
+                      mr="auto"
+                      onClick={() =>
+                        downloadFile({
+                          path: url + file.attributes.url,
+                          name: file.attributes.name,
+                          extension: file.attributes.ext
+                        })
+                      }
+                    />
                     <a
                       href={url + file.attributes.url}
                       target="_blank"
@@ -216,20 +215,38 @@ const ViewNote = () => {
           <Flex width="100%" justifyContent="center">
             {filesArray?.length && (
               <Center width={{ base: '80vw', lg: '800px' }} height={{ base: '80vw', lg: '600px' }}>
-                {filesArray[counter].file?.attributes?.mime?.split('/')[0] === 'image' && (
+                {filesArray[counter].file?.attributes?.mime?.split('/')[0] === 'image' ? (
                   <Image
                     src={url + filesArray[counter].file?.attributes.url}
                     height="auto"
-                    width="100%"
+                    minW="100%"
                   />
-                )}
-                {filesArray[counter].file?.attributes?.mime?.split('/')[0] === 'text' && (
+                ) : filesArray[counter].file?.attributes?.mime?.split('/')[0] === 'text' ? (
                   <DisplayText url={url + filesArray[counter].file?.attributes.url} />
-                )}
-                {filesArray[counter].file?.attributes?.mime?.split('/')[0] === 'video' && (
-                  <Center background="white" w="100%" h="100%">
-                    No Preview Avalailable <br />
-                    click on view button in the items list
+                ) : (
+                  <Center
+                    background="white"
+                    minW="100%"
+                    h="100%"
+                    flexWrap="wrap"
+                    flexDirection="column">
+                    <Box m="auto">No Preview Avalailable</Box>
+                    <Box m="auto">
+                      <Center m="auto" textlign="center">
+                        Click on view button
+                      </Center>
+                      <a
+                        href={url + filesArray[counter].file?.attributes?.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        h="150px"
+                        ml="auto"
+                        d="block">
+                        <Center>
+                          <TiEyeOutline />
+                        </Center>
+                      </a>
+                    </Box>
                   </Center>
                 )}
               </Center>
@@ -242,7 +259,12 @@ const ViewNote = () => {
             mt={{ lg: '-20vh' }}
             flexWrap="wrap">
             <Center h="200px" order="1" width={{ base: '50%', lg: 'unset' }}>
-              <MdOutlineArrowBackIos color="white" cursor="pointer" onClick={(e) => moveLeft(e)} />
+              <MdOutlineArrowBackIos
+                border="2px soli gray"
+                color="gray"
+                cursor="pointer"
+                onClick={(e) => moveLeft(e)}
+              />
             </Center>
             {filesArray?.map((file, i) => (
               <Box
@@ -272,7 +294,8 @@ const ViewNote = () => {
             ))}
             <Center h="200px" order={{ base: '2', lg: '3' }} width={{ base: '50%', lg: 'unset' }}>
               <MdOutlineArrowForwardIos
-                color="white"
+                border="2px solid gray"
+                color="gray"
                 cursor="pointer"
                 onClick={(e) => moveRight(e)}
               />

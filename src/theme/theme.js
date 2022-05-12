@@ -23,7 +23,7 @@ const theme = extendTheme({
       variants: {
         submitButton: {
           fontSize: '18px',
-          width: '110px',
+          minWidth: '110px',
           height: '48px',
           borderRadius: '10px',
           background: '#805ad5',

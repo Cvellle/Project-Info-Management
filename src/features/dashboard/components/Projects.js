@@ -1,12 +1,14 @@
-import { Grid, Center, Spinner, Image } from '@chakra-ui/react'
+import { Grid, Center, Spinner, Image, Link, Button } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Link as ReactLink } from 'react-router-dom'
 
 import { dashboardState, fetchItems, resetProjects } from '../dashboardSlice'
 import { ProjectItem } from './ProjectItem'
 import { authState } from 'features/auth/authSlice'
 import { useDidUpdate } from 'hooks/useDidUpdate'
 import noData from 'assets/no-results.png'
+import { projectManager } from 'shared/constants'
 
 export function Projects() {
   const dispatch = useDispatch()
@@ -67,7 +69,28 @@ export function Projects() {
             })}
           </Grid>
         ) : (
-          <Image src={noData} m="auto" w={{ base: '80%', lg: '15vw' }} mt="20vh" d="block" />
+          <>
+            <Image src={noData} m="auto" w={{ base: '80%', lg: '15vw' }} mt="20vh" d="block" />
+            {currentUser?.role === projectManager && (
+              <Link
+                d="block"
+                m="auto"
+                as={ReactLink}
+                size="sm"
+                to="/create-project"
+                _hover={{ textDecoration: 'none' }}>
+                <Button
+                  mt="50px"
+                  variant="submitButton"
+                  d="block"
+                  m="auto"
+                  colorScheme="purple"
+                  size="sm">
+                  Create a Project
+                </Button>
+              </Link>
+            )}
+          </>
         )
       ) : (
         <Center h="70vh">

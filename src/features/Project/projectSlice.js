@@ -22,6 +22,7 @@ export const projectSlice = createSlice({
     },
     resetLoading: (state) => {
       state.loading = null
+      state.hasNotes = false
     }
   },
   extraReducers: {
