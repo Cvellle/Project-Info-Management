@@ -147,7 +147,7 @@ export function Project() {
           <Spinner size="xl" />
         </Center>
       )}
-      {currentTab === null && !hasNotes && (
+      {!hasNotes && currentUser?.role && (
         <>
           <Image src={noData} m="auto" w={{ base: '80%', lg: '15vw' }} mt="20vh" d="block" />
           {!categories.length && currentUser?.role === projectManager && (
